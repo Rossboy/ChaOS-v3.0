@@ -86,5 +86,8 @@ void Process::addToMessages(std::string message)
 }
 std::string Process::getMessage()
 {
-	return this->messages.pop_front();
+	// return this->messages.pop_front();
+	auto popped = this->messages.front();
+	this->messages.pop_front();
+	return popped;
 }
