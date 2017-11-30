@@ -4,7 +4,7 @@
 #include <vector>
 #include "Process.h"
 
-
+//test
 class Interpreter
 {
 	//Rejestry
