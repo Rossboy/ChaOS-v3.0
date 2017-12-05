@@ -113,11 +113,13 @@
   <ItemGroup>
     <ClCompile Include="Shell_.cpp" />
     <ClCompile Include="Sources\Interpreter.cpp" />
+    <ClCompile Include="Sources\MemoryManager.cpp" />
     <ClCompile Include="Sources\Process.cpp" />
     <ClCompile Include="Sources\ProcessesManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\Interpreter.h" />
+    <ClInclude Include="Headers\MemoryManager.h" />
     <ClInclude Include="Headers\Process.h" />
     <ClInclude Include="Headers\ProcessesManager.h" />
   </ItemGroup>
