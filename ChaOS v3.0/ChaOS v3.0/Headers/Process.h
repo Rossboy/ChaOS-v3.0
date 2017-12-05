@@ -8,14 +8,14 @@
 enum State { New, Ready, Waiting, Running, Terminated };
 
 
-class Process
+class PCB
 {
 private:
 	int PID;
 	int GID;
 	State state;
 	int instructionCounter;
-	int registers[4];
+
 	int burstTime;
 	std::string programName;
 	std::list<std::string>messages;
@@ -24,8 +24,9 @@ private:
 
 
 public:
+	int registers[4]; 
 	static int processesCounter;
-	Process(std::string fileName, int GID);
+	PCB(std::string fileName, int GID);
 	void SetState(State newState);
 	void SetProcesBurstTime(int newBurstTime);
 	int GetProcesBurstTime();
