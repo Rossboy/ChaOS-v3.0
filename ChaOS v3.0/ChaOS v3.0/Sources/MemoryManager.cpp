@@ -1,4 +1,4 @@
-#include "MemoryManager.h"
+#include "../Headers/MemoryManager.h"
 
 void MemoryManager::swapToFile(PCB * pcb)
 {
@@ -163,7 +163,7 @@ void MemoryManager::printPCBframes(PCB * pcb, bool onlyInRam)
 	pair<int, bool> * PCBpages = pcb->getPages();
 	int PCBpagesSize = pcb->getPagesSize();
 	
-	cout << " --- Pamiec zarezerwowana przez proces: " << pcb->getName() << " ---\n";
+	cout << " --- Pamiec zarezerwowana przez proces: " << pcb->GetPID() << " ---\n";
 	for (int i = 0; i < PCBpagesSize; i++)
 	{
 		if (PCBpages[i].second)

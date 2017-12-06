@@ -1,5 +1,5 @@
 #pragma once
-#include "PCB.h"
+#include "../Headers/Process.h"
 #include <list>
 #include <iostream>
 #include <queue>
