@@ -3,19 +3,19 @@
 #include <vector>
 #include <algorithm>
 #include "../Headers/Interpreter.h"
-
+extern PCB* ActiveProcess;
 
 //Wykonywanie rozkazu
-void Interpreter::DoCommand(PCB ActivePCB)
+void Interpreter::DoCommand()
 {
-	std::string command_code = getArgument(ActivePCB);
+	std::string command_code = getArgument();
 	//Wczytywanie ID rozkazu, oraz iloœci argumentów
 	std::pair<int, int > CommandParameters = GetParameters(command_code);
 	std::vector<std::string>Arguments;
 
 	//Wczytywanie Argumentów
 	for (int i = 0; i < CommandParameters.second; i++) {
-		Arguments.push_back(getArgument(ActivePCB));//od osoby zarz¹dzaj¹cej pamiêci¹
+		Arguments.push_back(getArgument());//od osoby zarz¹dzaj¹cej pamiêci¹
 	}
 
 	//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;
@@ -35,47 +35,47 @@ void Interpreter::DoCommand(PCB ActivePCB)
 		std::clog << "Wykonuje siê operacja dodawania..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
-		REG[arg1] += REG[arg2];
+		ActiveProcess->registers[arg1] += ActiveProcess->registers[arg2];
 		RegStatus();
 		break;
 	case 1://SB = Odejmowanie
 		std::clog << "Wykonuje siê operacja odejmowania..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
-		REG[arg1] -= REG[arg2];
+		ActiveProcess->registers[arg1] -= ActiveProcess->registers[arg2];
 		RegStatus();
 		break;
 	case 2://ML = MNO¯ENIE
 		std::clog << "Wykonuje siê operacja mno¿enia..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
-		REG[arg1] *= REG[arg2];
+		ActiveProcess->registers[arg1] *= ActiveProcess->registers[arg2];
 		RegStatus();
 		break;
 	case 3://DV = DZIELENIE
 		std::clog << "Wykonuje siê operacja dzielenia..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
-		REG[arg1] /= REG[arg2];
+		ActiveProcess->registers[arg1] /= ActiveProcess->registers[arg2];
 		RegStatus();
 		break;
 	case 4://DR = DEKREMENTACJA
 		std::clog << "Wykonuje siê operacja dekrementacji..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
-		REG[arg1]--;
+		ActiveProcess->registers[arg1]--;
 		RegStatus();
 		break;
 	case 5://IR = INKREMENTACJA
 		std::clog << "Wykonuje siê operacja inkrementacji..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
-		REG[arg1]++;
+		ActiveProcess->registers[arg1]++;
 		RegStatus();
 		break;
 	case 6://MV =PRZENOSZENIE WARTOŒCI
 		std::clog << "Wykonuje siê operacja przypisania wartoœci..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
-		REG[arg1] = arg2;
+		ActiveProcess->registers[arg1] = arg2;
 		RegStatus();
 		break;
 
@@ -128,7 +128,7 @@ void Interpreter::DoCommand(PCB ActivePCB)
 
 
 //Pobiera ID oraz iloœæ parametrów z tablicy rozkazów
-std::pair<int, int > Interpreter::GetParameters(const std::string& cmd)
+std::pair<int, int > Interpreter::GetParameters(std::string& cmd)
 {
 	std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::toupper);
 	for (int i = 0; i < CommandTab.size(); i++) {
@@ -143,7 +143,7 @@ std::pair<int, int > Interpreter::GetParameters(const std::string& cmd)
 
 
 //Symulacja podawania argumentu
-std::string Interpreter::getArgument(PCB ActivePCB)
+std::string Interpreter::getArgument()
 {
 	std::string arg;
 	std::clog << "WprowadŸ argument:";
@@ -156,6 +156,6 @@ std::string Interpreter::getArgument(PCB ActivePCB)
 void Interpreter::RegStatus()
 {
 	std::cout << "Aktualny stan rejestrów" << std::endl;
-	std::cout << "R0: " << REG[0] << " | R1: " << REG[1] << " | R2 " << REG[2] << std::endl;
+	std::cout << "R0: " << ActiveProcess->registers[0] << " | R1: " << ActiveProcess->registers[1] << " | R2 " << ActiveProcess->registers[2] << std::endl;
 	std::cin.ignore(1);
 }

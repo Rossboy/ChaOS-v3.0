@@ -6,9 +6,9 @@
 #include <algorithm>
 #include <vector>
 
-int Process::processesCounter = 0;
+int PCB::processesCounter = 0;
 
-Process::Process(std::string programName, int GID)
+PCB::PCB(std::string programName, int GID)
 {
 	this->PID = processesCounter++;
 	this->GID = GID;
@@ -23,68 +23,68 @@ Process::Process(std::string programName, int GID)
 	this->state = State::Waiting;
 }
 
-void Process::SetState(State newState) 
+void PCB::SetState(State newState) 
 {
 	this->state = newState;
 }
-void Process::SetProcesBurstTime(int newBurstTime)
+void PCB::SetProcesBurstTime(int newBurstTime)
 {
 	this->burstTime = newBurstTime;
 }
-int Process::GetProcesBurstTime()
+int PCB::GetProcesBurstTime()
 {
 	return burstTime;
 }
-int Process::GetPID()
+int PCB::GetPID()
 {
 	return PID;
 }
 
-int Process::GetGID()
+int PCB::GetGID()
 {
 	return GID;
 }
-std::string Process::GetFileName()
+std::string PCB::GetFileName()
 {
 	return programName;
 }
-State Process::GetState()
+State PCB::GetState()
 {
 	return state;
 }
-void Process::setPages(std::pair<int, bool>* newPages)
+void PCB::setPages(std::pair<int, bool>* newPages)
 {
 	this->pages = newPages;
 }
-std::pair<int, bool>* Process::getPages()
+std::pair<int, bool>* PCB::getPages()
 {
 	return this->pages;
 }
-void Process::setPagesSize(int num)
+void PCB::setPagesSize(int num)
 {
 	this->pagesSize = num;
 }
-int Process::getPagesSize()
+int PCB::getPagesSize()
 {
 	return this->pagesSize;
 }
-void Process::displayProcess()
+void PCB::displayProcess()
 {
 	std::cout << "PID: " << GetPID() << ", GID: " << GetGID() << ", File name: " << GetFileName() << ", Burst time: " << GetProcesBurstTime() << ", State: " << GetState() << std::endl;
 }
-void Process::SetInstructionCounter(int counter)
+void PCB::SetInstructionCounter(int counter)
 {
 	this->instructionCounter = counter;
 }
-int Process::GetInstructionCounter()
+int PCB::GetInstructionCounter()
 {
 	return this->instructionCounter;
 }
-void Process::addToMessages(std::string message) 
+void PCB::addToMessages(std::string message) 
 {
 	this->messages.push_back(message);
 }
-std::string Process::getMessage()
+std::string PCB::getMessage()
 {
 	// return this->messages.pop_front();
 	auto popped = this->messages.front();

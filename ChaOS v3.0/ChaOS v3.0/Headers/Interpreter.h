@@ -4,11 +4,10 @@
 #include <vector>
 #include "Process.h"
 
-//test123
+
 class Interpreter
 {
-	//Rejestry
-	int REG[3]{ 0,0,0 };
+	
 
 
 
@@ -54,10 +53,10 @@ class Interpreter
 	};
 
 
-	std::pair<int, int > GetParameters(const std::string& cmd);
+	std::pair<int, int > GetParameters(std::string& cmd);
 
 	//Tymczasowe wpisywanie argumentówl
-	std::string getArgument(PCB ActivePCB);
+	std::string getArgument();
 
 	//Stan rejestrów
 	void RegStatus();
@@ -66,5 +65,5 @@ public:
 	Interpreter() {};
 
 	//Wykonaj rozkaz (kod rozkazu)
-	void DoCommand(PCB ActivePCB);
+	void DoCommand();
 };
