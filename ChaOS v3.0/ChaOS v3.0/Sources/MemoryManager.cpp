@@ -1,4 +1,4 @@
-#include "MemoryManager.h"
+#include "../Headers/MemoryManager.h"
 
 void MemoryManager::swapToFile(PCB * pcb)
 {
