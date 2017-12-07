@@ -1,6 +1,6 @@
-#include "ConditionVariable.h"
+#include "../Headers/ConditionVariable.h"
 //#include "ProcessScheduling.h"		Czekam na Alberta XD
-#include "Process.h"
+#include "../Headers/Process.h"
 #include <iostream>
 
 ConditionVariable::ConditionVariable()
