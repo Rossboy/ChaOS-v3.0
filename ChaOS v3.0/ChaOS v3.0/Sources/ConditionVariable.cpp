@@ -5,7 +5,7 @@
 
 ConditionVariable::ConditionVariable()
 {
-	resourceOccupied = false;
+	this->resourceOccupied = false;
 }
 
 // Zmienia stan procesu na waiting, dodaje do listy procesów oczekuj¹cych 
@@ -32,11 +32,13 @@ void ConditionVariable::signal()
 {
 	if (!resourceOccupied && !waitingProcesses.empty())
 	{
-		waitingProcesses.front->SetState(State::Ready);
+		PCB* temp = waitingProcesses.front();
+		temp->SetState(State::Ready);
 		// Dodanie do listy procesów oczekuj¹cych na liœcie planisty
 		waitingProcesses.pop_front();
 		//this->resourceOccupied = true;
 		//SRTSchedulingAlgorithm();
+		delete temp;
 	}
 }
 
