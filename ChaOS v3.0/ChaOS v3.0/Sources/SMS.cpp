@@ -1,5 +1,5 @@
-#include "SMS.h"
-#include"Headers\Process.h"
+#include "..\Headers\SMS.h"
+#include"..\Headers\Process.h"
 extern PCB* ActiveProcess;
 
 

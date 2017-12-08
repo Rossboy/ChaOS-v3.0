@@ -1,5 +1,5 @@
-#include "Siec.h"
-#include "Headers\ProcessesManager.h"
+#include "..\Headers\Siec.h"
+#include "..\Headers\ProcessesManager.h"
 extern PCB* ActiveProcess;
 
 Siec::Siec()

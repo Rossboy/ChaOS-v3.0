@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -121,6 +121,8 @@
     <ClCompile Include="Sources\MemoryManager.cpp" />
     <ClCompile Include="Sources\Process.cpp" />
     <ClCompile Include="Sources\ProcessesManager.cpp" />
+    <ClCompile Include="Sources\Siec.cpp" />
+    <ClCompile Include="Sources\SMS.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\ChaOS_filesystem.h" />
@@ -132,6 +134,11 @@
     <ClInclude Include="Headers\MemoryManager.h" />
     <ClInclude Include="Headers\Process.h" />
     <ClInclude Include="Headers\ProcessesManager.h" />
+    <ClInclude Include="Headers\Siec.h" />
+    <ClInclude Include="Headers\SMS.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="ChaOS v3.0.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
