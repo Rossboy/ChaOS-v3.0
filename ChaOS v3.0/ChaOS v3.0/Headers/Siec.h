@@ -1,6 +1,7 @@
 #pragma once
-#include"SMS.h"
-class Siec : private ProcessesManager
+#include"..\Headers\SMS.h"
+#include "..\Headers\ProcessesManager.h"
+class Siec
 {
 public:
 	bool wyslij(std::string, int ID);

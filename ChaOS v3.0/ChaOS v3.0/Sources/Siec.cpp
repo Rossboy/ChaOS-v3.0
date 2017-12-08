@@ -1,6 +1,6 @@
 #include "..\Headers\Siec.h"
-#include "..\Headers\ProcessesManager.h"
 extern PCB* ActiveProcess;
+extern ProcessesManager *pm;
 
 Siec::Siec()
 {
@@ -12,7 +12,7 @@ Siec::~Siec()
 }
 bool Siec::wyslij(std::string wiad, int ID)
 {
-	for (auto it = allProcesses.begin(); it != allProcesses.end(); it++)
+	for (auto it = pm->getAllProcesseslist().begin(); it != pm->getAllProcesseslist().end(); it++)
 	{
 		if(ActiveProcess->GetGID() == (*it->begin())->GetGID())
 		for (auto et = it->begin(); et != it->end(); et++)

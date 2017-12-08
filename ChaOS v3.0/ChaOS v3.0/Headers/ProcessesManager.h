@@ -6,7 +6,7 @@
 #include <map>
 
 class ProcessesManager {
-protected:
+private:
 	std::list<std::list<PCB*>>allProcesses;
 	std::list<PCB*>waitingProcesses;
 	std::list<PCB*>readyProcesses;
@@ -20,4 +20,6 @@ public:
 	// Albert -- napisalem se funkcje do zwracania std::list<Process*>readyProcesses;
 	std::list<PCB*> GiveReadyProcessesList();
 	std::list<PCB*> GiveWaitingProcessesList();
+	//Konrad: potrzebowa³em tego heh
+	std::list<std::list<PCB*>> getAllProcesseslist();
 };

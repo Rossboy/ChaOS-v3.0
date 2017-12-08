@@ -116,3 +116,7 @@ std::list<PCB*> ProcessesManager::GiveReadyProcessesList() {
 std::list<PCB*> ProcessesManager::GiveWaitingProcessesList() {
 	return waitingProcesses;
 }
+std::list<std::list<PCB*>> ProcessesManager::getAllProcesseslist()
+{
+	return allProcesses;
+}
