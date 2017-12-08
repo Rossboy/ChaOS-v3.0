@@ -109,7 +109,10 @@ void ProcessesManager::displayReadyProcesses()
 	else std::cout << "List is empty" << std::endl;
 }
 
-// Albert -- napisalem se funkcje do zwracania std::list<Process*>readyProcesses;
+// Albert -- napisalem se funkcje do zwracania std::list<Process*>readyProcesses i std::list<PCB*>waitingProcesses
 std::list<PCB*> ProcessesManager::GiveReadyProcessesList() {
 	return readyProcesses;
+}
+std::list<PCB*> ProcessesManager::GiveWaitingProcessesList() {
+	return waitingProcesses;
 }

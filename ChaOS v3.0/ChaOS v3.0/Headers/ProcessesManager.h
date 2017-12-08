@@ -19,4 +19,5 @@ public:
 	void displayReadyProcesses();
 	// Albert -- napisalem se funkcje do zwracania std::list<Process*>readyProcesses;
 	std::list<PCB*> GiveReadyProcessesList();
+	std::list<PCB*> GiveWaitingProcessesList();
 };
