@@ -6,7 +6,7 @@
 #include <map>
 
 class ProcessesManager {
-private:
+protected:
 	std::list<std::list<PCB*>>allProcesses;
 	std::list<PCB*>waitingProcesses;
 	std::list<PCB*>readyProcesses;

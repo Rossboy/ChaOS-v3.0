@@ -1,10 +1,10 @@
+#include"..\SMS.h"
 #pragma once
 #include <iostream>
 #include <string>
 #include <list>
 #include <algorithm>
 #include <vector>
-
 enum State { New, Ready, Waiting, Running, Terminated };
 
 
@@ -18,7 +18,7 @@ private:
 
 	int burstTime;
 	std::string programName;
-	std::list<std::string>messages;
+	std::list<SMS>messages;
 	std::pair<int, bool>* pages;
 	int pagesSize;
 
@@ -41,6 +41,10 @@ public:
 	std::pair<int, bool>* getPages();
 	void setPagesSize(int num);
 	int getPagesSize();
-	void addToMessages(std::string message);
-	std::string getMessage();
+	void addToMessages(SMS message);
+	SMS getMessage();
+	//Konrad: doda³em usuwanie bo potrzebujê te¿ geta do wyœwietlania wiadomoœci
+	void deleteMessage();
+	//Konrad: d³ugoœci te¿ bêdê potrzebowa³
+	int messagessize();
 };
