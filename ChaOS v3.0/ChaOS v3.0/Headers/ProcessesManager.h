@@ -1,8 +1,8 @@
+#pragma once
 #include <iostream>
 #include <string>
 #include <list>
 #include "Process.h"
-//#include "disk_drive.h"
 #include <map>
 
 class ProcessesManager {

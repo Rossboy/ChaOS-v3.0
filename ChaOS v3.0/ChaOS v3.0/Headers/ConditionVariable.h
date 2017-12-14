@@ -1,3 +1,4 @@
+#pragma once
 #include "../Headers/Process.h"
 #include <list>
 
