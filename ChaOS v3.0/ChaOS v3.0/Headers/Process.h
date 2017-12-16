@@ -1,5 +1,6 @@
+#ifndef PROCESS__H
+#define PROCESS__H
 #include"..\Headers\SMS.h"
-#pragma once
 #include <iostream>
 #include <string>
 #include <list>
@@ -48,3 +49,4 @@ public:
 	//Konrad: d³ugoœci te¿ bêdê potrzebowa³
 	int messagessize();
 };
+#endif PROCESS__H

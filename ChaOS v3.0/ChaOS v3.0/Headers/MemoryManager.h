@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MEMORYMANAGER__H
+#define MEMORYMANAGER__H
 #include "../Headers/Process.h"
 #include <list>
 #include <iostream>
@@ -52,3 +53,4 @@ public:
 	~MemoryManager();
 };
 
+#endif MEMORYMANAGER__H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SIEC__H
+#define SIEC__H
 #include"..\Headers\SMS.h"
 #include "..\Headers\ProcessesManager.h"
 class Siec
@@ -11,3 +12,4 @@ public:
 	~Siec();
 };
 
+#endif SIEC__H

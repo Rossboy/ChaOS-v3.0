@@ -1,5 +1,5 @@
-﻿#pragma once
-
+﻿#ifndef DISKDIRVE__H
+#define DISKDRIVE__H
 using uShort = unsigned short;
 using c_uShort = const uShort;
 
@@ -27,3 +27,4 @@ private:
 	char* diskSpace; 
 };
 
+#endif DISKDIRIVE__H

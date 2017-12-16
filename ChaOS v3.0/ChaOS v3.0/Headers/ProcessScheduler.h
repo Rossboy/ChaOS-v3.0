@@ -1,4 +1,5 @@
-#pragma once
+#ifndef PROCESSSCHEDULER__H
+#define PROCESSSCHEDULER__H
 #include "ProcessesManager.h"
 #include "Process.h"
 #include <iostream>
@@ -15,3 +16,4 @@ public:
 	//procedura sluzaca do uruchomienia procesu i wywo³ania planisty
 	void RunProcess();
 };
+#endif PROCESSSCHEDULER__H

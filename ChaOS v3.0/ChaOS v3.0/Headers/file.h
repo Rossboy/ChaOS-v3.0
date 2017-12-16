@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿#ifndef FILE__H
+#define FILE__H
 #include <string>
 // Klasa file reprezentuje plik na którym pracuje OS.
 // 
@@ -25,3 +26,4 @@ private:
 	uShort sizeInSectors;
 };
 
+#endif FILE__H

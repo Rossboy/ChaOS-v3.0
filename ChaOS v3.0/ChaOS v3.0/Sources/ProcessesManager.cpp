@@ -6,8 +6,7 @@
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
 ProcessesManager::ProcessesManager()
 {
-	std::list<PCB*>list;
-	allProcesses.push_back(list); // GroupID == 0
+	this->allProcesses.push_back(this->list); // GroupID == 0
 }
 
 //Tworzenie procesu. Jeszcze brak grupowania procesów
