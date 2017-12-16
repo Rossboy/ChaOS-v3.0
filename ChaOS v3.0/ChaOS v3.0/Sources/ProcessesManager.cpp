@@ -6,22 +6,60 @@
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
 ProcessesManager::ProcessesManager()
 {
-	this->allProcesses.push_back(this->list); // GroupID == 0
+	createProcess("programbezczynnosci.txt", 0); //Tworzenie procesu bezczynnosci GID = 0
 }
 
-//Tworzenie procesu. Jeszcze brak grupowania procesów
+//Tworzenie procesu. Juz z grupowaniem
 void ProcessesManager::createProcess(std::string programName, int GID)
 {
+
+	bool GroupExist = true;
 	PCB* newProcess = new PCB(programName, GID);
 
-
-	
-	std::list<std::list<PCB*>>::iterator it = allProcesses.begin();
-	(*it).push_back(newProcess);
+	/*Przypadek kiedy dodawany jest proces bezczynnosci*/
+	if (GID == 0)
+	{
+		std::list<PCB*>list;
+		allProcesses.push_back(list); // GroupID == 0
+		std::list<std::list<PCB*>>::iterator it = allProcesses.begin();
+		std::list<PCB*>::iterator it2 = (*it).begin();
+		(*it).push_back(newProcess);
+	}
+	else {
+		/*Sprawdzamy czy dana grupa juz istnieje*/
+		for (std::list<std::list<PCB*>>::iterator it = allProcesses.begin(); it != allProcesses.end(); it++)
+		{
+			std::list<PCB*>::iterator it2 = (*it).begin();
+			if ((*it2)->GetGID() == GID)
+			{
+				(*it).push_back(newProcess);
+				GroupExist = true;
+				break;
+			}
+			else
+			{
+				GroupExist = false;
+			}
+		}
+		/*Jezeli nie to tworzymy nowa*/
+		if (GroupExist == false)
+		{
+			std::list<PCB*>list;
+			allProcesses.push_back(list);
+			std::list<std::list<PCB*>>::iterator it = allProcesses.begin();
+			for (int i = 0; i < allProcesses.size() - 1; i++)
+			{
+				it++;
+			}
+			(*it).push_back(newProcess);
+			std::list<PCB*>::iterator it2 = (*it).begin();
+		}
+	}
 
 	waitingProcesses.push_front(newProcess);
 
 }
+/*Zabijanie procesu*/
 void ProcessesManager::killProcess(int PID)
 {
 	if (waitingProcesses.empty() == false)
@@ -49,7 +87,6 @@ void ProcessesManager::killProcess(int PID)
 
 	if (allProcesses.empty() == false)
 	{
-
 		for (std::list<std::list<PCB*>>::iterator it = allProcesses.begin(); it != allProcesses.end(); it++)
 		{
 			for (std::list<PCB*>::iterator it2 = it->begin(); it2 != it->end(); it2++)
@@ -58,7 +95,12 @@ void ProcessesManager::killProcess(int PID)
 				{
 					delete *it2;
 					//deallocateMemory(*it2);
-					it2 = it->erase(it2);
+					if (it->size() != 1)
+					{
+						it2 = it->erase(it2);
+					}
+					else it = allProcesses.erase(it);
+					break;
 				}
 			}
 		}
