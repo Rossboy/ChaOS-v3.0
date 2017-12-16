@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <climits>
 #include "../Headers/ProcessesManager.h"
 
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
@@ -23,6 +24,7 @@ void ProcessesManager::createProcess(std::string programName, int GID)
 		allProcesses.push_back(list); // GroupID == 0
 		std::list<std::list<PCB*>>::iterator it = allProcesses.begin();
 		std::list<PCB*>::iterator it2 = (*it).begin();
+		newProcess->SetProcesBurstTime(INT_MAX);
 		(*it).push_back(newProcess);
 	}
 	else {
@@ -56,12 +58,18 @@ void ProcessesManager::createProcess(std::string programName, int GID)
 		}
 	}
 
-	waitingProcesses.push_front(newProcess);
+	readyProcesses.push_back(newProcess);
 
 }
 /*Zabijanie procesu*/
 void ProcessesManager::killProcess(int PID)
 {
+	if (PID == 0)
+	{
+		std::cout << " Nie mozna wykonac operacji na procesie bezczynnosci. " << std::endl;
+	}
+	else
+	{
 	if (waitingProcesses.empty() == false)
 	{
 
@@ -104,6 +112,8 @@ void ProcessesManager::killProcess(int PID)
 				}
 			}
 		}
+	}
+
 	}
 }
 
