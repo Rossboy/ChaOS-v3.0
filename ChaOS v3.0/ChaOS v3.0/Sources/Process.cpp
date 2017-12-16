@@ -1,5 +1,3 @@
-#ifndef PCB__H
-#define PCB__H
 #include "../Headers/Process.h"
 #include <iostream>
 #include <string>
@@ -99,4 +97,3 @@ int PCB::messagessize()
 {
 	return messages.size();
 }
-#endif PCB__H
