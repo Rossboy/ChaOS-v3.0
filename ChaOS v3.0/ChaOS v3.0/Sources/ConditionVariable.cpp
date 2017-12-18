@@ -16,11 +16,13 @@ void ConditionVariable::wait(PCB* process)
 	{
 		process->SetState(State::Waiting);
 		waitingProcesses.push_back(process);
+		this->resourceOccupied = false;
 		// SRTSchedulingAlgorithm();
 	}
 	if (this->waitingProcesses.empty() || !resourceOccupied)
 	{
 		process->SetState(State::Ready);
+		this->resourceOccupied = false;
 		// Dodanie do listy procesów oczekuj¹cych na liœcie planisty
 		// SRTSchedulingAlgorithm();
 	}
