@@ -2,19 +2,11 @@
 #include "../Shell_.cpp"
 #include <list>
 
-//void ProcessScheduler::GetReadyProcessesList() {
-//	readyProcesses = pm->GiveReadyProcessesList();
-//}
-//
-//void ProcessScheduler::GetWaitingProcessesList() {
-//	waitingProcesses = pm->GiveWaitingProcessesList();
-//}
-
 void ProcessScheduler::RunProcess() {
 	//Sprawdzenie, czy wyst¹pi³ b³¹d lub jakiœ proces siê po prostu wykona³ - w obu przypadkach wywo³ywana zostaje funkcja usuwania procesu killProcess()
 	if (ActiveProcess->error == 1 || ActiveProcess->GetState() == 4) {
 		std::cout << "Killing the process and removing it from all the lists it belonged to\n";
-		pm->killProcess(ActiveProcess);
+		pm->killProcess(ActiveProcess->GetPID());
 		ActiveProcess = nullptr;
 	}
 
