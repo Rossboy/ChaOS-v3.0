@@ -2,6 +2,7 @@
 #include <string>
 #include <list>
 #include <climits>
+#include <algorithm>
 #include "../Headers/ProcessesManager.h"
 
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
@@ -70,50 +71,69 @@ void ProcessesManager::killProcess(int PID)
 	}
 	else
 	{
-	if (waitingProcesses.empty() == false)
-	{
-
-		for (std::list<PCB*>::iterator it = waitingProcesses.begin(); it != waitingProcesses.end(); it++)
+		if (waitingProcesses.empty() == false)
 		{
-			if ((*it)->GetPID() == PID)
-			{
-				it = waitingProcesses.erase(it);
-			}
-		}
-	}
+			PCB * toRemove = nullptr;
 
-	if (readyProcesses.empty() == false)
-	{
-		for (std::list<PCB*>::iterator it = readyProcesses.begin(); it != readyProcesses.end(); it++)
-		{
-			if ((*it)->GetPID() == PID)
+			for (auto element : waitingProcesses)
 			{
-				it = readyProcesses.erase(it);
-			}
-		}
-	}
-
-	if (allProcesses.empty() == false)
-	{
-		for (std::list<std::list<PCB*>>::iterator it = allProcesses.begin(); it != allProcesses.end(); it++)
-		{
-			for (std::list<PCB*>::iterator it2 = it->begin(); it2 != it->end(); it2++)
-			{
-				if ((*it2)->GetPID() == PID && it->empty() == false)
+				if (element->GetGID() == PID)
 				{
-					delete *it2;
-					//deallocateMemory(*it2);
-					if (it->size() != 1)
-					{
-						it2 = it->erase(it2);
-					}
-					else it = allProcesses.erase(it);
+					toRemove = element;
 					break;
 				}
 			}
-		}
-	}
 
+			if (toRemove != nullptr)
+			{
+				waitingProcesses.remove(toRemove);
+			}
+		}
+
+		if (readyProcesses.empty() == false)
+		{
+			PCB * toRemove = nullptr;
+
+			for (auto element : readyProcesses)
+			{
+				if (element->GetGID() == PID)
+				{
+					toRemove = element;
+					break;
+				}
+			}
+
+			if (toRemove != nullptr)
+			{
+				readyProcesses.remove(toRemove);
+			}
+
+		}
+
+		if (allProcesses.empty() == false)
+		{
+			PCB * toRemove = nullptr;
+			std::list<PCB * > * listToRemove = nullptr;
+
+			for (auto &_list : allProcesses)
+			{
+				for (auto element : _list)
+				{
+					if (element->GetPID() == PID)
+					{
+						//deallocateMemory(toRemove);
+						toRemove = element;
+						if(_list.size() == 1)
+							listToRemove = &_list;
+					}
+				}
+			}
+
+			if (toRemove != nullptr)
+				listToRemove->remove(toRemove);
+
+			allProcesses.remove(*listToRemove);
+		}
 	}
 }
 
