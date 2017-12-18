@@ -1,9 +1,10 @@
 #include "..\Headers\Siec.h"
+#include"..\Headers\ProcessesManager.h"
 extern PCB* ActiveProcess;
 extern ProcessesManager *pm;
-
 Siec::Siec()
 {
+	zmienna = ConditionVariable();
 }
 
 
@@ -12,24 +13,32 @@ Siec::~Siec()
 }
 bool Siec::wyslij(std::string wiad, int ID)
 {
+	//przeszukiwanie listy procesów w poszukiwaniu grupy procesu aktywnego (procesy mog¹ siê komunikowaæ tylko w obrêbie tej samej grupy)
 	for (auto it = pm->getAllProcesseslist().begin(); it != pm->getAllProcesseslist().end(); it++)
 	{
-		if(ActiveProcess->GetGID() == (*it->begin())->GetGID())
-		for (auto et = it->begin(); et != it->end(); et++)
+		if (ActiveProcess->GetGID() == (*it->begin())->GetGID())
 		{
-			if (ID == (*et)->GetPID())
+			//jeœli GID siê zgadza to szukamy procesu o wskazanym ID
+			for (auto et = it->begin(); et != it->end(); et++)
 			{
-				(*et)->addToMessages(SMS(wiad));
-				return true;
+				if (ID == (*et)->GetPID())
+				{
+					(*et)->addToMessages(SMS(wiad));
+					zmienna.wait(ActiveProcess);
+					return true;
+				}
 			}
 		}
 	}
+	//jeœli odpowiedni proces-odbiorca nie zosta³ zanleziony to zostanie zwrócona wartoœæ false
 	return false;
 }
-SMS Siec::odbierz()
+std::unique_ptr<SMS> Siec::odbierz()
 {
-	SMS pom = ActiveProcess->getMessage();
+	if (ActiveProcess->messagessize() == 0) return nullptr;
+	std::unique_ptr<SMS> pom = std::make_unique<SMS>(ActiveProcess->getMessage());
 	ActiveProcess->deleteMessage();
+	zmienna.signal();
 	return pom;
 }
 void Siec::wyswietlwiad()
