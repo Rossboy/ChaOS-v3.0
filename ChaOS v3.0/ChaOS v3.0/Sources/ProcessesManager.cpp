@@ -114,6 +114,7 @@ void ProcessesManager::killProcess(int PID)
 		{
 			PCB * toRemove = nullptr;
 			std::list<PCB * > * listToRemove = nullptr;
+			std::list<PCB * > * removeFrom = nullptr;
 
 			for (auto &_list : allProcesses)
 			{
@@ -123,6 +124,7 @@ void ProcessesManager::killProcess(int PID)
 					{
 						//deallocateMemory(toRemove);
 						toRemove = element;
+						removeFrom = &_list;
 						if(_list.size() == 1)
 							listToRemove = &_list;
 					}
@@ -130,9 +132,10 @@ void ProcessesManager::killProcess(int PID)
 			}
 
 			if (toRemove != nullptr)
-				listToRemove->remove(toRemove);
-
-			allProcesses.remove(*listToRemove);
+				removeFrom->remove(toRemove);
+			
+			if(listToRemove != nullptr)
+				allProcesses.remove(*listToRemove);
 		}
 	}
 }
