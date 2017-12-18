@@ -4,7 +4,7 @@ extern PCB* ActiveProcess;
 extern ProcessesManager *pm;
 Siec::Siec()
 {
-	zmienna = ConditionVariable();
+	//zmienna = ConditionVariable();
 }
 
 
@@ -24,7 +24,7 @@ bool Siec::wyslij(std::string wiad, int ID)
 				if (ID == (*et)->GetPID())
 				{
 					(*et)->addToMessages(SMS(wiad));
-					zmienna.wait(ActiveProcess);
+					//zmienna.wait(ActiveProcess);
 					return true;
 				}
 			}
@@ -38,7 +38,7 @@ std::unique_ptr<SMS> Siec::odbierz()
 	if (ActiveProcess->messagessize() == 0) return nullptr;
 	std::unique_ptr<SMS> pom = std::make_unique<SMS>(ActiveProcess->getMessage());
 	ActiveProcess->deleteMessage();
-	zmienna.signal();
+	//zmienna.signal();
 	return pom;
 }
 void Siec::wyswietlwiad()
