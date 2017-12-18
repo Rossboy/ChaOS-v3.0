@@ -73,17 +73,21 @@ void ProcessesManager::killProcess(int PID)
 	{
 		if (waitingProcesses.empty() == false)
 		{
+			// wskaznik na PCB do usuniecia -- Bartek
 			PCB * toRemove = nullptr;
 
+			// poszukujemy w liscie procesow czekajacych PCB o PID ktory chcemy usunac -- Bartek
 			for (auto element : waitingProcesses)
 			{
 				if (element->GetGID() == PID)
 				{
+					// zaleziono wskaznik -- Bartek
 					toRemove = element;
 					break;
 				}
 			}
 
+			// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
 			if (toRemove != nullptr)
 			{
 				waitingProcesses.remove(toRemove);
@@ -92,17 +96,21 @@ void ProcessesManager::killProcess(int PID)
 
 		if (readyProcesses.empty() == false)
 		{
+			// wskaznik na PCB do usuniecia -- Bartek
 			PCB * toRemove = nullptr;
 
+			// poszukujemy w liscie procesow gotowych PCB o PID ktory chcemy usunac -- Bartek
 			for (auto element : readyProcesses)
 			{
 				if (element->GetGID() == PID)
 				{
+					// zaleziono wskaznik -- Bartek
 					toRemove = element;
 					break;
 				}
 			}
 
+			// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
 			if (toRemove != nullptr)
 			{
 				readyProcesses.remove(toRemove);
@@ -112,30 +120,43 @@ void ProcessesManager::killProcess(int PID)
 
 		if (allProcesses.empty() == false)
 		{
+			// wskaznik na PCB do usuniecia -- Bartek
 			PCB * toRemove = nullptr;
+			// wskaznik do listy ktora bedzie usunieta z listy list, bo bedzie pusta -- Bartek
 			std::list<PCB * > * listToRemove = nullptr;
+			// wskaznik do listy wskaznikow PCB z ktorego usuwamy-- Bartek
 			std::list<PCB * > * removeFrom = nullptr;
 
+			// iterujemy po listcie list -- Bartek
+			// &_list - dlatego, ¿e potrzebujemy adresu listy  ktorej pozniej bêdziemy modyfikowac -- Bartek
 			for (auto &_list : allProcesses)
 			{
 				for (auto element : _list)
 				{
 					if (element->GetPID() == PID)
 					{
-						//deallocateMemory(toRemove);
+						// element do usunieca i lista do usunieca -- Bartek
 						toRemove = element;
 						removeFrom = &_list;
+						// jezeli lista przed usunieciem jest rowna 1, to po usunieciu bedzie pusta i trzeba ja usunac -- Bartek
 						if(_list.size() == 1)
 							listToRemove = &_list;
 					}
 				}
 			}
-
+			// jezeli znaleziono element do usuniecia -- Bartek
 			if (toRemove != nullptr)
+			{
+				// usuwanie procesu z pamieci i systemu normalnego i windowsa -- Bartek
 				removeFrom->remove(toRemove);
-			
-			if(listToRemove != nullptr)
+				//mm->dealocateMemory(toRemove); -- jak bêdzie w koncu moj modol potrzebny to tu trzeba to wywyolac -- Bartek
+				delete toRemove;
+			}
+			// jezeli lista zawierajacy element jest pusta to ja usuwamy -- Bartek
+			if (listToRemove != nullptr)
+			{
 				allProcesses.remove(*listToRemove);
+			}
 		}
 	}
 }
