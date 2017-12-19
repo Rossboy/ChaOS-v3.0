@@ -1,30 +1,33 @@
 #include "../Headers/ConditionVariable.h"
-//#include "ProcessScheduling.h"		Czekam na Alberta XD
 #include "../Headers/Process.h"
 #include <iostream>
+
 
 ConditionVariable::ConditionVariable()
 {
 	this->resourceOccupied = false;
 }
 
+
 // Zmienia stan procesu na waiting, dodaje do listy procesów oczekuj¹cych 
 void ConditionVariable::wait(PCB* process)
 {
-	// Tych ifów nie jestem pewna - zobaczymy podczas testów jak to bêdzie dzia³aæ
-	//if (resourceOccupied)
-	//{
+	if (resourceOccupied)
+	{
 		process->SetState(State::Waiting);
 		waitingProcesses.push_back(process);
+		this->resourceOccupied = false;
 		// SRTSchedulingAlgorithm();
-	//}
-	//else
-	//{
-	//	process->SetState(State::Ready);
+	}
+	if (this->waitingProcesses.empty() || !resourceOccupied)
+	{
+		process->SetState(State::Ready);
+		this->resourceOccupied = false;
 		// Dodanie do listy procesów oczekuj¹cych na liœcie planisty
 		// SRTSchedulingAlgorithm();
-	//}
+	}
 }
+
 
 // Zmienia stan procesu na gotowy, usuwa go z listy procesów oczekuj¹cych i w³¹cza planistê.
 // Jeœli nic nie czeka pod zmienn¹ warunkow¹ to wywo³anie metody jest ignorowane.
@@ -36,7 +39,7 @@ void ConditionVariable::signal()
 		temp->SetState(State::Ready);
 		// Dodanie do listy procesów oczekuj¹cych na liœcie planisty
 		waitingProcesses.pop_front();
-		//this->resourceOccupied = true;
+		this->resourceOccupied = true;
 		//SRTSchedulingAlgorithm();
 		delete temp;
 	}

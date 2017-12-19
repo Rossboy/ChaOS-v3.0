@@ -2,6 +2,7 @@
 #include <string>
 #include <list>
 #include <climits>
+#include <algorithm>
 #include "../Headers/ProcessesManager.h"
 
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
@@ -70,50 +71,93 @@ void ProcessesManager::killProcess(int PID)
 	}
 	else
 	{
-	if (waitingProcesses.empty() == false)
-	{
-
-		for (std::list<PCB*>::iterator it = waitingProcesses.begin(); it != waitingProcesses.end(); it++)
+		if (waitingProcesses.empty() == false)
 		{
-			if ((*it)->GetPID() == PID)
-			{
-				it = waitingProcesses.erase(it);
-			}
-		}
-	}
+			// wskaznik na PCB do usuniecia -- Bartek
+			PCB * toRemove = nullptr;
 
-	if (readyProcesses.empty() == false)
-	{
-		for (std::list<PCB*>::iterator it = readyProcesses.begin(); it != readyProcesses.end(); it++)
-		{
-			if ((*it)->GetPID() == PID)
+			// poszukujemy w liscie procesow czekajacych PCB o PID ktory chcemy usunac -- Bartek
+			for (auto element : waitingProcesses)
 			{
-				it = readyProcesses.erase(it);
-			}
-		}
-	}
-
-	if (allProcesses.empty() == false)
-	{
-		for (std::list<std::list<PCB*>>::iterator it = allProcesses.begin(); it != allProcesses.end(); it++)
-		{
-			for (std::list<PCB*>::iterator it2 = it->begin(); it2 != it->end(); it2++)
-			{
-				if ((*it2)->GetPID() == PID && it->empty() == false)
+				if (element->GetGID() == PID)
 				{
-					delete *it2;
-					//deallocateMemory(*it2);
-					if (it->size() != 1)
-					{
-						it2 = it->erase(it2);
-					}
-					else it = allProcesses.erase(it);
+					// zaleziono wskaznik -- Bartek
+					toRemove = element;
 					break;
 				}
 			}
-		}
-	}
 
+			// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
+			if (toRemove != nullptr)
+			{
+				waitingProcesses.remove(toRemove);
+			}
+		}
+
+		if (readyProcesses.empty() == false)
+		{
+			// wskaznik na PCB do usuniecia -- Bartek
+			PCB * toRemove = nullptr;
+
+			// poszukujemy w liscie procesow gotowych PCB o PID ktory chcemy usunac -- Bartek
+			for (auto element : readyProcesses)
+			{
+				if (element->GetGID() == PID)
+				{
+					// zaleziono wskaznik -- Bartek
+					toRemove = element;
+					break;
+				}
+			}
+
+			// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
+			if (toRemove != nullptr)
+			{
+				readyProcesses.remove(toRemove);
+			}
+
+		}
+
+		if (allProcesses.empty() == false)
+		{
+			// wskaznik na PCB do usuniecia -- Bartek
+			PCB * toRemove = nullptr;
+			// wskaznik do listy ktora bedzie usunieta z listy list, bo bedzie pusta -- Bartek
+			std::list<PCB * > * listToRemove = nullptr;
+			// wskaznik do listy wskaznikow PCB z ktorego usuwamy-- Bartek
+			std::list<PCB * > * removeFrom = nullptr;
+
+			// iterujemy po listcie list -- Bartek
+			// &_list - dlatego, ¿e potrzebujemy adresu listy  ktorej pozniej bêdziemy modyfikowac -- Bartek
+			for (auto &_list : allProcesses)
+			{
+				for (auto element : _list)
+				{
+					if (element->GetPID() == PID)
+					{
+						// element do usunieca i lista do usunieca -- Bartek
+						toRemove = element;
+						removeFrom = &_list;
+						// jezeli lista przed usunieciem jest rowna 1, to po usunieciu bedzie pusta i trzeba ja usunac -- Bartek
+						if(_list.size() == 1)
+							listToRemove = &_list;
+					}
+				}
+			}
+			// jezeli znaleziono element do usuniecia -- Bartek
+			if (toRemove != nullptr)
+			{
+				// usuwanie procesu z pamieci i systemu normalnego i windowsa -- Bartek
+				removeFrom->remove(toRemove);
+				//mm->dealocateMemory(toRemove); -- jak bêdzie w koncu moj modol potrzebny to tu trzeba to wywyolac -- Bartek
+				delete toRemove;
+			}
+			// jezeli lista zawierajacy element jest pusta to ja usuwamy -- Bartek
+			if (listToRemove != nullptr)
+			{
+				allProcesses.remove(*listToRemove);
+			}
+		}
 	}
 }
 
