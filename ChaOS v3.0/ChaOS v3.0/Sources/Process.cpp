@@ -1,5 +1,4 @@
 #include "../Headers/Process.h"
-#pragma once
 #include <iostream>
 #include <string>
 #include <list>
@@ -81,14 +80,21 @@ int PCB::GetInstructionCounter()
 {
 	return this->instructionCounter;
 }
-void PCB::addToMessages(std::string message) 
+void PCB::addToMessages(SMS message) 
 {
 	this->messages.push_back(message);
 }
-std::string PCB::getMessage()
+SMS PCB::getMessage()
 {
 	// return this->messages.pop_front();
 	auto popped = this->messages.front();
-	this->messages.pop_front();
 	return popped;
+}
+void PCB::deleteMessage()
+{
+	this->messages.pop_front();
+}
+int PCB::messagessize()
+{
+	return messages.size();
 }

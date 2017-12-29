@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INTERPRETER__H
+#define INTERPRETER__H
 #include <iostream>
 #include <string>
 #include <vector>
@@ -67,3 +68,4 @@ public:
 	//Wykonaj rozkaz (kod rozkazu)
 	void DoCommand();
 };
+#endif INTERPRETER__H
