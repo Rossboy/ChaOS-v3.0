@@ -11,7 +11,7 @@ private:
 	std::list<PCB*>waitingProcesses;
 	std::list<PCB*>readyProcesses;
 public:
-	ProcessesManager() {};
+	ProcessesManager();
 	void createProcess(std::string fileName, int GID);
 	void killProcess(int PID);
 	void displayAllProcesses();

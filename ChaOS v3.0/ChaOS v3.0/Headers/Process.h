@@ -43,4 +43,5 @@ public:
 	int getPagesSize();
 	void addToMessages(std::string message);
 	std::string getMessage();
+	int error;
 };
