@@ -1,4 +1,4 @@
-#ifndef CANDITIONVARIABLES__H
+#ifndef CONDITIONVARIABLES__H
 #define CONDITIONVARIABLES__H
 #include "../Headers/Process.h"
 #include <list>
