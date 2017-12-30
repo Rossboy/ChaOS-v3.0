@@ -1,66 +1,168 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <climits>
+#include <algorithm>
 #include "../Headers/ProcessesManager.h"
+#include "../Headers/MemoryManager.h"
+
+extern MemoryManager *mm;
 
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
 ProcessesManager::ProcessesManager()
 {
-	std::list<PCB*>list;
-	allProcesses.push_back(list); // GroupID == 0
+	createProcess("programbezczynnosci.txt", 0); //Tworzenie procesu bezczynnosci GID = 0
 }
 
-//Tworzenie procesu. Jeszcze brak grupowania procesów
+//Tworzenie procesu. Juz z grupowaniem
 void ProcessesManager::createProcess(std::string programName, int GID)
 {
+
+	bool GroupExist = true;
 	PCB* newProcess = new PCB(programName, GID);
 
+	//tmczasowe bo tutaj wpisujemy kod programu
+	mm->allocateMemory(newProcess, programName, programName.size());
+	mm->readMemory(newProcess, 1);
 
-	
-	std::list<std::list<PCB*>>::iterator it = allProcesses.begin();
-	(*it).push_back(newProcess);
-
-	waitingProcesses.push_front(newProcess);
-
-}
-void ProcessesManager::killProcess(int PID)
-{
-	if (waitingProcesses.empty() == false)
+	/*Przypadek kiedy dodawany jest proces bezczynnosci*/
+	if (GID == 0)
 	{
-
-		for (std::list<PCB*>::iterator it = waitingProcesses.begin(); it != waitingProcesses.end(); it++)
-		{
-			if ((*it)->GetPID() == PID)
-			{
-				it = waitingProcesses.erase(it);
-			}
-		}
+		std::list<PCB*>list;
+		allProcesses.push_back(list); // GroupID == 0
+		std::list<std::list<PCB*>>::iterator it = allProcesses.begin();
+		std::list<PCB*>::iterator it2 = (*it).begin();
+		newProcess->SetProcesBurstTime(INT_MAX);
+		(*it).push_back(newProcess);
 	}
-
-	if (readyProcesses.empty() == false)
-	{
-		for (std::list<PCB*>::iterator it = readyProcesses.begin(); it != readyProcesses.end(); it++)
-		{
-			if ((*it)->GetPID() == PID)
-			{
-				it = readyProcesses.erase(it);
-			}
-		}
-	}
-
-	if (allProcesses.empty() == false)
-	{
-
+	else {
+		/*Sprawdzamy czy dana grupa juz istnieje*/
 		for (std::list<std::list<PCB*>>::iterator it = allProcesses.begin(); it != allProcesses.end(); it++)
 		{
-			for (std::list<PCB*>::iterator it2 = it->begin(); it2 != it->end(); it2++)
+			std::list<PCB*>::iterator it2 = (*it).begin();
+			if ((*it2)->GetGID() == GID)
 			{
-				if ((*it2)->GetPID() == PID && it->empty() == false)
+				(*it).push_back(newProcess);
+				GroupExist = true;
+				break;
+			}
+			else
+			{
+				GroupExist = false;
+			}
+		}
+		/*Jezeli nie to tworzymy nowa*/
+		if (GroupExist == false)
+		{
+			std::list<PCB*>list;
+			allProcesses.push_back(list);
+			std::list<std::list<PCB*>>::iterator it = allProcesses.begin();
+			for (int i = 0; i < allProcesses.size() - 1; i++)
+			{
+				it++;
+			}
+			(*it).push_back(newProcess);
+			std::list<PCB*>::iterator it2 = (*it).begin();
+		}
+	}
+
+	readyProcesses.push_back(newProcess);
+
+}
+/*Zabijanie procesu*/
+void ProcessesManager::killProcess(int PID)
+{
+	if (PID == 0)
+	{
+		std::cout << " Nie mozna wykonac operacji na procesie bezczynnosci. " << std::endl;
+	}
+	else
+	{
+		if (waitingProcesses.empty() == false)
+		{
+			// wskaznik na PCB do usuniecia -- Bartek
+			PCB * toRemove = nullptr;
+
+			// poszukujemy w liscie procesow czekajacych PCB o PID ktory chcemy usunac -- Bartek
+			for (auto element : waitingProcesses)
+			{
+				if (element->GetGID() == PID)
 				{
-					delete *it2;
-					//deallocateMemory(*it2);
-					it2 = it->erase(it2);
+					// zaleziono wskaznik -- Bartek
+					toRemove = element;
+					break;
 				}
+			}
+
+			// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
+			if (toRemove != nullptr)
+			{
+				waitingProcesses.remove(toRemove);
+			}
+		}
+
+		if (readyProcesses.empty() == false)
+		{
+			// wskaznik na PCB do usuniecia -- Bartek
+			PCB * toRemove = nullptr;
+
+			// poszukujemy w liscie procesow gotowych PCB o PID ktory chcemy usunac -- Bartek
+			for (auto element : readyProcesses)
+			{
+				if (element->GetGID() == PID)
+				{
+					// zaleziono wskaznik -- Bartek
+					toRemove = element;
+					break;
+				}
+			}
+
+			// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
+			if (toRemove != nullptr)
+			{
+				readyProcesses.remove(toRemove);
+			}
+
+		}
+
+		if (allProcesses.empty() == false)
+		{
+			// wskaznik na PCB do usuniecia -- Bartek
+			PCB * toRemove = nullptr;
+			// wskaznik do listy ktora bedzie usunieta z listy list, bo bedzie pusta -- Bartek
+			std::list<PCB * > * listToRemove = nullptr;
+			// wskaznik do listy wskaznikow PCB z ktorego usuwamy-- Bartek
+			std::list<PCB * > * removeFrom = nullptr;
+
+			// iterujemy po listcie list -- Bartek
+			// &_list - dlatego, ¿e potrzebujemy adresu listy  ktorej pozniej bêdziemy modyfikowac -- Bartek
+			for (auto &_list : allProcesses)
+			{
+				for (auto element : _list)
+				{
+					if (element->GetPID() == PID)
+					{
+						// element do usunieca i lista do usunieca -- Bartek
+						toRemove = element;
+						removeFrom = &_list;
+						// jezeli lista przed usunieciem jest rowna 1, to po usunieciu bedzie pusta i trzeba ja usunac -- Bartek
+						if(_list.size() == 1)
+							listToRemove = &_list;
+					}
+				}
+			}
+			// jezeli znaleziono element do usuniecia -- Bartek
+			if (toRemove != nullptr)
+			{
+				// usuwanie procesu z pamieci i systemu normalnego i windowsa -- Bartek
+				removeFrom->remove(toRemove);
+				//mm->dealocateMemory(toRemove); -- jak bêdzie w koncu moj modol potrzebny to tu trzeba to wywyolac -- Bartek
+				delete toRemove;
+			}
+			// jezeli lista zawierajacy element jest pusta to ja usuwamy -- Bartek
+			if (listToRemove != nullptr)
+			{
+				allProcesses.remove(*listToRemove);
 			}
 		}
 	}

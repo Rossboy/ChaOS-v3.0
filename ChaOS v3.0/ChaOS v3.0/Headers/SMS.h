@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SMS__H
+#define SMS__H
 #include<string>
 class SMS
 {
@@ -11,3 +12,4 @@ public:
 	std::string getwiad();
 };
 
+#endif SMS__H

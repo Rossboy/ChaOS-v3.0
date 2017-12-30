@@ -1,12 +1,11 @@
-ï»¿#include"..\Headers\SMS.h"
-#pragma once
+#ifndef PROCESS__H
+#define PROCESS__H
+#include"..\Headers\SMS.h"
 #include <iostream>
 #include <string>
 #include <list>
 #include <algorithm>
 #include <vector>
-#include <stack>
-#include "file.h"
 enum State { New, Ready, Waiting, Running, Terminated };
 
 
@@ -45,16 +44,9 @@ public:
 	int getPagesSize();
 	void addToMessages(SMS message);
 	SMS getMessage();
-	//Konrad: dodaÂ³em usuwanie bo potrzebujÃª teÂ¿ geta do wyÅ“wietlania wiadomoÅ“ci
+	//Konrad: doda³em usuwanie bo potrzebujê te¿ geta do wyœwietlania wiadomoœci
 	void deleteMessage();
-	//Konrad: dÂ³ugoÅ“ci teÂ¿ bÃªdÃª potrzebowaÂ³
+	//Konrad: d³ugoœci te¿ bêdê potrzebowa³
 	int messagessize();
-
-	//Stanislaw: Plik otwarty przez proces
-	file* currentFile;
-	unsigned short currentDir;
-	std::stack<uShort> returnPath;
-	//Stanislaw: nie rzucam wyjÄ…tkÃ³w, tylko ustawiam flagÄ™, tak jak ustaliliÅ›my
-	bool error_flag;
-
 };
+#endif PROCESS__H

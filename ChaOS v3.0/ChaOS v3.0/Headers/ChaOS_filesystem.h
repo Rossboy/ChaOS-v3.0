@@ -1,5 +1,5 @@
-﻿#pragma once
-
+﻿#ifndef FILESYSTEM__H
+#define FILESYSTEM__H
 #include "../Headers/disk_drive.h"
 #include "../Headers/file.h"
 #include "../Headers/ChaOS_filesystem_exception.h"
@@ -89,3 +89,4 @@ private:
 	std::string asBitVector(const int vector);
 };
 
+#endif FILESYSTEM__H

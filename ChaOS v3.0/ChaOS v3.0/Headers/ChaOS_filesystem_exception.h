@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FILESYSTEMEXCEPTION_H
+#define FILESYSTEMEXECEPTION__H
 #include <exception>
 
 class outOfMemory : public std::exception
@@ -24,3 +25,4 @@ class fileToLong : public std::exception
 public:
 	fileToLong();
 };
+#endif FILESYSTEMEXCEPTION__H

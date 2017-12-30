@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CANDITIONVARIABLES__H
+#define CONDITIONVARIABLES__H
 #include "../Headers/Process.h"
 #include <list>
 
@@ -16,3 +17,4 @@ public:
 	void displayWaitingProcesses();
 	bool getResourceOccupied();
 };
+#endif CONDITIONVARIABLESS__H
