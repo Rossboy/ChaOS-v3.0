@@ -83,7 +83,7 @@ c_uShort ChaOS_filesystem::allocateSector()
 	if (freeSectorCount == 0)
 	{
 		//throw outOfMemory();
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return 0;
 	}
 
@@ -127,7 +127,7 @@ void ChaOS_filesystem::create(const char * f, type t)
 	if (search(name, type::dir) || search(name, type::file))
 	{
 		//throw objectExists();
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 
@@ -208,20 +208,20 @@ void ChaOS_filesystem::remove(const char * f)
 	if (!(file || dir))
 	{
 		//throw objectNotFound();
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 	if (file)
 	{
 		if (!ActiveProcess->currentFile)
 		{
-			ActiveProcess->error_flag = 1;
+			ActiveProcess->errorCode = 1;
 			return;
 		}
 
 		if (!equalName(ActiveProcess->currentFile->filename, name))
 		{
-			ActiveProcess->error_flag = 1;
+			ActiveProcess->errorCode = 1;
 			return;
 		}
 	}
@@ -321,7 +321,7 @@ void ChaOS_filesystem::changeDirectory(const char * name)
 	else
 	{
 		//throw objectNotFound();
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 }
@@ -356,7 +356,7 @@ void ChaOS_filesystem::rename(const char * f, const char* newname)
 	if (!(search(name, type::file) || search(name, type::dir)))
 	{
 		//throw objectNotFound();
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 
@@ -424,7 +424,7 @@ void ChaOS_filesystem::openFile(const char * filename)
 	if (!search(name, type::file))
 	{
 		//throw objectNotFound();
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 
@@ -451,7 +451,7 @@ void ChaOS_filesystem::openFile(const char * filename)
 
 	if (ActiveProcess->currentFile)
 	{
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 	ActiveProcess->currentFile = new file;
@@ -480,7 +480,7 @@ void ChaOS_filesystem::writeFile(const std::string& text)
 {
 	if (ActiveProcess->currentFile == nullptr)
 	{
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 	currentFileFirst = ActiveProcess->currentFile->firstSector;
@@ -493,7 +493,7 @@ std::string ChaOS_filesystem::readFile()
 {
 	if (ActiveProcess->currentFile == nullptr)
 	{
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return "";
 	}
 
@@ -532,7 +532,7 @@ void ChaOS_filesystem::appendFile(const std::string& text)
 {
 	if (ActiveProcess->currentFile == nullptr)
 	{
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 	currentFileFirst = ActiveProcess->currentFile->firstSector;
@@ -544,7 +544,7 @@ void ChaOS_filesystem::appendFile(const std::string& text)
 	if ((float(charsToWrite) / 31) + float(ActiveProcess->currentFile->fileSize) > float(VCB[8]) + float(ActiveProcess->currentFile->fileSizeInSectors))
 	{
 		//throw outOfMemory();
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 	if (int(charsToWrite) + int(ActiveProcess->currentFile->fileSize) > 255)
@@ -627,7 +627,7 @@ void ChaOS_filesystem::saveFile()
 {
 	if (ActiveProcess->currentFile == nullptr)
 	{
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 	currentFileFirst = ActiveProcess->currentFile->firstSector;
@@ -639,7 +639,7 @@ void ChaOS_filesystem::saveFile()
 	if ((float(charsToWrite) / 31) > float(VCB[8]) + float(ActiveProcess->currentFile->fileSizeInSectors))
 	{
 		//throw outOfMemory();
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return;
 	}
 
@@ -735,7 +735,7 @@ std::string  ChaOS_filesystem::printSector(const unsigned short number)
 	if (number >= disk.numberOfSectors)
 	{
 		//throw objectNotFound();
-		ActiveProcess->error_flag = 1;
+		ActiveProcess->errorCode = 1;
 		return "";
 	}
 

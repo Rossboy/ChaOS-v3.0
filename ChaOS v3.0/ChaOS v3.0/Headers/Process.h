@@ -57,7 +57,7 @@ public:
 	std::stack<uShort> returnPath;
 	//Stanislaw: nie rzucam wyjątków, tylko ustawiam flagę, tak jak ustaliliśmy
 
-	int ErrorCode;
+	int errorCode;
 	bool wait;
 };
 #endif PROCESS__H
