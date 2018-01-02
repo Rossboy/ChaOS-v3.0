@@ -53,11 +53,11 @@ State PCB::GetState()
 {
 	return state;
 }
-void PCB::setPages(std::pair<int, bool>* newPages)
+void PCB::setPages(Page* newPages)
 {
 	this->pages = newPages;
 }
-std::pair<int, bool>* PCB::getPages()
+Page* PCB::getPageTable()
 {
 	return this->pages;
 }
@@ -65,7 +65,7 @@ void PCB::setPagesSize(int num)
 {
 	this->pagesSize = num;
 }
-int PCB::getPagesSize()
+int PCB::getPageTableSize()
 {
 	return this->pagesSize;
 }

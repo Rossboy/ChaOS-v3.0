@@ -9,6 +9,20 @@ using namespace std;
 
 class PCB;
 
+struct Page;
+
+struct FIFO_entry
+{
+	PCB * pcb;
+	int pageNumber;
+
+	FIFO_entry(PCB * pcb, int pageNumber)
+	{
+		this->pcb = pcb;
+		this->pageNumber = pageNumber;
+	}
+};
+
 enum class CharTable : char
 {
 	CTL = 218, //Corner Top Left
@@ -34,13 +48,20 @@ private:
 	const int SWAP_FILE_SIZE = SWAP_FILE_FRAME_COUNT * FRAME_SIZE; //rozmiar plku wymiany
 	char * RAM; //tablica symulujaca RAM
 	char * swapFile; //tablica symulujaca plik wymiany
-	list<int> freeRAMFrames; //lista wolnych ramek w RAM
+	list<int> freeMemoryFrames; //lista wolnych ramek w RAM
 	list<int> freeSwapFileFrames; //lista wolnych ranek w pliku wymiany
-	list<pair<PCB *, int>> FIFOlist; //trzyma informacje ktory PCB wszedl pierwszy
-	void swapToRAM(PCB * pcb, int pageNr);
+	list<FIFO_entry> FIFO; //trzyma informacje ktory PCB wszedl pierwszy
+	void swapPageFromSwapFileToMemory(PCB * pcb, int pageNr);
+	void swapPageFromMemoryToSwapFile(PCB * pcb, int pageNr);
+	void moveMemoryContentToSwapFile(int MemoryFrame, int SwapFileFrame);
+	void moveSwapFileContentToMemory(int SwapFileFrame, int MemoryFrame);
+	int calculateOffset(int addr_l);
+	int calculatePageNumber(int addr_l);
+	int calculatePhysicalAddress(PCB* pcb, int addr_l);
+	void ensureFreeMemoryFrame();
+	void addEntryToFIFO(FIFO_entry entry);
 public:
 	char readMemory(PCB * pcb, int l_Addr);
-	void swapToFile(PCB * pcb, int pageNr);
 	bool allocateMemory(PCB * pcb, string program, int size);
 	string readUntilSpace(PCB * pcb, int & l_Addr);
 	void printMemoryConnetent(int nrToPrint = 0);

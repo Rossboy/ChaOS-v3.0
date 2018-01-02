@@ -10,6 +10,11 @@
 #include "..\Headers\file.h"
 enum State { New, Ready, Waiting, Running, Terminated };
 
+struct Page
+{
+	int frameOccupied;
+	bool inMemory;
+};
 
 class PCB
 {
@@ -22,7 +27,7 @@ private:
 	int burstTime;
 	std::string programName;
 	std::list<SMS>messages;
-	std::pair<int, bool>* pages;
+	Page* pages;
 	int pagesSize;
 
 public:
@@ -40,10 +45,10 @@ public:
 	void displayProcess();
 	void SetInstructionCounter(int counter);
 	int GetInstructionCounter();
-	void setPages(std::pair<int, bool>* newPages);
-	std::pair<int, bool>* getPages();
+	void setPages(Page* newPages);
+	Page* getPageTable();
 	void setPagesSize(int num);
-	int getPagesSize();
+	int getPageTableSize();
 	void addToMessages(SMS message);
 	SMS getMessage();
 	//Konrad: doda³em usuwanie bo potrzebujê te¿ geta do wyœwietlania wiadomoœci
