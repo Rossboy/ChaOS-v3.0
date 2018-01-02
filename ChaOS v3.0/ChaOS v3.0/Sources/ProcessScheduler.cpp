@@ -1,9 +1,10 @@
 #include "../Headers/ProcessScheduler.h"
 #include <list>
+#include "../Headers/Interpreter.h"
 
 extern PCB* ActiveProcess;
 extern ProcessesManager *pm;
-extern Interpreter *i;
+extern Interpreter* i;
 
 void ProcessScheduler::RunProcess() {
 	//Sprawdzenie, czy wyst¹pi³ b³¹d lub jakiœ proces siê po prostu wykona³ - w obu przypadkach wywo³ywana zostaje funkcja usuwania procesu killProcess()
