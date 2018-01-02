@@ -86,44 +86,67 @@ namespace cmd {
 
 	void openFile(const std::vector<std::string>& Arguments)
 	{
-		
+		std::clog << "Wykonuje siê operacja otwarcia pliku..." << std::endl;
+		fs->openFile(Arguments[0].c_str());
 	}
 
 	void closeFile(const std::vector<std::string>& Arguments)
 	{
-		
+		std::clog << "Wykonuje siê operacja zamykania pliku..." << std::endl;
+		fs->closeFile();
 	}
 
 	void makeFile(const std::vector<std::string>& Arguments)
 	{
-		
+		std::clog << "Wykonuje siê operacja tworzenia pliku..." << std::endl;
+		fs->create(Arguments[0].c_str(), ChaOS_filesystem::type::file);
 	}
-
-	void saveFile(const std::vector<std::string>& Arguments)
-	{
-
-	}
-
 
 	void deleteFile(const std::vector<std::string>& Arguments)
 	{
-
+		std::clog << "Wykonuje siê operacja usuwania pliku..." << std::endl;
+		fs->remove(Arguments[0].c_str());
 	}
 
 	void readFile(const std::vector<std::string>& Arguments)
 	{
-
+		std::clog << "Wykonuje siê operacja czytania pliku..." << std::endl;
+		fs->readFile();
 	}
 
 	void listFiles(const std::vector<std::string>& Arguments)
 	{
-
+		std::clog << "Wykonuje siê operacja listowania katalogu..." << std::endl;
+		std::cout << fs->listDirectory() << std::endl;
 	}
 
 	void changeFileName(const std::vector<std::string>& Arguments)
 	{
-
+		std::clog << "Wykonuje siê operacja zmiany nazwy..." << std::endl;
+		fs->rename(Arguments[0].c_str(), Arguments[1].c_str());
 	}
+
+
+
+	void appendFile(const std::vector<std::string>& Arguments)
+	{
+		std::clog << "Wykonuje siê operacja dopisywania do pliku..." << std::endl;
+		fs->appendFile(Arguments[0]);
+	}
+
+	void writeFile(const std::vector<std::string>& Arguments)
+	{
+		std::clog << "Wykonuje siê operacja pisania do pliku..." << std::endl;
+		fs->writeFile(Arguments[0]);
+	}
+
+	void makeDirectory(const std::vector<std::string>& Arguments)
+	{
+		std::clog << "Wykonuje siê operacja tworzenia folderu..." << std::endl;
+		fs->create(Arguments[0].c_str(), ChaOS_filesystem::type::dir);
+	}
+
+	///////////////////////////////////////////////////////////
 
 	void makeProcess(const std::vector<std::string>& Arguments)
 	{
