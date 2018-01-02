@@ -1,38 +1,33 @@
 #include "../Headers/MemoryManager.h"
 
-void MemoryManager::swapToFile(PCB * pcb)
+void MemoryManager::swapToFile(PCB * pcb, int pageNr)
 {
 	pair<int, bool> * PCBpages = pcb->getPages();
 	int PCBpagesSize = pcb->getPagesSize();
-	for (int i = 0; i < PCBpagesSize; i++)
+
+	//jezeli trafimy na strone w pamieci RAM to wysylamy ja do pliku wymiany
+	//uwalniamy ramke od PCB
+	int freeRAMframe = PCBpages[pageNr].first;
+	//wybieramy wolna ramke z listy ramek pliku wymiany
+	int newSFframe = freeSwapFileFrames.front();
+	freeSwapFileFrames.pop_front();
+	//przenosimy strone
+	int Id_SF = newSFframe * FRAME_SIZE;
+	int endIdSF = Id_SF + FRAME_SIZE;
+	int Id_RAM = freeRAMframe * FRAME_SIZE;
+	int endIdRAM = Id_RAM + FRAME_SIZE;
+	while (Id_SF < endIdSF && Id_RAM < endIdRAM)
 	{
-		//jezeli trafimy na strone w pamieci RAM to wysylamy ja do pliku wymiany
-		if (PCBpages[i].second == true)
-		{
-			//uwalniamy ramke od PCB
-			int freeRAMframe = PCBpages[i].first;
-			//wybieramy wolna ramke z listy ramek pliku wymiany
-			int newSFframe = freeSwapFileFrames.front();
-			freeSwapFileFrames.pop_front();
-			//przenosimy strone
-			int Id_SF = newSFframe*FRAME_SIZE;
-			int endIdSF = Id_SF + FRAME_SIZE;
-			int Id_RAM = freeRAMframe*FRAME_SIZE;
-			int endIdRAM = Id_RAM + FRAME_SIZE;
-			while(Id_SF < endIdSF && Id_RAM < endIdRAM)
-			{
-				swapFile[Id_SF] = RAM[Id_RAM];
-				RAM[Id_RAM] = ' ';
-				Id_SF++;
-				Id_RAM++;
-			}
-			//wolna ramke ram dodajemy do listy wolnych ramek
-			freeRAMFrames.push_back(freeRAMframe);
-			//podmieniamy informacje o stronie w PCB
-			PCBpages[i].first = newSFframe; //nowa ramka w SwapFile
-			PCBpages[i].second = false; //strona nie jest w RAM
-		}
+		swapFile[Id_SF] = RAM[Id_RAM];
+		RAM[Id_RAM] = ' ';
+		Id_SF++;
+		Id_RAM++;
 	}
+	//wolna ramke ram dodajemy do listy wolnych ramek
+	freeRAMFrames.push_back(freeRAMframe);
+	//podmieniamy informacje o stronie w PCB
+	PCBpages[pageNr].first = newSFframe; //nowa ramka w SwapFile
+	PCBpages[pageNr].second = false; //strona nie jest w RAM
 }
 
 void MemoryManager::swapToRAM(PCB * pcb, int pageNr)
@@ -43,18 +38,19 @@ void MemoryManager::swapToRAM(PCB * pcb, int pageNr)
 	while (freeRAMFrames.empty())
 	{
 		//nie ma wolnych ramek wiec usuwamy metoda FIFO najstarszy PCB
-		PCB * victim = FIFOlist.front();
+		PCB * victim = FIFOlist.front().first;
+		int victimPageNr = FIFOlist.front().second;
 		FIFOlist.pop_front();
-		swapToFile(victim);
+		swapToFile(victim, victimPageNr);
 	}
 	//wybieramy wolna ramke RAM
 	int newRAMframe = freeRAMFrames.front();
 	freeRAMFrames.pop_front();
 	int freeSFframe = PCBpages[pageNr].first;
 	//zmiana stronicy z SF do RAM
-	int Id_SF = freeSFframe*FRAME_SIZE;
+	int Id_SF = freeSFframe * FRAME_SIZE;
 	int endIdSF = Id_SF + FRAME_SIZE;
-	int Id_RAM = newRAMframe*FRAME_SIZE;
+	int Id_RAM = newRAMframe * FRAME_SIZE;
 	int endIdRAM = Id_RAM + FRAME_SIZE;
 	while (Id_SF < endIdSF && Id_RAM < endIdRAM)
 	{
@@ -66,10 +62,11 @@ void MemoryManager::swapToRAM(PCB * pcb, int pageNr)
 	//ustawiamy indeks aktualnej strony w RAM
 	PCBpages[pageNr].first = newRAMframe; //nowa ramka w RAM
 	PCBpages[pageNr].second = true; //strona jest w RAM
-	//dodajemy zwolniona ramke SF do listy pustych ramek SF
+									//dodajemy zwolniona ramke SF do listy pustych ramek SF
 	freeSwapFileFrames.push_front(freeSFframe);
 	//proces zajmuje teraz ostatnie miejsce w FIFO
-	FIFOlist.push_back(pcb);
+	pair<PCB *, int> lockedPage(pcb, pageNr);
+	FIFOlist.push_back(lockedPage);
 }
 
 char MemoryManager::readMemory(PCB * pcb, int l_Addr)
@@ -88,7 +85,7 @@ char MemoryManager::readMemory(PCB * pcb, int l_Addr)
 	//sprawdzamy w ktorej ramce jest poszukiwana strona
 	int page = PCBpages[pageNr].first;
 	//obliczamy adres fizyczny szukanej komorki pamieci
-	int p_Addr = page*FRAME_SIZE + offset;
+	int p_Addr = page * FRAME_SIZE + offset;
 	return RAM[p_Addr];
 }
 
@@ -96,12 +93,12 @@ bool MemoryManager::allocateMemory(PCB * pcb, string program, int size)
 {
 	//ilosc stronic potrzebynch do alokacji
 	int PCBpagesSize = ceil((double)size / (double)FRAME_SIZE);
-	pair<int, bool> * PCBpages = new pair<int,bool>[PCBpagesSize];
+	pair<int, bool> * PCBpages = new pair<int, bool>[PCBpagesSize];
 	int base = 0;
 	for (int i = 0; i < PCBpagesSize; i++) {
 		//jezeli plik wymiany jest pelny
 		if (freeSwapFileFrames.empty())
-		{	
+		{
 			//blad, nie da sie zaalokowac
 			return false;
 		}
@@ -111,7 +108,7 @@ bool MemoryManager::allocateMemory(PCB * pcb, string program, int size)
 		PCBpages[i].second = false;
 		string page = program.substr(base, FRAME_SIZE);
 		program.erase(base, FRAME_SIZE);
-		for (int j = freeFrame*FRAME_SIZE, k = 0; j < j + FRAME_SIZE && k < page.size(); j++, k++)
+		for (int j = freeFrame * FRAME_SIZE, k = 0; j < j + FRAME_SIZE && k < page.size(); j++, k++)
 		{
 			swapFile[j] = page[k];
 		}
@@ -162,7 +159,7 @@ void MemoryManager::printPCBframes(PCB * pcb, bool onlyInRam)
 {
 	pair<int, bool> * PCBpages = pcb->getPages();
 	int PCBpagesSize = pcb->getPagesSize();
-	
+
 	cout << " --- Pamiec zarezerwowana przez proces: " << pcb->GetPID() << " ---\n";
 	for (int i = 0; i < PCBpagesSize; i++)
 	{
@@ -172,7 +169,7 @@ void MemoryManager::printPCBframes(PCB * pcb, bool onlyInRam)
 			printFrame(PCBpages[i].first, i);
 		}
 		//jezeli nie chcemy wypisywac ramek w SF
-		else if(!onlyInRam)
+		else if (!onlyInRam)
 		{
 			//Jezeli strona znajduje sie w SF
 			printSFframe(PCBpages[i].first, i);
@@ -182,7 +179,7 @@ void MemoryManager::printPCBframes(PCB * pcb, bool onlyInRam)
 
 void MemoryManager::printFrame(int frameNr, int pageNr)
 {
-	int addr = frameNr*FRAME_SIZE;
+	int addr = frameNr * FRAME_SIZE;
 	string space = "        ";
 	cout << "Ramka nr: " << frameNr;
 	if (pageNr >= 0)
@@ -192,7 +189,7 @@ void MemoryManager::printFrame(int frameNr, int pageNr)
 	cout << endl;
 	// ----------------------------------------------------------------------
 	// wyzwietla gore ramki
-	cout << space <<(char)CharTable::CTL;
+	cout << space << (char)CharTable::CTL;
 	for (int i = 0; i < FRAME_SIZE - 1; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -211,7 +208,7 @@ void MemoryManager::printFrame(int frameNr, int pageNr)
 	cout << space << (char)CharTable::VL;
 	for (int i = 0; i < FRAME_SIZE; i++)
 	{
-		if(addr + i <10)
+		if (addr + i < 10)
 			printf(" %d ", addr + i);
 		else
 			printf("%3d", addr + i);
@@ -221,7 +218,7 @@ void MemoryManager::printFrame(int frameNr, int pageNr)
 	// ----------------------------------------------------------------------
 	// wyzwietla srodek ramki
 	cout << space << (char)CharTable::VLR;
-	for (int i = 0; i < FRAME_SIZE-1; i++)
+	for (int i = 0; i < FRAME_SIZE - 1; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
@@ -233,10 +230,10 @@ void MemoryManager::printFrame(int frameNr, int pageNr)
 	{
 		cout << (char)CharTable::HL;
 	}
-	cout << (char)CharTable::VLL <<endl;
+	cout << (char)CharTable::VLL << endl;
 	// ----------------------------------------------------------------------
 	// wyzwietla zawartosc RAMu
-	addr = frameNr*FRAME_SIZE;
+	addr = frameNr * FRAME_SIZE;
 	cout << space << (char)CharTable::VL;
 	for (int i = 0; i < FRAME_SIZE; i++)
 	{
@@ -264,7 +261,7 @@ void MemoryManager::printFrame(int frameNr, int pageNr)
 
 void MemoryManager::printSFframe(int frameNr, int pageNr)
 {
-	int addr = frameNr*FRAME_SIZE;
+	int addr = frameNr * FRAME_SIZE;
 	string space = "        ";
 	cout << "Ramka pliku wymiany nr: " << frameNr;
 	if (pageNr >= 0)
@@ -293,11 +290,11 @@ void MemoryManager::printSFframe(int frameNr, int pageNr)
 	cout << space << (char)CharTable::VL;
 	for (int i = 0; i < FRAME_SIZE; i++)
 	{
-		if (addr + i <10)
+		if (addr + i < 10)
 			printf("  %d  ", addr + i);
-		else if(addr + i <100)
+		else if (addr + i < 100)
 			printf("  %d ", addr + i);
-		else if (addr + i <1000)
+		else if (addr + i < 1000)
 			printf(" %d ", addr + i);
 		else
 			printf("%5d", addr + i);
@@ -322,7 +319,7 @@ void MemoryManager::printSFframe(int frameNr, int pageNr)
 	cout << (char)CharTable::VLL << endl;
 	// ----------------------------------------------------------------------
 	// wyzwietla zawartosc RAMu
-	addr = frameNr*FRAME_SIZE;
+	addr = frameNr * FRAME_SIZE;
 	cout << space << (char)CharTable::VL;
 	for (int i = 0; i < FRAME_SIZE; i++)
 	{
@@ -351,6 +348,7 @@ void MemoryManager::printSFframe(int frameNr, int pageNr)
 bool MemoryManager::writeMemory(PCB * pcb, int l_Addr, char element)
 {
 	int PCBpagesSize = pcb->getPagesSize();
+	pair<int, bool> * PCBpages = pcb->getPages();
 	//liczymy numer strony i bajt w tej stronie
 	int pageNr = l_Addr / FRAME_SIZE;
 	int offset = l_Addr % FRAME_SIZE;
@@ -360,7 +358,14 @@ bool MemoryManager::writeMemory(PCB * pcb, int l_Addr, char element)
 		//adres jest z poza przestrzni adresowej procesu
 		return false;
 	}
-	int p_addr = pageNr + offset;
+	if (PCBpages[pageNr].second == false)
+	{
+		//nie ma strony w ramie wiec trzeba ja sprowadzic
+		swapToRAM(pcb, pageNr);
+	}
+	int page = PCBpages[pageNr].first;
+	int p_Addr = page * FRAME_SIZE + offset;
+	RAM[p_Addr] = element;
 	return true;
 }
 
@@ -372,12 +377,19 @@ bool MemoryManager::deallocateMemory(PCB * pcb)
 	for (int i = 0; i < PCBpagesSize; i++)
 	{
 		int frame = PCBpages[i].first;
-		int begFrameId = frame*FRAME_SIZE;
+		int begFrameId = frame * FRAME_SIZE;
 		int endFrameId = begFrameId + FRAME_SIZE;
 		//wysylamy wszystkie ramki do SF
-		swapToFile(pcb);
+		for (int j = 0; j < pcb->getPagesSize(); j++)
+		{
+			if (pcb->getPages()[j].second == true)
+			{
+				swapToFile(pcb, j);
+			}
+		}
 		//usuwamy z kolejki FIFO pcb, nie mozemy juz z niego kozystac
-		FIFOlist.remove(pcb);
+		FIFOlist.remove_if([pcb](const pair<PCB *, int> &victim) {return victim.first == pcb; });
+		//FIFOlist.remove(pcb);
 		for (begFrameId; begFrameId < endFrameId; begFrameId++)
 		{
 			swapFile[begFrameId] = ' ';
@@ -400,7 +412,7 @@ MemoryManager::MemoryManager()
 	{
 		RAM[i] = ' ';
 	}
-	for (int i = 0; i<FRAME_COUNT; i++)
+	for (int i = 0; i < FRAME_COUNT; i++)
 		freeRAMFrames.push_back(i);
 	for (int i = 0; i < SWAP_FILE_SIZE; i++)
 	{
@@ -411,7 +423,6 @@ MemoryManager::MemoryManager()
 		freeSwapFileFrames.push_back(i);
 	}
 }
-
 
 MemoryManager::~MemoryManager()
 {
