@@ -1,10 +1,10 @@
-#include "ProcessScheduler.h"
+#include "../Headers/ProcessScheduler.h"
 #include "../Shell_.cpp"
 #include <list>
 
 void ProcessScheduler::RunProcess() {
 	//Sprawdzenie, czy wyst¹pi³ b³¹d lub jakiœ proces siê po prostu wykona³ - w obu przypadkach wywo³ywana zostaje funkcja usuwania procesu killProcess()
-	if (ActiveProcess->error == 1 || ActiveProcess->GetState() == 4) {
+	if (ActiveProcess->ErrorCode == 1 || ActiveProcess->GetState() == 4) {
 		std::cout << "Killing the process and removing it from all the lists it belonged to\n";
 		pm->killProcess(ActiveProcess->GetPID());
 		ActiveProcess = nullptr;
@@ -27,7 +27,6 @@ void ProcessScheduler::RunProcess() {
 void ProcessScheduler::SRTSchedulingAlgorithm() {
 	//std::cout << "SRT Scheduling algorithm has been called, so I'm doing my job!\n";
 	iteratorToMinElement = std::min_element(pm->readyProcesses.begin(), pm->readyProcesses.end(), [](PCB* x, PCB* y) { return x->GetProcesBurstTime() < y->GetProcesBurstTime(); });
-	
 	//Sprawdzenie, czy przypadkowo nie trafiliœmy na ten sam proces
 	if ((*iteratorToMinElement)->GetPID() != ActiveProcess->GetPID() && (*iteratorToMinElement)->GetProcesBurstTime() < ActiveProcess->GetProcesBurstTime() - differenceCounter) {
 		//Wyliczenie nowego przewidywanego czasu dostêpu do procesora przez proces, który by³ aktywny
