@@ -301,9 +301,9 @@ void Interpreter::DoCommand()
 	//Wybór rozkazu
 	
 	//obs³uga b³êdów.
-	if(ActiveProcess->ErrorCode!=0)
+	if(ActiveProcess->errorCode!=0)
 	{
-		std::cout << ErrorsTab[ActiveProcess->ErrorCode] << std::endl;
+		std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
 		std::cout << "Na rzecz b³êdu, program zostaje zakoñczony." << std::endl;
 		pm->killProcess(ActiveProcess->GetPID());
 	}
