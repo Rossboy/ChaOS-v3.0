@@ -6,6 +6,8 @@
 
 extern PCB* ActiveProcess;
 
+
+
 union char_short
 {
 	unsigned short USHORT;
@@ -352,12 +354,27 @@ void ChaOS_filesystem::rootDirectory()
 void ChaOS_filesystem::rename(const char * f, const char* newname)
 {
 	char name[5]; toChar5(f, name);
-
-	if (!(search(name, type::file) || search(name, type::dir)))
+	int file = search(name, type::file);
+	if (!(file || search(name, type::dir)))
 	{
 		//throw objectNotFound();
 		ActiveProcess->errorCode = 4;
 		return;
+	}
+
+	if (file)
+	{
+		if (!ActiveProcess->currentFile)
+		{
+			ActiveProcess->errorCode = 5;
+			return;
+		}
+
+		if (!equalName(ActiveProcess->currentFile->filename, name))
+		{
+			ActiveProcess->errorCode = 6;
+			return;
+		}
 	}
 
 	currentDirSector = currentDirFirst;
@@ -479,6 +496,7 @@ void ChaOS_filesystem::openFile(const char * filename)
 
 void ChaOS_filesystem::writeFile(const std::string& text)
 {
+	fileInfoSynch();
 	if (ActiveProcess->currentFile == nullptr)
 	{
 		ActiveProcess->errorCode = 5;
@@ -492,6 +510,7 @@ void ChaOS_filesystem::writeFile(const std::string& text)
 
 std::string ChaOS_filesystem::readFile()
 {
+	fileInfoSynch();
 	if (ActiveProcess->currentFile == nullptr)
 	{
 		ActiveProcess->errorCode = 5;
@@ -529,8 +548,10 @@ std::string ChaOS_filesystem::readFile()
 	return ActiveProcess->currentFile->fileContent;
 }
 
+
 void ChaOS_filesystem::appendFile(const std::string& text)
 {
+	fileInfoSynch();
 	if (ActiveProcess->currentFile == nullptr)
 	{
 		ActiveProcess->errorCode = 5;
@@ -627,6 +648,7 @@ void ChaOS_filesystem::appendFile(const std::string& text)
 
 void ChaOS_filesystem::saveFile()
 {
+	fileInfoSynch();
 	if (ActiveProcess->currentFile == nullptr)
 	{
 		ActiveProcess->errorCode = 5;
@@ -861,4 +883,37 @@ std::string ChaOS_filesystem::asBitVector(const int vector)
 		copy >>= 1;
 	}
 	return result += "{31}";
+}
+
+void ChaOS_filesystem::fileInfoSynch()
+{
+	currentDirFirst = ActiveProcess->currentFile->fileDir;
+
+	char row[8] = {};
+	char dirSector[32] = {};
+	char sizeInSectors;
+
+	// Wyszukiwanie wpisu dot. pliku.
+	while (currentDirSector)
+	{
+		disk.readSector(currentDirSector, dirSector);
+		for (int i = 0, j = 0; i < 3; i++, j += 8)
+		{
+			getRow(&dirSector[j], row);
+			if (equalName(row, ActiveProcess->currentFile->filename))
+			{
+				currentFileSector = currentFileFirst = row[5];
+				sizeInSectors = row[6];
+			}
+		}
+		currentDirSector = dirSector[31];
+	}
+
+	//filesizeInsectors
+	ActiveProcess->currentFile->fileSizeInSectors = sizeInSectors;
+
+	//fileSize
+	char fileSector[32];
+	disk.readSector(currentFileFirst, fileSector);
+	ActiveProcess->currentFile->fileSize = fileSector[0];
 }
