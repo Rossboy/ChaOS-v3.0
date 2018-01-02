@@ -37,7 +37,7 @@ namespace cmd {
 			ActiveProcess->zero = false;
 		}
 	}//done
-
+	//ok
 	void substract(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
@@ -54,7 +54,7 @@ namespace cmd {
 			ActiveProcess->zero = false;
 		}
 	}//done
-
+	//ok
 	void multiply(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
@@ -63,7 +63,7 @@ namespace cmd {
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] *= ActiveProcess->registers[arg2];
 	}//done
-
+	//ok
 	void divide(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2; 
@@ -72,7 +72,7 @@ namespace cmd {
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] /= ActiveProcess->registers[arg2];
 	}//done
-
+	//ok
 	void increment(const std::vector<std::string>& Arguments)
 	{
 		int arg1;
@@ -80,7 +80,7 @@ namespace cmd {
 		arg1 = atoi(Arguments[0].c_str());
 		ActiveProcess->registers[arg1]++;
 	}//done
-
+	//ok
 	void decrement(const std::vector<std::string>& Arguments)
 	{
 		
@@ -97,7 +97,7 @@ namespace cmd {
 			ActiveProcess->zero = false;
 		}
 	}	//done
-
+	//ok
 
 	void move(const std::vector<std::string>& Arguments)
 	{
@@ -114,7 +114,7 @@ namespace cmd {
 		fs->openFile(Arguments[0].c_str());
 	}
 
-	void closeFile(const std::vector<std::string>& Arguments)
+	void closeFile()
 	{
 		std::clog << "Wykonuje siê operacja zamykania pliku..." << std::endl;
 		fs->closeFile();
@@ -122,8 +122,18 @@ namespace cmd {
 
 	void makeFile(const std::vector<std::string>& Arguments)
 	{
-		std::clog << "Wykonuje siê operacja tworzenia pliku..." << std::endl;
-		fs->create(Arguments[0].c_str(), ChaOS_filesystem::type::file);
+		std::clog << "Wykonuje siê operacja tworzenia ";
+		if (Arguments[1] == "plik") {
+			std::clog << "pliku..." << std::endl;
+			fs->create(Arguments[0].c_str(), ChaOS_filesystem::type::file);
+		}
+		else if (Arguments[1] == "folder") {
+			std::clog << "folderu..." << std::endl;
+			fs->create(Arguments[0].c_str(), ChaOS_filesystem::type::dir);
+		}
+		else {
+			ActiveProcess->errorCode = 9;
+		}
 	}
 
 	void deleteFile(const std::vector<std::string>& Arguments)
@@ -132,13 +142,13 @@ namespace cmd {
 		fs->remove(Arguments[0].c_str());
 	}
 
-	void readFile(const std::vector<std::string>& Arguments)
+	void readFile()
 	{
 		std::clog << "Wykonuje siê operacja czytania pliku..." << std::endl;
-		fs->readFile();
+		std::cout << fs->readFile()<<std::endl;
 	}
 
-	void listFiles(const std::vector<std::string>& Arguments)
+	void listFiles()
 	{
 		std::clog << "Wykonuje siê operacja listowania katalogu..." << std::endl;
 		std::cout << fs->listDirectory() << std::endl;
@@ -164,11 +174,6 @@ namespace cmd {
 		fs->writeFile(Arguments[0]);
 	}
 
-	void makeDirectory(const std::vector<std::string>& Arguments)
-	{
-		std::clog << "Wykonuje siê operacja tworzenia folderu..." << std::endl;
-		fs->create(Arguments[0].c_str(), ChaOS_filesystem::type::dir);
-	}
 
 	///////////////////////////////////////////////////////////
 
@@ -206,12 +211,12 @@ namespace cmd {
 	{
 		ActiveProcess->SetInstructionCounter(atoi(Arguments[1].c_str()));
 	}//ok
-
+	///ok
 	void jumpPoint(const std::vector<std::string>& Arguments)
 	{
 		ActiveProcess->SetInstructionCounter(ActiveProcess->points[atoi(Arguments[1].c_str())]);
 	}//ok
-
+	//ok
 	void jumpZero(const std::vector<std::string>& Arguments)
 	{
 		if(ActiveProcess->zero)
@@ -219,7 +224,7 @@ namespace cmd {
 			jumpPoint(Arguments);
 		}
 	}//ok
-
+	//ok
 
 
 	void Return(const std::vector<std::string>& Arguments)
