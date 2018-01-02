@@ -35,7 +35,7 @@ void ProcessScheduler::SRTSchedulingAlgorithm() {
 		//std::cout << " however the burst time has changed and is equal to: " << ActiveProcess->GetProcesBurstTime() << std::emdl;
 
 		//W³aœciwa zmiana aktywnego procesu
-		ActiveProcess = iteratorToMinElement; //albo *iteratorToMinElement
+		ActiveProcess = *iteratorToMinElement; //albo *iteratorToMinElement <-- i to jest ok
 		//std::cout << "New process has been chosen, its PID: " << ActiveProcess->GetPID() << " and estimated burst time: " << ActiveProcess->GetProcesBurstTime() << std::emdl;
 		
 		//Ustawienie zmiennych pomocniczych

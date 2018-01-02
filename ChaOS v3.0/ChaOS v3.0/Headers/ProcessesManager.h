@@ -9,12 +9,11 @@
 #include <map>
 
 class ProcessesManager {
-private:
+public:
 	std::list<std::list<PCB*>>allProcesses{};
 	std::list<PCB*>waitingProcesses{};
 	std::list<PCB*>list{};
 	std::list<PCB*>readyProcesses{};
-public:
 	ProcessesManager(); //Poprawi³em bo by³o {}; i przez to by³ problem ¿e konstruktor jest ju¿ zdefiniowany - Bartek
 	void createProcess(std::string fileName, int GID);
 	void killProcess(int PID);
