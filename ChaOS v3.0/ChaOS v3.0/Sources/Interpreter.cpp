@@ -182,6 +182,8 @@ namespace cmd {
 	{
 
 	}
+	//tworzenie procesu, do uzupe³nienia
+
 	//tworzenie procesu
 	//void executeProcess(const std::vector<std::string>& Arguments)
 	//{
@@ -236,8 +238,7 @@ namespace cmd {
 			jumpPoint(Arguments);
 		}
 	}//ok
-	//ok
-
+	//oks
 	void end()
 	{
 		PCB* temp = ActiveProcess;
@@ -245,7 +246,6 @@ namespace cmd {
 		pm->killProcess(temp->GetPID());
 	}
 	//ok
-
 	void Return(const std::vector<std::string>& Arguments)
 	{
 		std::cout << ActiveProcess->registers[atoi(Arguments[0].c_str())] << std::endl;
@@ -295,10 +295,10 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 		cmd::deleteFile(Arguments);
 		break;
 	case 10://RF = Odczyt pliku
-		cmd::readFile(Arguments);
+		cmd::readFile();
 		break;
 	case 11://LS = Listuj pliki
-		cmd::listFiles(Arguments);
+		cmd::listFiles();
 		break;
 	case 12://CP = Zmieñ nazwê pliku
 		cmd::changeFileName(Arguments);
@@ -309,10 +309,10 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 		cmd::makeProcess(Arguments);
 		break;
 	case 14://EX = Wykonaj program?
-		cmd::executeProcess(Arguments);
+		//cmd::executeProcess(Arguments);
 		break;
 	case 15://PS = Wyœwietl procesy
-		cmd::listProcess(Arguments);
+		//cmd::listProcess(Arguments);
 		break;
 	case 16://SM = Wyœlij komunikat
 		cmd::sendMessage(Arguments);
@@ -336,7 +336,7 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 		cmd::Return(Arguments);
 		break;
 	case 23://SP = Koniec programu
-		cmd::end(Arguments);
+		cmd::end();
 		break;
 	default:
 		std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;
