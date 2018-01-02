@@ -31,11 +31,12 @@ class Interpreter
 
 		//Operacje na plikach
 		std::make_pair("CF",std::make_pair(7,2)), //Utwórz plik/folder
-		std::make_pair("SF",std::make_pair(8,2)), //Zapis do pliku
-		std::make_pair("DF",std::make_pair(9,1)), //Usuwanie pliku
-		std::make_pair("RF",std::make_pair(10,1)), //Odczyt pliku
+		std::make_pair("SF",std::make_pair(8,2)), //Zapis do pliku //////do podmiany
+		std::make_pair("RF",std::make_pair(9,1)), //Usuwanie pliku
+		std::make_pair("FR",std::make_pair(10,0)), //Odczyt pliku
 		std::make_pair("LS",std::make_pair(11,0)), //Listuj pliki
 		std::make_pair("REN",std::make_pair(12,2)), //Zmieñ nazwê pliku
+		std::make_pair("AP",std::make_pair(17,1)), //Dopisz do pliku
 
 		//Procesy
 		std::make_pair("CP",std::make_pair(13,2)), //Utwórz proces
@@ -43,6 +44,7 @@ class Interpreter
 		std::make_pair("PS",std::make_pair(15,0)), //Wyœwietl procesy
 		std::make_pair("SM",std::make_pair(16,2)), //Wyœlij komunikat
 		std::make_pair("RM",std::make_pair(17,1)), //Odczytaj komunikat
+		std::make_pair("KP",std::make_pair(26,1)), //Zabij proces
 
 		//Programowe
 		std::make_pair("ET",std::make_pair(18,0)), //Utwórz etykietê

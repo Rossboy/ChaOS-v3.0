@@ -21,6 +21,7 @@ extern ConditionVariable *cv;
 
 //funkcje do obs³ugi komend
 namespace cmd {
+	/*ARYTMETYKA*/
 	void add(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
@@ -98,7 +99,6 @@ namespace cmd {
 		}
 	}	//done
 	//ok
-
 	void move(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
@@ -107,19 +107,21 @@ namespace cmd {
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] = arg2;
 	}//done
-
+	//ok
+	///////////////////////////////////////////////////////////
+	/*PLIKI*/
 	void openFile(const std::vector<std::string>& Arguments)
 	{
 		std::clog << "Wykonuje siê operacja otwarcia pliku..." << std::endl;
 		fs->openFile(Arguments[0].c_str());
 	}
-
+	//ok
 	void closeFile()
 	{
 		std::clog << "Wykonuje siê operacja zamykania pliku..." << std::endl;
 		fs->closeFile();
 	}
-
+	//ok
 	void makeFile(const std::vector<std::string>& Arguments)
 	{
 		std::clog << "Wykonuje siê operacja tworzenia ";
@@ -135,63 +137,71 @@ namespace cmd {
 			ActiveProcess->errorCode = 9;
 		}
 	}
-
+	//ok
 	void deleteFile(const std::vector<std::string>& Arguments)
 	{
 		std::clog << "Wykonuje siê operacja usuwania pliku..." << std::endl;
 		fs->remove(Arguments[0].c_str());
 	}
-
+	//ok
 	void readFile()
 	{
 		std::clog << "Wykonuje siê operacja czytania pliku..." << std::endl;
 		std::cout << fs->readFile()<<std::endl;
 	}
-
+	//ok
 	void listFiles()
 	{
 		std::clog << "Wykonuje siê operacja listowania katalogu..." << std::endl;
 		std::cout << fs->listDirectory() << std::endl;
 	}
-
+	//ok
 	void changeFileName(const std::vector<std::string>& Arguments)
 	{
 		std::clog << "Wykonuje siê operacja zmiany nazwy..." << std::endl;
 		fs->rename(Arguments[0].c_str(), Arguments[1].c_str());
 	}
-
-
-
+	//ok
 	void appendFile(const std::vector<std::string>& Arguments)
 	{
 		std::clog << "Wykonuje siê operacja dopisywania do pliku..." << std::endl;
 		fs->appendFile(Arguments[0]);
 	}
-
+	//ok
 	void writeFile(const std::vector<std::string>& Arguments)
 	{
 		std::clog << "Wykonuje siê operacja pisania do pliku..." << std::endl;
 		fs->writeFile(Arguments[0]);
 	}
-
+	//ok
 
 	///////////////////////////////////////////////////////////
+	/*PROCESY*/
 
 	void makeProcess(const std::vector<std::string>& Arguments)
 	{
 
 	}
+	//tworzenie procesu
+	//void executeProcess(const std::vector<std::string>& Arguments)
+	//{
 
-	void executeProcess(const std::vector<std::string>& Arguments)
+	//}
+	//nie wiem czy to w góle bêdzie
+
+	//void listProcess(const std::vector<std::string>& Arguments)
+	//{
+
+	//}
+
+	void killProcess(const std::vector<std::string>& Arguments)
 	{
-
+		pm->killProcess(atoi(Arguments[0].c_str()));
 	}
+	//ok
 
-	void listProcess(const std::vector<std::string>& Arguments)
-	{
-
-	}
-
+	///////////////////////////////////////////////////////////
+	/* KOMUNIKACJA */
 	void sendMessage(const std::vector<std::string>& Arguments)
 	{
 
@@ -202,16 +212,18 @@ namespace cmd {
 
 	}
 
+	///////////////////////////////////////////////////////////
+	/*OBS£UGA PROCESU*/
 	void makePoint(const std::vector<std::string>& Arguments)
 	{
 		ActiveProcess->points.push_back(ActiveProcess->GetInstructionCounter());
 	}
-
+	//ok
 	void jump(const std::vector<std::string>& Arguments)
 	{
 		ActiveProcess->SetInstructionCounter(atoi(Arguments[1].c_str()));
 	}//ok
-	///ok
+	//ok
 	void jumpPoint(const std::vector<std::string>& Arguments)
 	{
 		ActiveProcess->SetInstructionCounter(ActiveProcess->points[atoi(Arguments[1].c_str())]);
@@ -226,16 +238,21 @@ namespace cmd {
 	}//ok
 	//ok
 
+	void end()
+	{
+		PCB* temp = ActiveProcess;
+		ActiveProcess = nullptr;
+		pm->killProcess(temp->GetPID());
+	}
+	//ok
 
 	void Return(const std::vector<std::string>& Arguments)
 	{
-
+		std::cout << ActiveProcess->registers[atoi(Arguments[0].c_str())] << std::endl;
+		end();
 	}
-	
-	void end(const std::vector<std::string>& Arguments)
-	{
+	//ok
 
-	}
 
 }
 
