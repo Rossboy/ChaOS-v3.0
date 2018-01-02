@@ -152,23 +152,28 @@ namespace cmd {
 
 	void makePoint(const std::vector<std::string>& Arguments)
 	{
-
+		ActiveProcess->points.push_back(ActiveProcess->GetInstructionCounter());
 	}
 
 	void jump(const std::vector<std::string>& Arguments)
 	{
-
-	}
-
-	void jumpZero(const std::vector<std::string>& Arguments)
-	{
-
-	}
+		ActiveProcess->SetInstructionCounter(atoi(Arguments[1].c_str()));
+	}//ok
 
 	void jumpPoint(const std::vector<std::string>& Arguments)
 	{
-		
-	}
+		ActiveProcess->SetInstructionCounter(ActiveProcess->points[atoi(Arguments[1].c_str())]);
+	}//ok
+
+	void jumpZero(const std::vector<std::string>& Arguments)
+	{
+		if(ActiveProcess->zero)
+		{
+			jumpPoint(Arguments);
+		}
+	}//ok
+
+
 
 	void Return(const std::vector<std::string>& Arguments)
 	{
@@ -294,20 +299,20 @@ void Interpreter::DoCommand()
 
 	//wykonanie rozkazu
 	ExecuteCommand(CommandParameters, Arguments);
+	if (ActiveProcess != nullptr) {
 
+		RegStatus();
 
-	RegStatus();
+		//Wybór rozkazu
 
-	//Wybór rozkazu
-	
-	//obs³uga b³êdów.
-	if(ActiveProcess->errorCode!=0)
-	{
-		std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
-		std::cout << "Na rzecz b³êdu, program zostaje zakoñczony." << std::endl;
-		pm->killProcess(ActiveProcess->GetPID());
+		//obs³uga b³êdów.
+		if (ActiveProcess->errorCode != 0)
+		{
+			std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
+			std::cout << "Na rzecz b³êdu, program zostaje zakoñczony." << std::endl;
+			pm->killProcess(ActiveProcess->GetPID());
+		}
 	}
-
 }
 
 void Interpreter::DoShellCommand(std::vector<std::string> cmd)

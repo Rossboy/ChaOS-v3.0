@@ -7,7 +7,7 @@
 
 int PCB::processesCounter = 0;
 
-PCB::PCB(std::string programName, int GID)
+PCB::PCB(std::string programName, int GID):points()
 {
 	this->PID = processesCounter++;
 	this->GID = GID;
@@ -21,7 +21,7 @@ PCB::PCB(std::string programName, int GID)
 	this->programName = programName;
 	this->state = State::Waiting;
 	this->errorCode = 0;
-	this->wait = false;
+	this->zero = 0;
 }
 
 void PCB::SetState(State newState) 

@@ -25,9 +25,9 @@ private:
 	std::pair<int, bool>* pages;
 	int pagesSize;
 
-
 public:
-	int registers[4]; 
+	std::vector<int> points;
+	int registers[4];
 	static int processesCounter;
 	PCB(std::string fileName, int GID);
 	void SetState(State newState);
@@ -56,7 +56,8 @@ public:
 	unsigned short currentDir;
 	std::stack<uShort> returnPath;
 	//Stanislaw: nie rzucam wyjątków, tylko ustawiam flagę, tak jak ustaliliśmy
-
+	
+	bool zero;
 	int errorCode;
 	bool wait;
 };
