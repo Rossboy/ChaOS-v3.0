@@ -344,7 +344,7 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 
 		break;
 	}
-	RegStatus();
+	//RegStatus();
 }
 //Wykonywanie rozkazu
 void Interpreter::DoCommand()
@@ -393,8 +393,8 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	PCB* Temp = ActiveProcess;
 	//ActiveProcess = pm->allProcesses.fi
 	//Wczytywanie Argumentów
-	for (int i = 1; i < CommandParameters.second; i++) {
-		Arguments.push_back(cmd[i]);
+	for (int i = 0; i < CommandParameters.second; i++) {
+		Arguments.push_back(cmd[i+1]);
 	}
 
 	//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;
@@ -407,14 +407,14 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	//wykonanie rozkazu
 	ExecuteCommand(CommandParameters, Arguments);
 
-
-	if(ActiveProcess->errorCode!=0)
-	{
-		std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
-		ActiveProcess->errorCode = 0;
+	if (ActiveProcess != nullptr) {
+		if (ActiveProcess->errorCode != 0 && ActiveProcess != nullptr)
+		{
+			std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
+			ActiveProcess->errorCode = 0;
+		}
+		if (ActiveProcess != nullptr)ActiveProcess = Temp;
 	}
-	ActiveProcess = Temp;
-	
 }
 
 
