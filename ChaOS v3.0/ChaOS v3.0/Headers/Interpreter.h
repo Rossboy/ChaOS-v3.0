@@ -24,6 +24,11 @@ class Interpreter
 		std::make_pair("IR",std::make_pair(5,1)), //INKREMENTACJA
 		std::make_pair("MV",std::make_pair(6,2)), //PRZENOSZENIE WARTOŒCI
 
+		//Pamiêæ
+		std::make_pair("MR",std::make_pair(24,2)), //Czytanie z pamiêci
+		std::make_pair("MW",std::make_pair(25,2)), //Wpisywanie do pamiêci
+
+
 		//Operacje na plikach
 		std::make_pair("MF",std::make_pair(7,1)), //Utwórz plik
 		std::make_pair("SF",std::make_pair(8,2)), //Zapis do pliku
@@ -42,8 +47,8 @@ class Interpreter
 		//Programowe
 		std::make_pair("ET",std::make_pair(18,0)), //Utwórz etykietê
 		std::make_pair("JP",std::make_pair(19,1)), //Skok bezwarunkowy
-		std::make_pair("JZ",std::make_pair(20,1)), //Skok jeœli flaga zerowa jest ustawiona
-		std::make_pair("CM",std::make_pair(21,2)), //Skok przyrównanie
+		std::make_pair("JZ",std::make_pair(20,1)), //Skok do etykiety jeœli flaga zerowa jest ustawiona
+		std::make_pair("JE",std::make_pair(21,1)), //Skok do etykiety
 		std::make_pair("RT",std::make_pair(22,1)), //Zwróæ
 		std::make_pair("SP",std::make_pair(23,1)), //Koniec programu
 
@@ -61,11 +66,17 @@ class Interpreter
 
 	//Stan rejestrów
 	void RegStatus();
+	//Wykonanie rozkazu
+	void ExecuteCommand(const std::pair<int, int>& CommandParameters, const std::vector<std::string>& Arguments);
 
+
+	
 public:
 	Interpreter() {};
 
 	//Wykonaj rozkaz (kod rozkazu)
 	void DoCommand();
+	//Wykonanie rozkazu od Shella (podmianka procesu i brak obs³ugi b³êdów w sposób zabijaj¹cy proces)
+	void DoShellCommand(std::vector<std::string> cmd);
 };
 #endif INTERPRETER__H

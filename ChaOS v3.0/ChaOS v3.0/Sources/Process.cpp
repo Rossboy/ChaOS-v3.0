@@ -20,6 +20,8 @@ PCB::PCB(std::string programName, int GID)
 	this->burstTime = 10;
 	this->programName = programName;
 	this->state = State::Waiting;
+	this->ErrorCode = 0;
+	this->wait = false;
 }
 
 void PCB::SetState(State newState) 

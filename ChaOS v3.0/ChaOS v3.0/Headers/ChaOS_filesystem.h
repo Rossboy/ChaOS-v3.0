@@ -3,6 +3,7 @@
 #include "../Headers/disk_drive.h"
 #include "../Headers/file.h"
 #include "../Headers/ChaOS_filesystem_exception.h"
+#include "../Headers/ConditionVariable.h"
 #include "stack"
 
 class ChaOS_filesystem final
@@ -40,10 +41,19 @@ public:
 	// Otwiera plik o wskazanej nazwie
 		void openFile(const char* filename); 
 
-	// Zapisuje otwarty plik
+	// Wpisanie nowej zawartości do pliku
+		void writeFile(const std::string& text);
+
+	// Odczytanie zawartości pliku i umieszczenie jej w currentFile
+		std::string readFile();
+
+	// Dopisanie tekstu na końcu pliku
+		void appendFile(const std::string& text);
+
+	// Zapisuje otwarty plik - użyte przy pisaniu do pliku
 		void saveFile(); 
 
-	// Zwalnia uchwyt currentFile
+	// Zamknięcie pliku
 		void closeFile(); 
 
 	// Zwraca string opisujący zadany sektor
@@ -55,7 +65,7 @@ public:
 	// Zwraca string opisujący stan dysku
 		std::string printDiskStats();
 
-	file* currentFile;
+	//file* currentFile;
 private:
 	c_uShort allocateSector();
 	void freeSector(uShort number);
@@ -69,7 +79,7 @@ private:
 
 	disk_drive disk;
 
-	std::stack<uShort> returnPath;
+	ConditionVariable fileSynchronization[32];
 
 	void addRow(char* sector, char* row);
 	void getRow(char* sector, char* row);

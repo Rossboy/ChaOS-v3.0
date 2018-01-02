@@ -31,16 +31,16 @@ private:
 	const int FRAME_SIZE = 16; //rozmiar ramki oraz stronicy
 	const int FRAME_COUNT = MEM_SIZE / FRAME_SIZE; //ilosc ramek
 	const int SWAP_FILE_FRAME_COUNT = 1024; //liosc ramek w pliku wymiany
-	const int SWAP_FILE_SIZE = SWAP_FILE_FRAME_COUNT*FRAME_SIZE; //rozmiar plku wymiany
+	const int SWAP_FILE_SIZE = SWAP_FILE_FRAME_COUNT * FRAME_SIZE; //rozmiar plku wymiany
 	char * RAM; //tablica symulujaca RAM
 	char * swapFile; //tablica symulujaca plik wymiany
 	list<int> freeRAMFrames; //lista wolnych ramek w RAM
 	list<int> freeSwapFileFrames; //lista wolnych ranek w pliku wymiany
-	list<PCB *> FIFOlist; //trzyma informacje ktory PCB wszedl pierwszy
+	list<pair<PCB *, int>> FIFOlist; //trzyma informacje ktory PCB wszedl pierwszy
 	void swapToRAM(PCB * pcb, int pageNr);
 public:
 	char readMemory(PCB * pcb, int l_Addr);
-	void swapToFile(PCB * pcb);
+	void swapToFile(PCB * pcb, int pageNr);
 	bool allocateMemory(PCB * pcb, string program, int size);
 	string readUntilSpace(PCB * pcb, int & l_Addr);
 	void printMemoryConnetent(int nrToPrint = 0);
