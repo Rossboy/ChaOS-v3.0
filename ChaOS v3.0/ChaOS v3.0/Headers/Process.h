@@ -56,7 +56,7 @@ public:
 	unsigned short currentDir;
 	std::stack<uShort> returnPath;
 	//Stanislaw: nie rzucam wyjątków, tylko ustawiam flagę, tak jak ustaliliśmy
-	bool error_flag;
+
 	int ErrorCode;
 	bool wait;
 };

@@ -121,6 +121,7 @@
     <ClCompile Include="Sources\MemoryManager.cpp" />
     <ClCompile Include="Sources\Process.cpp" />
     <ClCompile Include="Sources\ProcessesManager.cpp" />
+    <ClCompile Include="Sources\ProcessScheduler.cpp" />
     <ClCompile Include="Sources\Siec.cpp" />
     <ClCompile Include="Sources\SMS.cpp" />
   </ItemGroup>
@@ -134,6 +135,7 @@
     <ClInclude Include="Headers\MemoryManager.h" />
     <ClInclude Include="Headers\Process.h" />
     <ClInclude Include="Headers\ProcessesManager.h" />
+    <ClInclude Include="Headers\ProcessScheduler.h" />
     <ClInclude Include="Headers\Siec.h" />
     <ClInclude Include="Headers\SMS.h" />
   </ItemGroup>
