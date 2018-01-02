@@ -243,7 +243,7 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 		cmd::makeFile(Arguments);
 		break;
 	case 8://SF = Zapis do pliku
-		cmd::saveFile(Arguments);
+	//	cmd::saveFile(Arguments);
 		break;
 	case 9://DF = Usuwanie pliku
 		cmd::deleteFile(Arguments);
