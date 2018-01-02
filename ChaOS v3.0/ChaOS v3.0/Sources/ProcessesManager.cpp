@@ -222,3 +222,7 @@ std::list<std::list<PCB*>> ProcessesManager::getAllProcesseslist()
 {
 	return allProcesses;
 }
+//Metoda dodaj¹ca proces do listy gotowoœci
+void ProcessesManager::AddProcessToReady(PCB* p) {
+	readyProcesses.push_back(p);
+}
