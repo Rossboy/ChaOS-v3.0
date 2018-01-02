@@ -1,10 +1,14 @@
 #include "../Headers/ProcessScheduler.h"
-#include "../Shell_.cpp"
 #include <list>
+#include "../Headers/Interpreter.h"
+
+extern PCB* ActiveProcess;
+extern ProcessesManager *pm;
+extern Interpreter* i;
 
 void ProcessScheduler::RunProcess() {
 	//Sprawdzenie, czy wyst¹pi³ b³¹d lub jakiœ proces siê po prostu wykona³ - w obu przypadkach wywo³ywana zostaje funkcja usuwania procesu killProcess()
-	if (ActiveProcess->errorCode != 1 || ActiveProcess->GetState() == 4) {
+	if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) {
 		std::cout << "Killing the process and removing it from all the lists it belonged to\n";
 		pm->killProcess(ActiveProcess->GetPID());
 		ActiveProcess = nullptr;
@@ -16,8 +20,9 @@ void ProcessScheduler::RunProcess() {
 		differenceCounter = endCounter - startCounter;
 	}
 
-	//Uruchomienie planisty
-	ProcessScheduler();
+	if (ActiveProcess == nullptr) {
+		SRTSchedulingAlgorithm();
+	}
 
 	//Wykonywanie instrukcji procesu + zmiana instructionCounter, co jest potrzebne przy liczeniu burstTime procesu
 	i->DoCommand();
