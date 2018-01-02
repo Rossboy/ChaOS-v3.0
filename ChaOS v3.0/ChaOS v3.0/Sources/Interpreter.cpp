@@ -28,6 +28,14 @@ namespace cmd {
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] += ActiveProcess->registers[arg2];
+		if(ActiveProcess->registers[arg1]==0)
+		{
+			ActiveProcess->zero = true;
+		}
+		else
+		{
+			ActiveProcess->zero = false;
+		}
 	}//done
 
 	void substract(const std::vector<std::string>& Arguments)
@@ -37,6 +45,14 @@ namespace cmd {
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] -= ActiveProcess->registers[arg2];
+		if (ActiveProcess->registers[arg1] == 0)
+		{
+			ActiveProcess->zero = true;
+		}
+		else
+		{
+			ActiveProcess->zero = false;
+		}
 	}//done
 
 	void multiply(const std::vector<std::string>& Arguments)
@@ -72,6 +88,14 @@ namespace cmd {
 		std::clog << "Wykonuje siê operacja dekrementacji..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		ActiveProcess->registers[arg1]--;
+		if (ActiveProcess->registers[arg1] == 0)
+		{
+			ActiveProcess->zero = true;
+		}
+		else
+		{
+			ActiveProcess->zero = false;
+		}
 	}	//done
 
 
@@ -344,10 +368,11 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	//Wczytywanie ID rozkazu, oraz iloœci argumentów
 	std::pair<int, int > CommandParameters = GetParameters(command_code);
 	std::vector<std::string>Arguments;
-
+	PCB* Temp = ActiveProcess;
+	//ActiveProcess = pm->allProcesses.fi
 	//Wczytywanie Argumentów
-	for (int i = 0; i < CommandParameters.second; i++) {
-		Arguments.push_back(cmd[1+i]);
+	for (int i = 1; i < CommandParameters.second; i++) {
+		Arguments.push_back(cmd[i]);
 	}
 
 	//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;
@@ -361,8 +386,12 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	ExecuteCommand(CommandParameters, Arguments);
 
 
-	RegStatus();
-
+	if(ActiveProcess->errorCode!=0)
+	{
+		std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
+		ActiveProcess->errorCode = 0;
+	}
+	ActiveProcess = Temp;
 	
 }
 
