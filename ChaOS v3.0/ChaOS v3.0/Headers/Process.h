@@ -48,5 +48,7 @@ public:
 	void deleteMessage();
 	//Konrad: d³ugoœci te¿ bêdê potrzebowa³
 	int messagessize();
+	int ErrorCode;
+	bool wait;
 };
 #endif PROCESS__H
