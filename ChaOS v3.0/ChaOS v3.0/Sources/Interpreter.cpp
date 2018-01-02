@@ -402,7 +402,7 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	for (int i = 0; i < Arguments.size(); i++) {
 		std::cout << " | Arg[" << i << "]: " << Arguments[i] << " ";
 	}
-	std::cin.ignore(2);
+	std::cin.ignore(1);
 
 	//wykonanie rozkazu
 	ExecuteCommand(CommandParameters, Arguments);
