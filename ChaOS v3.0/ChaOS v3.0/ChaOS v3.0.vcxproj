@@ -138,9 +138,13 @@
     <ClInclude Include="Headers\ProcessScheduler.h" />
     <ClInclude Include="Headers\Siec.h" />
     <ClInclude Include="Headers\SMS.h" />
+    <ClInclude Include="table_maker.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ChaOS v3.0.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="help.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
