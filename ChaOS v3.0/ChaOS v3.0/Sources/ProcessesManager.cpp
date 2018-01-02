@@ -23,7 +23,7 @@ void ProcessesManager::createProcess(std::string programName, int GID)
 
 	//tmczasowe bo tutaj wpisujemy kod programu
 	mm->allocateMemory(newProcess, programName, programName.size());
-	mm->readMemory(newProcess, 1);
+	//mm->readMemory(newProcess, 1);
 
 	/*Przypadek kiedy dodawany jest proces bezczynnosci*/
 	if (GID == 0)

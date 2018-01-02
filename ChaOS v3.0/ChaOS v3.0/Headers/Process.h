@@ -27,8 +27,8 @@ private:
 	int burstTime;
 	std::string programName;
 	std::list<SMS>messages;
-	Page* pages;
-	int pagesSize;
+	Page* pageTable;
+	int pageTableSize;
 
 public:
 	std::vector<int> points;
@@ -45,9 +45,9 @@ public:
 	void displayProcess();
 	void SetInstructionCounter(int counter);
 	int GetInstructionCounter();
-	void setPages(Page* newPages);
+	void setPageTable(Page* newpageTable);
 	Page* getPageTable();
-	void setPagesSize(int num);
+	void setPageTableSize(int num);
 	int getPageTableSize();
 	void addToMessages(SMS message);
 	SMS getMessage();

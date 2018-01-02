@@ -6,7 +6,7 @@ void MemoryManager::swapPageFromMemoryToSwapFile(PCB * pcb, int pageNumber)
 
 	if (freeSwapFileFrames.empty()) //je¿eli brak wolnych ramek w pliku wymiany, to mamy problem
 	{
-		pcb->errorCode = 10; // nie powinno nigdy siê staæ
+		pcb->errorCode = static_cast<int>(MemoryManagerErrorCodes::OUT_OF_MEMORY);; // nie powinno nigdy siê staæ
 		return;
 	}
 
@@ -33,7 +33,7 @@ void MemoryManager::swapPageFromSwapFileToMemory(PCB * pcb, int pageNumber)
 
 	PageTable[pageNumber].frameOccupied = newOccupiedMemoryFrame; //nowa ramka w RAM
 	PageTable[pageNumber].inMemory = true; //strona jest w RAM
-	
+
 	addEntryToFIFO(FIFO_entry(pcb, pageNumber)); //dodanie procesu do FIFO
 }
 
@@ -88,6 +88,14 @@ int MemoryManager::calculatePhysicalAddress(PCB* pcb, int addr_l)
 	return frameNumber * FRAME_SIZE + offset;
 }
 
+int MemoryManager::calculatePageTableSize(int sizeInBytes)
+{
+	double frameSize = static_cast<double>(FRAME_SIZE);
+	double entireSize = static_cast<double>(sizeInBytes);
+	double result = ceil(entireSize / frameSize);
+	return static_cast<int>(result);
+}
+
 void MemoryManager::ensureFreeMemoryFrame()
 {
 	while (freeMemoryFrames.empty())
@@ -106,77 +114,68 @@ void MemoryManager::addEntryToFIFO(FIFO_entry entry)
 
 char MemoryManager::readMemory(PCB * pcb, int l_Addr)
 {
-	Page * PageTable = pcb->getPageTable();
-	int PCBpagesSize = pcb->getPageTableSize();
-	//liczymy numer strony i bajt w tej stronie
-	int pageNumber = l_Addr / FRAME_SIZE;
-	int offset = l_Addr % FRAME_SIZE;
-	//sprawdzamy czy strona jest w RAM
-	if (PageTable[pageNumber].inMemory == false)
+	if (isOutOfAddressSpace(pcb, l_Addr))
 	{
-		//nie ma strony w ramie wiec trzeba ja sprowadzic
-		swapPageFromSwapFileToMemory(pcb, pageNumber);
+		pcb->errorCode = static_cast<int>(MemoryManagerErrorCodes::OUT_OF_RANGE);
+		return ' ';
 	}
-	//sprawdzamy w ktorej ramce jest poszukiwana strona
-	int page = PageTable[pageNumber].frameOccupied;
-	//obliczamy adres fizyczny szukanej komorki pamieci
-	int p_Addr = page * FRAME_SIZE + offset;
+	ensurePageInMemory(pcb, l_Addr);
+	int p_Addr = calculatePhysicalAddress(pcb, l_Addr); //obliczamy adres fizyczny szukanej komorki pamieci
 	return RAM[p_Addr];
 }
 
-bool MemoryManager::allocateMemory(PCB * pcb, string program, int size)
+void MemoryManager::allocateMemory(PCB * pcb, string program, int size)
 {
 	//ilosc stronic potrzebynch do alokacji
-	int PCBpagesSize = ceil((double)size / (double)FRAME_SIZE);
-	Page * PCBpages = new Page[PCBpagesSize];
-	int base = 0;
-	for (int i = 0; i < PCBpagesSize; i++) {
+	int PageTableSize = calculatePageTableSize(size);
+	Page * PageTable = new Page[PageTableSize];
+	int stringBegin = 0;
+
+	for (int pageNumber = 0; pageNumber < PageTableSize; pageNumber++) {
 		//jezeli plik wymiany jest pelny
 		if (freeSwapFileFrames.empty())
 		{
-			//blad, nie da sie zaalokowac
-			return false;
+			pcb->errorCode = static_cast<int>(MemoryManagerErrorCodes::OUT_OF_MEMORY);;//blad, nie da sie zaalokowac
+			return;
 		}
-		int freeFrame = freeSwapFileFrames.front();
-		freeSwapFileFrames.pop_front();
-		PCBpages[i].frameOccupied = freeFrame;
-		PCBpages[i].inMemory = false;
-		string page = program.substr(base, FRAME_SIZE);
-		program.erase(base, FRAME_SIZE);
-		for (int j = freeFrame * FRAME_SIZE, k = 0; j < j + FRAME_SIZE && k < page.size(); j++, k++)
-		{
-			swapFile[j] = page[k];
-		}
+		int newOccupiedSwapFileFrame = getFreeSwapFileFrame();
+
+		PageTable[pageNumber].frameOccupied = newOccupiedSwapFileFrame;
+		PageTable[pageNumber].inMemory = false;
+
+		string pageContent = program.substr(stringBegin, FRAME_SIZE);
+		program.erase(stringBegin, FRAME_SIZE);
+		writePageContentToSwapFile(newOccupiedSwapFileFrame, pageContent);
 	}
-	pcb->setPages(PCBpages);
-	pcb->setPagesSize(PCBpagesSize);
-	return true;
+
+	pcb->setPageTable(PageTable);
+	pcb->setPageTableSize(PageTableSize);
 }
 
-string MemoryManager::readUntilSpace(PCB * pcb, int & l_Addr)
+string MemoryManager::readString(PCB * pcb, int l_Addr)
 {
-	int PCBpagesSize = pcb->getPageTableSize();
+	int pageTableSize = pcb->getPageTableSize();
 	string result = "";
-	char byte = '0';
-	bool quote = false;
+	char byte;
+	int addressLimiter = pageTableSize * FRAME_SIZE;
 	//powtarzej dopoki adres logiczny nie wskazuje na ' ' i nie przekroczyl logicznej pamieci
-	while (l_Addr < PCBpagesSize*FRAME_SIZE)
+	while (l_Addr < addressLimiter)
 	{
 		byte = readMemory(pcb, l_Addr);
-		l_Addr++;
-		if (byte == '"' && quote == false)
-		{
-			quote = true;
-		}
-		else if (byte == '"' && quote == true)
-		{
-			quote = false;
-		}
-		if (byte == ' ' && quote == false)
+		if (byte == ' ')
 			break;
 		result += byte;
+		l_Addr++;
 	}
 	return result;
+}
+
+void MemoryManager::writeString(PCB * pcb, int l_Addr, string content)
+{
+	for (int contentIndex = 0; contentIndex < content.size(); contentIndex++)
+	{
+		writeMemory(pcb, l_Addr, content[contentIndex]);
+	}
 }
 
 void MemoryManager::printMemoryConnetent(int nrToPrint)
@@ -210,6 +209,17 @@ void MemoryManager::printPCBframes(PCB * pcb, bool onlyInRam)
 			printSFframe(PCBpages[i].frameOccupied, i);
 		}
 	}
+}
+
+void MemoryManager::printFIFO()
+{
+	cout << "Stan algorytmu FIFO. Element po lewej zostanie usuniety, w przypadku braku miejsca w pamieci." << endl
+		<< "Format: [{PID_procesu},{numer strony}]"<<endl;
+	for (auto entry : FIFO)
+	{
+		cout << "[" << entry.pcb->GetPID() << "," << entry.pageNumber << "] ";
+	}
+	cout << endl;
 }
 
 void MemoryManager::printFrame(int frameNr, int pageNumber)
@@ -380,63 +390,103 @@ void MemoryManager::printSFframe(int frameNr, int pageNumber)
 	cout << (char)CharTable::CBR << endl;
 }
 
-bool MemoryManager::writeMemory(PCB * pcb, int l_Addr, char element)
+void MemoryManager::writeMemory(PCB * pcb, int l_Addr, char element)
 {
-	int PCBpagesSize = pcb->getPageTableSize();
-	Page * PCBpages = pcb->getPageTable();
-	//liczymy numer strony i bajt w tej stronie
-	int pageNumber = l_Addr / FRAME_SIZE;
-	int offset = l_Addr % FRAME_SIZE;
-	//sprawdzamy czy adres logiczny jest w przestrzeni adresowej procesu
-	if (pageNumber >= PCBpagesSize)
+	if (isOutOfAddressSpace(pcb, l_Addr))
 	{
-		//adres jest z poza przestrzni adresowej procesu
-		return false;
+		pcb->errorCode = static_cast<int>(MemoryManagerErrorCodes::OUT_OF_RANGE);
+		return;
 	}
-	if (PCBpages[pageNumber].inMemory == false)
-	{
-		//nie ma strony w ramie wiec trzeba ja sprowadzic
-		swapPageFromSwapFileToMemory(pcb, pageNumber);
-	}
-	int page = PCBpages[pageNumber].frameOccupied;
-	int p_Addr = page * FRAME_SIZE + offset;
+	ensurePageInMemory(pcb, l_Addr);
+	int p_Addr = calculatePhysicalAddress(pcb, l_Addr);
 	RAM[p_Addr] = element;
-	return true;
 }
 
-bool MemoryManager::deallocateMemory(PCB * pcb)
+void MemoryManager::writePageContentToSwapFile(int frameNumber, string pageContent)
 {
-	Page * PCBpages = pcb->getPageTable();
-	int PCBpagesSize = pcb->getPageTableSize();
-	//usuwanie informacji z pamieci i stronic
-	for (int i = 0; i < PCBpagesSize; i++)
+	int swapFileIndex = frameNumber * FRAME_SIZE;
+	int stringIndex = 0;
+
+	while (stringIndex < pageContent.size())
 	{
-		int frame = PCBpages[i].frameOccupied;
-		int begFrameId = frame * FRAME_SIZE;
-		int endFrameId = begFrameId + FRAME_SIZE;
-		//wysylamy wszystkie ramki do SF
-		for (int j = 0; j < pcb->getPageTableSize(); j++)
+		swapFile[swapFileIndex] = pageContent[stringIndex];
+		swapFileIndex++;
+		stringIndex++;
+	}
+}
+
+int MemoryManager::getFreeSwapFileFrame()
+{
+	int freeFrame = freeSwapFileFrames.front();
+	freeSwapFileFrames.pop_front();
+	return freeFrame;
+}
+
+int MemoryManager::getFreeMemoryFrame()
+{
+	int freeFrame = freeMemoryFrames.front();
+	freeMemoryFrames.pop_front();
+	return freeFrame;
+}
+
+void MemoryManager::ensurePageInMemory(PCB * pcb, int logicalAddress)
+{
+	Page * PageTable = pcb->getPageTable();
+
+	int pageNumber = calculatePageNumber(logicalAddress); //liczymy numer strony i bajt w tej stronie
+
+	if (PageTable[pageNumber].inMemory == false) //sprawdzamy czy strona jest w RAM
+	{
+		swapPageFromSwapFileToMemory(pcb, pageNumber); //nie ma strony w ramie wiec trzeba ja sprowadzic
+	}
+}
+
+bool MemoryManager::isOutOfAddressSpace(PCB * pcb, int logicalAddress)
+{
+	int pageNumber = calculatePageNumber(logicalAddress);
+	if (pageNumber >= pcb->getPageTableSize())
+		return true;
+	else
+		return false;
+}
+
+void MemoryManager::clearSwapFileFrame(int frameNumber)
+{
+	int frameIndex = frameNumber * FRAME_SIZE;
+	int frameEndIndex = frameIndex + FRAME_SIZE;
+	while (frameIndex < frameEndIndex)
+	{
+		swapFile[frameIndex] = ' ';
+		frameIndex++;
+	}
+}
+
+void MemoryManager::deallocateMemory(PCB * pcb)
+{
+	Page * pageTable = pcb->getPageTable();
+	int pageTableSize = pcb->getPageTableSize();
+	int pageNumber = 0;
+
+	while (pageNumber < pageTableSize) //usuwanie informacji z pamieci i stronic
+	{
+		if (pageTable[pageNumber].inMemory) //wysylamy ramki z pamieci do pliku wymiany
 		{
-			if (pcb->getPageTable()[j].inMemory == true)
-			{
-				swapPageFromMemoryToSwapFile(pcb, j);
-			}
+			swapPageFromMemoryToSwapFile(pcb, pageNumber);
 		}
-		//usuwamy z kolejki FIFO pcb, nie mozemy juz z niego kozystac
-		FIFO.remove_if([pcb](const FIFO_entry &victim) {return victim.pcb == pcb; });
-		//FIFO.remove(pcb);
-		for (begFrameId; begFrameId < endFrameId; begFrameId++)
-		{
-			swapFile[begFrameId] = ' ';
-		}
-		freeSwapFileFrames.push_back(frame);
+
+		FIFO.remove_if([pcb](const FIFO_entry &victim) {return victim.pcb == pcb; }); //usuwamy z kolejki FIFO pcb
+
+		int frameToFree = pageTable[pageNumber].frameOccupied;
+		clearSwapFileFrame(frameToFree);
+		freeSwapFileFrames.push_back(frameToFree);
+
+		pageNumber++;
 	}
 
-	delete[] PCBpages;
+	delete[] pageTable;
 
-	pcb->setPages(nullptr);
-	pcb->setPagesSize(0);
-	return false;
+	pcb->setPageTable(nullptr);
+	pcb->setPageTableSize(0);
 }
 
 MemoryManager::MemoryManager()

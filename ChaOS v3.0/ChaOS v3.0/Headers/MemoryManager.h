@@ -41,6 +41,13 @@ enum class CharTable : char
 class MemoryManager
 {
 private:
+
+	enum class MemoryManagerErrorCodes
+	{
+		OUT_OF_RANGE = 9,
+		OUT_OF_MEMORY = 10
+	};
+
 	const int MEM_SIZE = 128; //rozmiar pamieci
 	const int FRAME_SIZE = 16; //rozmiar ramki oraz stronicy
 	const int FRAME_COUNT = MEM_SIZE / FRAME_SIZE; //ilosc ramek
@@ -58,18 +65,27 @@ private:
 	int calculateOffset(int addr_l);
 	int calculatePageNumber(int addr_l);
 	int calculatePhysicalAddress(PCB* pcb, int addr_l);
+	int calculatePageTableSize(int sizeInBytes);
 	void ensureFreeMemoryFrame();
 	void addEntryToFIFO(FIFO_entry entry);
-public:
 	char readMemory(PCB * pcb, int l_Addr);
-	bool allocateMemory(PCB * pcb, string program, int size);
-	string readUntilSpace(PCB * pcb, int & l_Addr);
+	void writeMemory(PCB * pcb, int l_Addr, char element);
+	void writePageContentToSwapFile(int frameNumber, string pageContent);
+	int getFreeSwapFileFrame();
+	int getFreeMemoryFrame();
+	void ensurePageInMemory(PCB * pcb, int logicalAddress);
+	bool isOutOfAddressSpace(PCB * pcb, int logicalAddress);
+	void clearSwapFileFrame(int frameNumber);
+public:
+	void allocateMemory(PCB * pcb, string program, int size);
+	string readString(PCB * pcb, int l_Addr);
+	void writeString(PCB * pcb, int l_Addr, string content);
 	void printMemoryConnetent(int nrToPrint = 0);
 	void printPCBframes(PCB * pcb, bool onlyInRam = false);
+	void printFIFO();
 	void printFrame(int frameNr, int pageNr = -1);
 	void printSFframe(int frameNr, int pageNr = -1);
-	bool writeMemory(PCB * pcb, int l_Addr, char element);
-	bool deallocateMemory(PCB * pcb);
+	void deallocateMemory(PCB * pcb);
 	MemoryManager();
 	~MemoryManager();
 };

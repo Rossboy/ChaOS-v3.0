@@ -53,21 +53,21 @@ State PCB::GetState()
 {
 	return state;
 }
-void PCB::setPages(Page* newPages)
+void PCB::setPageTable(Page* newpageTable)
 {
-	this->pages = newPages;
+	this->pageTable = newpageTable;
 }
 Page* PCB::getPageTable()
 {
-	return this->pages;
+	return this->pageTable;
 }
-void PCB::setPagesSize(int num)
+void PCB::setPageTableSize(int num)
 {
-	this->pagesSize = num;
+	this->pageTableSize = num;
 }
 int PCB::getPageTableSize()
 {
-	return this->pagesSize;
+	return this->pageTableSize;
 }
 void PCB::displayProcess()
 {
