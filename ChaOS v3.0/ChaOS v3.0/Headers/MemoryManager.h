@@ -84,6 +84,8 @@ public:
 	void printPCBframes(PCB * pcb, bool onlyInRam = false);
 	void printFIFO();
 	void printFrame(int frameNr, int pageNr = -1);
+	bool isAddressInAddressSpace(PCB * pcb, int logicalAddress);
+	bool isAddressRangeInAddressSpace(PCB * pcb, int logicalAddress, int range);
 	void printSFframe(int frameNr, int pageNr = -1);
 	void deallocateMemory(PCB * pcb);
 	MemoryManager();

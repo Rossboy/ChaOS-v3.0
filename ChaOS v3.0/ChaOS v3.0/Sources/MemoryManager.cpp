@@ -174,7 +174,7 @@ void MemoryManager::writeString(PCB * pcb, int l_Addr, string content)
 {
 	for (int contentIndex = 0; contentIndex < content.size(); contentIndex++)
 	{
-		writeMemory(pcb, l_Addr, content[contentIndex]);
+		writeMemory(pcb, l_Addr + contentIndex, content[contentIndex]);
 	}
 }
 
@@ -214,7 +214,7 @@ void MemoryManager::printPCBframes(PCB * pcb, bool onlyInRam)
 void MemoryManager::printFIFO()
 {
 	cout << "Stan algorytmu FIFO. Element po lewej zostanie usuniety, w przypadku braku miejsca w pamieci." << endl
-		<< "Format: [{PID_procesu},{numer strony}]"<<endl;
+		<< "Format: [{PID_procesu},{numer strony}]" << endl;
 	for (auto entry : FIFO)
 	{
 		cout << "[" << entry.pcb->GetPID() << "," << entry.pageNumber << "] ";
@@ -302,6 +302,28 @@ void MemoryManager::printFrame(int frameNr, int pageNumber)
 		cout << (char)CharTable::HL;
 	}
 	cout << (char)CharTable::CBR << endl;
+}
+
+bool MemoryManager::isAddressInAddressSpace(PCB * pcb, int logicalAddress)
+{
+	int pageNumber = calculatePageNumber(logicalAddress);
+	if (pageNumber < pcb->getPageTableSize())
+		return true;
+	else
+		return false;
+}
+
+bool MemoryManager::isAddressRangeInAddressSpace(PCB * pcb, int logicalAddress, int range)
+{
+	int endAddress = range + logicalAddress;
+	while (logicalAddress < endAddress)
+	{
+		if (isOutOfAddressSpace(pcb, logicalAddress))
+			return false;
+
+		logicalAddress++;
+	}
+	return true;
 }
 
 void MemoryManager::printSFframe(int frameNr, int pageNumber)
