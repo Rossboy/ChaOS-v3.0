@@ -369,7 +369,7 @@ void MemoryManager::printSFframe(int frameNr, int pageNumber)
 	}
 	cout << endl;
 	// ----------------------------------------------------------------------
-	// wyzwietla srodek ramki
+	// wyswietla srodek ramki
 	cout << space << (char)CharTable::VLR;
 	for (int i = 0; i < FRAME_SIZE - 1; i++)
 	{
@@ -385,7 +385,7 @@ void MemoryManager::printSFframe(int frameNr, int pageNumber)
 	}
 	cout << (char)CharTable::VLL << endl;
 	// ----------------------------------------------------------------------
-	// wyzwietla zawartosc RAMu
+	// wyswietla zawartosc RAMu
 	addr = frameNr * FRAME_SIZE;
 	cout << space << (char)CharTable::VL;
 	for (int i = 0; i < FRAME_SIZE; i++)
@@ -395,7 +395,7 @@ void MemoryManager::printSFframe(int frameNr, int pageNumber)
 	}
 	cout << endl;
 	// ----------------------------------------------------------------------
-	// wyzwietla spod ramki
+	// wyswietla spod ramki
 	cout << space << (char)CharTable::CBL;
 	for (int i = 0; i < FRAME_SIZE - 1; i++)
 	{
