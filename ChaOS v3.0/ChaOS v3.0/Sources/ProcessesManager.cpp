@@ -23,7 +23,7 @@ void ProcessesManager::createProcess(std::string programName, int GID)
 
 	//tmczasowe bo tutaj wpisujemy kod programu
 	mm->allocateMemory(newProcess, programName, programName.size());
-	//mm->readMemory(newProcess, 1);
+	mm->readString(newProcess, 0);
 
 	/*Przypadek kiedy dodawany jest proces bezczynnosci*/
 	if (GID == 0)
@@ -156,7 +156,7 @@ void ProcessesManager::killProcess(int PID)
 			{
 				// usuwanie procesu z pamieci i systemu normalnego i windowsa -- Bartek
 				removeFrom->remove(toRemove);
-				//mm->dealocateMemory(toRemove); -- jak bêdzie w koncu moj modol potrzebny to tu trzeba to wywyolac -- Bartek
+				mm->deallocateMemory(toRemove); // -- Bartek
 				delete toRemove;
 			}
 			// jezeli lista zawierajacy element jest pusta to ja usuwamy -- Bartek
