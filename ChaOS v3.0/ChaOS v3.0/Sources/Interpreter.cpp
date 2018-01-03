@@ -18,7 +18,7 @@ extern MemoryManager *mm;
 extern Siec *s;
 extern ChaOS_filesystem *fs;
 extern ConditionVariable *cv;
-
+PCB shell("Shell", 999);
 //funkcje do obs³ugi komend
 namespace cmd {
 	/*ARYTMETYKA*/
@@ -351,6 +351,7 @@ void Interpreter::DoCommand()
 {
 	std::string command_code = getArgument();
 	//Wczytywanie ID rozkazu, oraz iloœci argumentów
+	
 	std::pair<int, int > CommandParameters = GetParameters(command_code);
 	std::vector<std::string>Arguments;
 
@@ -391,7 +392,7 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	std::pair<int, int > CommandParameters = GetParameters(command_code);
 	std::vector<std::string>Arguments;
 	PCB* Temp = ActiveProcess;
-	//ActiveProcess = pm->allProcesses.fi
+	ActiveProcess = &shell;
 	//Wczytywanie Argumentów
 	for (int i = 0; i < CommandParameters.second; i++) {
 		Arguments.push_back(cmd[i+1]);
@@ -436,10 +437,12 @@ std::pair<int, int > Interpreter::GetParameters(std::string& cmd)
 //Symulacja podawania argumentu
 std::string Interpreter::getArgument()
 {
-	std::string arg;
-	std::clog << "WprowadŸ argument:";
+	std::string arg = mm->readString(ActiveProcess, ActiveProcess->GetInstructionCounter());;
+	ActiveProcess->SetInstructionCounter(ActiveProcess->GetInstructionCounter() + arg.size() + 1);
+	
+	/*std::clog << "WprowadŸ argument:";
 	std::cin >> arg;
-	std::clog << std::endl;
+	std::clog << std::endl;*/
 	return arg;
 }
 

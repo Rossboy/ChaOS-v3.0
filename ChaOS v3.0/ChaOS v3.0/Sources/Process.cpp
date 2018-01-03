@@ -4,9 +4,11 @@
 #include <list>
 #include <algorithm>
 #include <vector>
+#include "../Headers/ChaOS_filesystem.h"
 
+extern PCB* ActiveProcess;
 int PCB::processesCounter = 0;
-
+extern ChaOS_filesystem* fs;
 PCB::PCB(std::string programName, int GID):points()
 {
 	this->PID = processesCounter++;
@@ -22,6 +24,9 @@ PCB::PCB(std::string programName, int GID):points()
 	this->state = State::Waiting;
 	this->errorCode = 0;
 	this->zero = 0;
+
+
+
 }
 
 void PCB::SetState(State newState) 
