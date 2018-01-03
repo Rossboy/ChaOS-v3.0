@@ -15,14 +15,14 @@ ProcessesManager::ProcessesManager()
 }
 
 //Tworzenie procesu. Juz z grupowaniem
-void ProcessesManager::createProcess(std::string programName, int GID)
+void ProcessesManager::createProcess(std::string fileName, int GID)
 {
 
 	bool GroupExist = true;
-	PCB* newProcess = new PCB(programName, GID);
+	PCB* newProcess = new PCB(fileName, GID);
 
 	//tmczasowe bo tutaj wpisujemy kod programu
-	mm->allocateMemory(newProcess, programName, programName.size());
+	mm->allocateMemory(newProcess, fileName, fileName.size());
 	mm->readString(newProcess, 0);
 
 	/*Przypadek kiedy dodawany jest proces bezczynnosci*/
