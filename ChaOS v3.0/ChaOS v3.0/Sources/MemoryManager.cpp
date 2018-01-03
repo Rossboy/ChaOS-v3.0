@@ -12,8 +12,9 @@ void MemoryManager::swapPageFromMemoryToSwapFile(PCB * pcb, int pageNumber)
 
 	int newFreeMemoryFrame = PageTable[pageNumber].frameOccupied; //jezeli trafimy na strone w pamieci RAM to wysylamy ja do pliku wymiany
 	freeMemoryFrames.push_back(newFreeMemoryFrame); //wolna ramke ram dodajemy do listy wolnych ramek
-	int newOccupiedSwapFileFrame = freeSwapFileFrames.front(); //wybieramy wolna ramke z listy ramek pliku wymiany
-	freeSwapFileFrames.pop_front();
+
+	int newOccupiedSwapFileFrame = getFreeSwapFileFrame();
+
 	moveMemoryContentToSwapFile(newFreeMemoryFrame, newOccupiedSwapFileFrame); //przenosimy strone
 
 	PageTable[pageNumber].frameOccupied = newOccupiedSwapFileFrame; //nowa ramka w SwapFile
@@ -25,8 +26,7 @@ void MemoryManager::swapPageFromSwapFileToMemory(PCB * pcb, int pageNumber)
 	Page * PageTable = pcb->getPageTable();
 	ensureFreeMemoryFrame(); //sprawiamy, ¿e na pewno pojawi siê wolna ramka pamiêci
 
-	int newOccupiedMemoryFrame = freeMemoryFrames.front(); //wybieramy wolna ramke RAM
-	freeMemoryFrames.pop_front();
+	int newOccupiedMemoryFrame = getFreeMemoryFrame();
 	int newFreeSwapFileFrame = PageTable[pageNumber].frameOccupied; //zmiana stronicy z SF do RAM
 	freeSwapFileFrames.push_front(newFreeSwapFileFrame);
 	moveSwapFileContentToMemory(newFreeSwapFileFrame, newOccupiedMemoryFrame); //ustawiamy indeks aktualnej strony w RAM
@@ -199,14 +199,11 @@ void MemoryManager::printPCBframes(PCB * pcb, bool onlyInRam)
 	{
 		if (PCBpages[i].inMemory)
 		{
-			//Jezeli strona znajduje sie w pamieci
-			printFrame(PCBpages[i].frameOccupied, i);
+			printFrame(PCBpages[i].frameOccupied, i); //Jezeli strona znajduje sie w pamieci
 		}
-		//jezeli nie chcemy wypisywac ramek w SF
-		else if (!onlyInRam)
+		else if (!onlyInRam) //jezeli nie chcemy wypisywac ramek w SF
 		{
-			//Jezeli strona znajduje sie w SF
-			printSFframe(PCBpages[i].frameOccupied, i);
+			printSFframe(PCBpages[i].frameOccupied, i); //Jezeli strona znajduje sie w SF
 		}
 	}
 }
@@ -457,7 +454,7 @@ void MemoryManager::ensurePageInMemory(PCB * pcb, int logicalAddress)
 
 	int pageNumber = calculatePageNumber(logicalAddress); //liczymy numer strony i bajt w tej stronie
 
-	if (PageTable[pageNumber].inMemory == false) //sprawdzamy czy strona jest w RAM
+	if (PageTable[pageNumber].inMemory == false) //sprawdzamy czy strona jest poza RAM
 	{
 		swapPageFromSwapFileToMemory(pcb, pageNumber); //nie ma strony w ramie wiec trzeba ja sprowadzic
 	}
