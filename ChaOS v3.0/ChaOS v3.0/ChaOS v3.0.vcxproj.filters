@@ -92,7 +92,7 @@
     <ClInclude Include="Headers\ProcessScheduler.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="table_maker.h">
+    <ClInclude Include="Headers\table_maker.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
