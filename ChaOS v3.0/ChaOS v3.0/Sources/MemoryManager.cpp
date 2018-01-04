@@ -191,6 +191,12 @@ void MemoryManager::printMemoryConnetent(int nrToPrint)
 
 void MemoryManager::printPCBframes(PCB * pcb, bool onlyInRam)
 {
+	if (pcb == nullptr)
+	{
+		cout << "Nie ma takiego procesu.\n";
+		return;
+	}
+
 	Page * PCBpages = pcb->getPageTable();
 	int PCBpagesSize = pcb->getPageTableSize();
 
