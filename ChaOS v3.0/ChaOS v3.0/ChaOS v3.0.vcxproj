@@ -113,7 +113,6 @@
   <ItemGroup>
     <ClCompile Include="Shell_.cpp" />
     <ClCompile Include="Sources\ChaOS_filesystem.cpp" />
-    <ClCompile Include="Sources\ChaOS_filesystem_exception.cpp" />
     <ClCompile Include="Sources\ConditionVariable.cpp" />
     <ClCompile Include="Sources\disk_drive.cpp" />
     <ClCompile Include="Sources\file.cpp" />
@@ -127,7 +126,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Headers\ChaOS_filesystem.h" />
-    <ClInclude Include="Headers\ChaOS_filesystem_exception.h" />
     <ClInclude Include="Headers\ConditionVariable.h" />
     <ClInclude Include="Headers\disk_drive.h" />
     <ClInclude Include="Headers\file.h" />

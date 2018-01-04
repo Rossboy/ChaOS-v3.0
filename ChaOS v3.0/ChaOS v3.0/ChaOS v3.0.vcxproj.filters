@@ -36,9 +36,6 @@
     <ClCompile Include="Sources\ChaOS_filesystem.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Sources\ChaOS_filesystem_exception.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="Sources\disk_drive.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
@@ -72,9 +69,6 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Headers\ChaOS_filesystem.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="Headers\ChaOS_filesystem_exception.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Headers\disk_drive.h">

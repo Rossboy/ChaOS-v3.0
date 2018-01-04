@@ -2,7 +2,6 @@
 #define FILESYSTEM__H
 #include "../Headers/disk_drive.h"
 #include "../Headers/file.h"
-#include "../Headers/ChaOS_filesystem_exception.h"
 #include "../Headers/ConditionVariable.h"
 #include "stack"
 
@@ -88,7 +87,6 @@ private:
 	uShort charArrSize(const char* arr);
 	void toChar5(const char* arr,char* result5);
 	std::string asBitVector(const int vector);
-	void fileInfoSynch();
 };
 
 #endif FILESYSTEM__H
