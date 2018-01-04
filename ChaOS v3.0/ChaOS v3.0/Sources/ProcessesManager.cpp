@@ -229,6 +229,21 @@ void ProcessesManager::displayReadyProcesses()
 	else std::cout << "List is empty" << std::endl;
 }
 
+PCB * ProcessesManager::findPCBbyPID(int PID)
+{
+	for (auto ptr : readyProcesses)
+	{
+		if (ptr->GetPID() == PID)
+			return ptr;
+	}
+	for (auto ptr : waitingProcesses)
+	{
+		if (ptr->GetPID() == PID)
+			return ptr;
+	}
+	return nullptr;
+}
+
 // Albert -- napisalem se funkcje do zwracania std::list<Process*>readyProcesses i std::list<PCB*>waitingProcesses
 std::list<PCB*> ProcessesManager::GiveReadyProcessesList() {
 	return readyProcesses;
