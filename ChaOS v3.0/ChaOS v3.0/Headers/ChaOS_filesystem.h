@@ -51,7 +51,7 @@ public:
 		void appendFile(const std::string& text);
 
 	// Zapisuje otwarty plik - użyte przy pisaniu do pliku
-		void saveFile(); 
+		void saveFile(const std::string& text);
 
 	// Zamknięcie pliku
 		void closeFile(); 
@@ -66,6 +66,7 @@ public:
 		std::string printDiskStats();
 
 	//file* currentFile;
+		uShort getRootDir();
 private:
 	c_uShort allocateSector();
 	void freeSector(uShort number);

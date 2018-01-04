@@ -73,6 +73,11 @@ ChaOS_filesystem::~ChaOS_filesystem()
 }
 
 
+uShort ChaOS_filesystem::getRootDir()
+{
+	return rootDirSector;
+}
+
 c_uShort ChaOS_filesystem::allocateSector()
 {
 	char VCB[32];
@@ -504,8 +509,8 @@ void ChaOS_filesystem::writeFile(const std::string& text)
 	}
 	currentFileFirst = ActiveProcess->currentFile->firstSector;
 
-	ActiveProcess->currentFile->fileContent = text;
-	saveFile();
+	//ActiveProcess->currentFile->fileContent = text;
+	saveFile(text);
 }
 
 std::string ChaOS_filesystem::readFile()
@@ -646,7 +651,7 @@ void ChaOS_filesystem::appendFile(const std::string& text)
 	ActiveProcess->currentDir = currentDirFirst;
 }
 
-void ChaOS_filesystem::saveFile()
+void ChaOS_filesystem::saveFile(const std::string& text)
 {
 	fileInfoSynch();
 	if (ActiveProcess->currentFile == nullptr)
@@ -658,7 +663,7 @@ void ChaOS_filesystem::saveFile()
 
 	char fileSector[32], VCB[32];
 	disk.readSector(0, VCB);
-	unsigned int charsToWrite = ActiveProcess->currentFile->fileSize + 1;
+	unsigned int charsToWrite = text.size() + 1;
 
 	if ((float(charsToWrite) / 31) > float(VCB[8]) + float(ActiveProcess->currentFile->fileSizeInSectors))
 	{
@@ -668,7 +673,8 @@ void ChaOS_filesystem::saveFile()
 	}
 
 	currentFileSector = currentFileFirst;
-	ActiveProcess->currentFile->fileContent.insert(ActiveProcess->currentFile->fileContent.begin(), ActiveProcess->currentFile->fileSize);
+	auto stringToWrite = text;
+	stringToWrite.insert(stringToWrite.begin(), stringToWrite.size());
 	ActiveProcess->currentFile->fileSizeInSectors = 0;
 
 	// Przepisywanie zawartość pliku do sektora
@@ -678,8 +684,9 @@ void ChaOS_filesystem::saveFile()
 		disk.readSector(currentFileSector, fileSector);
 		for (int j = 0; j < 31 && charsToWrite; j++)
 		{
-			fileSector[j] = ActiveProcess->currentFile->fileContent[ActiveProcess->currentFile->fileContent.size() - charsToWrite];
+			fileSector[j] = stringToWrite[stringToWrite.size() - charsToWrite];
 			charsToWrite--;
+			std::cout << "FS LOG: " << fileSector[j] << std::endl;
 		}
 
 		if (charsToWrite > 0 && fileSector[31] == 0) //przydział nowego sektora
@@ -708,9 +715,6 @@ void ChaOS_filesystem::saveFile()
 
 		currentFileSector = fileSector[31];
 	}
-
-	ActiveProcess->currentFile->fileContent.erase(0, 1);
-
 	currentFileSector = currentFileFirst;
 	//////////////////////////////////////////////////////////
 
@@ -814,8 +818,24 @@ std::string ChaOS_filesystem::printDiskStats()
 
 	char_int temp; temp.CHAR[3] = VCB[16]; temp.CHAR[2] = VCB[17]; temp.CHAR[1] = VCB[18]; temp.CHAR[0] = VCB[19];//char[4] to int
 	freeSectorBitVector = temp.INT;
+	
+	result << "Free sector count: " << unsigned int(freeSectorCount) << "/" << disk.numberOfSectors << "   " << asBitVector(freeSectorBitVector) << std::endl;
 
-	result << "FreeSectorCount: " << unsigned int(freeSectorCount) << "/" << disk.numberOfSectors << "   " << asBitVector(freeSectorBitVector) << std::endl;
+	result << "Condition variables - opened files: ";
+	for (int i = 0; i < 32; i++) 
+	{
+		if (fileSynchronization[i].getResourceOccupied())
+			result << i << " ";
+	}
+	result << std::endl;
+
+	/*for (int i = 0; i < 32 ; i++)
+	{
+		disk.readSector(i, VCB);
+		result << i << ": ";
+		for (int j = 0; j < 32; j++) result << int(VCB[j])<<" ";
+		result << std::endl;
+	}*/
 	return result.str();
 }
 
