@@ -1,8 +1,11 @@
 #ifndef CONDITIONVARIABLES__H
 #define CONDITIONVARIABLES__H
-#include "../Headers/Process.h"
-#include <list>
 
+#include <list>
+#include "../Headers/Process.h"
+#include "../Headers/ProcessesManager.h"
+
+extern ProcessesManager *pm;
 
 class ConditionVariable
 {

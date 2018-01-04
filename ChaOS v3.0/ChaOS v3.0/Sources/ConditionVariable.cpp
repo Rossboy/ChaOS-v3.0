@@ -12,19 +12,18 @@ ConditionVariable::ConditionVariable()
 // Zmienia stan procesu na waiting, dodaje do listy procesów oczekuj¹cych 
 void ConditionVariable::wait(PCB* process)
 {
-	if (resourceOccupied)
+	if (resourceOccupied || !this->waitingProcesses.empty())
 	{
 		process->SetState(State::Waiting);
+		process->wait = true;
 		waitingProcesses.push_back(process);
-		this->resourceOccupied = false;
-		// SRTSchedulingAlgorithm();
+		this->resourceOccupied = true;
 	}
-	if (this->waitingProcesses.empty() || !resourceOccupied)
+	else if (!resourceOccupied && this->waitingProcesses.empty())
 	{
 		process->SetState(State::Ready);
-		this->resourceOccupied = false;
-		// Dodanie do listy procesów oczekuj¹cych na liœcie planisty
-		// SRTSchedulingAlgorithm();
+		this->resourceOccupied = true;
+		pm->AddProcessToReady(process);
 	}
 }
 
@@ -33,14 +32,22 @@ void ConditionVariable::wait(PCB* process)
 // Jeœli nic nie czeka pod zmienn¹ warunkow¹ to wywo³anie metody jest ignorowane.
 void ConditionVariable::signal()
 {
-	if (!resourceOccupied && !waitingProcesses.empty())
+	if (resourceOccupied && !waitingProcesses.empty())
 	{
-		PCB* temp = waitingProcesses.front();
+		auto temp = waitingProcesses.front();
 		temp->SetState(State::Ready);
-		// Dodanie do listy procesów oczekuj¹cych na liœcie planisty
+		pm->AddProcessToReady(temp);
 		waitingProcesses.pop_front();
-		this->resourceOccupied = true;
-		//SRTSchedulingAlgorithm();
+
+		if (this->waitingProcesses.empty())
+		{
+			this->resourceOccupied = false;
+		}
+		else
+		{
+			this->resourceOccupied = true;
+		}
+
 		delete temp;
 	}
 }
