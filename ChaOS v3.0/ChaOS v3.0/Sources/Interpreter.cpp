@@ -21,6 +21,47 @@ extern ConditionVariable *cv;
 PCB shell("Shell", 999);
 //funkcje do obs³ugi komend
 namespace cmd {
+
+	///////////////////////////////////////////////////////////
+	/*OBS£UGA PROCESU*/
+
+	void makePoint(const std::vector<std::string>& Arguments)
+	{
+		ActiveProcess->points.push_back(ActiveProcess->GetInstructionCounter());
+	}
+	//ok
+	void jump(const std::vector<std::string>& Arguments)
+	{
+		ActiveProcess->SetInstructionCounter(atoi(Arguments[1].c_str()));
+	}//ok
+	 //ok
+	void jumpPoint(const std::vector<std::string>& Arguments)
+	{
+		ActiveProcess->SetInstructionCounter(ActiveProcess->points[atoi(Arguments[1].c_str())]);
+	}//ok
+	 //ok
+	void jumpZero(const std::vector<std::string>& Arguments)
+	{
+		if (ActiveProcess->zero)
+		{
+			jumpPoint(Arguments);
+		}
+	}//ok
+	 //oks
+	void end()
+	{
+		PCB* temp = ActiveProcess;
+		ActiveProcess = nullptr;
+		pm->killProcess(temp->GetPID());
+	}
+	//ok
+	void Return(const std::vector<std::string>& Arguments)
+	{
+		std::cout << ActiveProcess->registers[atoi(Arguments[0].c_str())] << std::endl;
+		end();
+	}
+	//ok
+
 	/*ARYTMETYKA*/
 	void add(const std::vector<std::string>& Arguments)
 	{
@@ -29,7 +70,7 @@ namespace cmd {
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] += ActiveProcess->registers[arg2];
-		if(ActiveProcess->registers[arg1]==0)
+		if (ActiveProcess->registers[arg1] == 0)
 		{
 			ActiveProcess->zero = true;
 		}
@@ -67,7 +108,7 @@ namespace cmd {
 	//ok
 	void divide(const std::vector<std::string>& Arguments)
 	{
-		int arg1, arg2; 
+		int arg1, arg2;
 		std::clog << "Wykonuje siê operacja dzielenia..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
@@ -84,7 +125,7 @@ namespace cmd {
 	//ok
 	void decrement(const std::vector<std::string>& Arguments)
 	{
-		
+
 		int arg1;
 		std::clog << "Wykonuje siê operacja dekrementacji..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
@@ -108,6 +149,30 @@ namespace cmd {
 		ActiveProcess->registers[arg1] = arg2;
 	}//done
 	//ok
+
+	void equal(const std::vector<std::string>& Arguments)
+	{
+
+	}
+
+
+	void lessThan(const std::vector<std::string>& Arguments)
+	{
+
+	}
+	
+	
+	void equalOrLessThan(const std::vector<std::string>& Arguments) 
+	{
+	if(ActiveProcess->registers[atoi(Arguments[0].c_str())] - atoi(Arguments[0].c_str())<=0)
+	{
+		ActiveProcess->zero = true;
+	}else
+	{
+		ActiveProcess->zero = false;
+	}
+	}
+	
 	///////////////////////////////////////////////////////////
 	/*PLIKI*/
 	void openFile(const std::vector<std::string>& Arguments)
@@ -147,7 +212,7 @@ namespace cmd {
 	void readFile()
 	{
 		std::clog << "Wykonuje siê operacja czytania pliku..." << std::endl;
-		std::cout << fs->readFile()<<std::endl;
+		std::cout << fs->readFile() << std::endl;
 	}
 	//ok
 	void listFiles()
@@ -228,45 +293,7 @@ namespace cmd {
 
 	}
 
-	///////////////////////////////////////////////////////////
-	/*OBS£UGA PROCESU*/
-	void makePoint(const std::vector<std::string>& Arguments)
-	{
-		ActiveProcess->points.push_back(ActiveProcess->GetInstructionCounter());
-	}
-	//ok
-	void jump(const std::vector<std::string>& Arguments)
-	{
-		ActiveProcess->SetInstructionCounter(atoi(Arguments[1].c_str()));
-	}//ok
-	//ok
-	void jumpPoint(const std::vector<std::string>& Arguments)
-	{
-		ActiveProcess->SetInstructionCounter(ActiveProcess->points[atoi(Arguments[1].c_str())]);
-	}//ok
-	//ok
-	void jumpZero(const std::vector<std::string>& Arguments)
-	{
-		if(ActiveProcess->zero)
-		{
-			jumpPoint(Arguments);
-		}
-	}//ok
-	//oks
-	void end()
-	{
-		PCB* temp = ActiveProcess;
-		ActiveProcess = nullptr;
-		pm->killProcess(temp->GetPID());
-	}
-	//ok
-	void Return(const std::vector<std::string>& Arguments)
-	{
-		std::cout << ActiveProcess->registers[atoi(Arguments[0].c_str())] << std::endl;
-		end();
-	}
-	//ok
-
+	
 	///////////////////////////////////////////////////////////
 	/*PAMIÊÆ*/
 	void readMemory(const std::vector<std::string>& Arguments)
@@ -384,8 +411,10 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 		cmd::closeFile();
 		break;
 	case 32:
+		cmd::equalOrLessThan(Arguments);
 		break;
-
+	case 33:
+		break;
 
 	default:
 		std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;
@@ -400,7 +429,7 @@ void Interpreter::DoCommand()
 {
 	std::string command_code = getArgument();
 	//Wczytywanie ID rozkazu, oraz iloœci argumentów
-	
+
 	std::pair<int, int > CommandParameters = GetParameters(command_code);
 	std::vector<std::string>Arguments;
 
@@ -488,7 +517,7 @@ std::string Interpreter::getArgument()
 {
 	std::string arg = mm->readString(ActiveProcess, ActiveProcess->GetInstructionCounter());;
 	ActiveProcess->SetInstructionCounter(ActiveProcess->GetInstructionCounter() + arg.size() + 1);
-	
+
 	/*std::clog << "WprowadŸ argument:";
 	std::cin >> arg;
 	std::clog << std::endl;*/
