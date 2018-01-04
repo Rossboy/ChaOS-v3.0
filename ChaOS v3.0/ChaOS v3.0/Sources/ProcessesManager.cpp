@@ -12,7 +12,7 @@ extern MemoryManager *mm;
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
 ProcessesManager::ProcessesManager()
 {
-	createProcess("programbezczynnosci.txt", 0); //Tworzenie procesu bezczynnosci GID = 0
+	createProcess("pb", 0); //Tworzenie procesu bezczynnosci GID = 0
 }
 
 //Tworzenie procesu. Juz z grupowaniem
