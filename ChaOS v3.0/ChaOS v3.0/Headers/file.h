@@ -17,7 +17,7 @@ public:
 	//void write(const std::string& text);
 	//std::string read();
 	//void append(const std::string& text);
-	
+
 private:
 	std::string fileContent;
 	char filename[5];
