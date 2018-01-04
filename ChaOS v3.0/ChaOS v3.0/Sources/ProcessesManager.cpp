@@ -12,7 +12,7 @@ extern MemoryManager *mm;
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
 ProcessesManager::ProcessesManager()
 {
-	createProcess("pb", 0); //Tworzenie procesu bezczynnosci GID = 0
+	createProcess("programbezczynnosci.txt", 0); //Tworzenie procesu bezczynnosci GID = 0
 }
 
 //Tworzenie procesu. Juz z grupowaniem
@@ -24,8 +24,9 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 
 	std::string program;
 	std::ifstream file;
-	fileName += ".txt";	
-	file.open(fileName);
+	fileName = fileName + ".txt";
+	std::string path = "../" + fileName;
+	file.open(path);
 	if (file.good())
 	{
 		std::string napis;
@@ -230,14 +231,14 @@ void ProcessesManager::displayReadyProcesses()
 
 PCB * ProcessesManager::findPCBbyPID(int PID)
 {
-	for (auto ptr : waitingProcesses)
-	{
-		if (ptr->GetPID == PID)
-			return ptr;
-	}
 	for (auto ptr : readyProcesses)
 	{
-		if (ptr->GetPID == PID)
+		if (ptr->GetPID() == PID)
+			return ptr;
+	}
+	for (auto ptr : waitingProcesses)
+	{
+		if (ptr->GetPID() == PID)
 			return ptr;
 	}
 	return nullptr;

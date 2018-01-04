@@ -2,7 +2,6 @@
 #define FILESYSTEM__H
 #include "../Headers/disk_drive.h"
 #include "../Headers/file.h"
-#include "../Headers/ChaOS_filesystem_exception.h"
 #include "../Headers/ConditionVariable.h"
 #include "stack"
 
@@ -15,58 +14,58 @@ public:
 	~ChaOS_filesystem();
 
 	// Tworzy obiekt w aktualnym folderze
-		void create(const char* name, type t);
+	void create(const char* name, type t);
 
 	// Usuwa obiekt z aktualnego folderu
-		void remove(const char* name); 
-	
+	void remove(const char* name);
+
 	// Zwraca string opisujący zawartość aktualnego folderu
-		std::string listDirectory();
+	std::string listDirectory();
 
 	// Zmiania aktualny folder na wskazany folder
-		void changeDirectory(const char* name); 
+	void changeDirectory(const char* name);
 
 	// zmiania aktualny folder na wskazany folder
-		void backDirectory(); 
+	void backDirectory();
 
 	// Zmiania aktualny folder na wskazany folder
-		void rootDirectory(); 
+	void rootDirectory();
 
 	// Zmienia nazwę obiektu w aktualnym folderze
-		void rename(const char* name, const char* newname);
-	
+	void rename(const char* name, const char* newname);
+
 	// Szuka pliku/katalogu w aktualnym katalogu. Zwraca adres pierwszego sektora szukanego pliku/katalogu lub 0, gdy nie istnieje
-		uShort search(const char* name, type t); 
+	uShort search(const char* name, type t);
 
 	// Otwiera plik o wskazanej nazwie
-		void openFile(const char* filename); 
+	void openFile(const char* filename);
 
 	// Wpisanie nowej zawartości do pliku
-		void writeFile(const std::string& text);
+	void writeFile(const std::string& text);
 
 	// Odczytanie zawartości pliku i umieszczenie jej w currentFile
-		std::string readFile();
+	std::string readFile();
 
 	// Dopisanie tekstu na końcu pliku
-		void appendFile(const std::string& text);
+	void appendFile(const std::string& text);
 
 	// Zapisuje otwarty plik - użyte przy pisaniu do pliku
-		void saveFile(const std::string& text);
+	void saveFile(const std::string& text);
 
 	// Zamknięcie pliku
-		void closeFile(); 
+	void closeFile();
 
 	// Zwraca string opisujący zadany sektor
-		std::string printSector(const unsigned short number);
+	std::string printSector(const unsigned short number);
 
 	// Zwraca string opisujący łańcuch sektorów zaczynając od 'first'
-		std::string printSectorsChain(const unsigned short first);
+	std::string printSectorsChain(const unsigned short first);
 
 	// Zwraca string opisujący stan dysku
-		std::string printDiskStats();
+	std::string printDiskStats();
 
 	//file* currentFile;
-		uShort getRootDir();
+	uShort getRootDir();
 private:
 	c_uShort allocateSector();
 	void freeSector(uShort number);
@@ -84,11 +83,10 @@ private:
 
 	void addRow(char* sector, char* row);
 	void getRow(char* sector, char* row);
-	bool equalName(const char* n1,const char* n2);
+	bool equalName(const char* n1, const char* n2);
 	uShort charArrSize(const char* arr);
-	void toChar5(const char* arr,char* result5);
+	void toChar5(const char* arr, char* result5);
 	std::string asBitVector(const int vector);
-	void fileInfoSynch();
 };
 
 #endif FILESYSTEM__H

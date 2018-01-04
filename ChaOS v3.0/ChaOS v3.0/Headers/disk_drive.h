@@ -18,13 +18,14 @@ public:
 	void readSector(c_uShort sectorNumber, char sector[]);
 	void writeSector(c_uShort sectorNumber, char sector[]);
 	void clear();
+	void loadFromFile();
 
 	c_uShort diskSize;
 	c_uShort sectorSize;
 	c_uShort numberOfSectors;
 
 private:
-	char* diskSpace; 
+	char* diskSpace;
 };
 
 #endif DISKDIRIVE__H

@@ -17,12 +17,14 @@ void ConditionVariable::wait(PCB* process)
 		process->SetState(State::Waiting);
 		waitingProcesses.push_back(process);
 		this->resourceOccupied = false;
+		// SRTSchedulingAlgorithm();
 	}
 	if (this->waitingProcesses.empty() || !resourceOccupied)
 	{
 		process->SetState(State::Ready);
 		this->resourceOccupied = false;
-		pm->AddProcessToReady(process);
+		// Dodanie do listy procesów oczekuj¹cych na liœcie planisty
+		// SRTSchedulingAlgorithm();
 	}
 }
 
@@ -35,9 +37,10 @@ void ConditionVariable::signal()
 	{
 		PCB* temp = waitingProcesses.front();
 		temp->SetState(State::Ready);
-		pm->AddProcessToReady(temp);
+		// Dodanie do listy procesów oczekuj¹cych na liœcie planisty
 		waitingProcesses.pop_front();
 		this->resourceOccupied = true;
+		//SRTSchedulingAlgorithm();
 		delete temp;
 	}
 }
