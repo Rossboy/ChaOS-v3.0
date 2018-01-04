@@ -11,7 +11,7 @@ class Interpreter
 	
 
 
-	//liczba rozkazów = 32 + error (99)
+	//liczba rozkazów = 33 + error (99)
 	//tablica rozkazów <KOD ROZKAZU <ID rozkazu/iloœæ argumentów>>
 	std::vector<std::pair<std::string, std::pair<int, int >>> CommandTab{
 
@@ -23,6 +23,7 @@ class Interpreter
 		std::make_pair("DR",std::make_pair(4,1)), //DEKREMENTACJA
 		std::make_pair("IR",std::make_pair(5,1)), //INKREMENTACJA
 		std::make_pair("MV",std::make_pair(6,2)), //PRZENOSZENIE WARTOŒCI
+		std::make_pair("MC",std::make_pair(33,2)), //PRZENOSZENIE WARTOŒCI Z REJESTRU DO REJESTRU
 		std::make_pair("EL",std::make_pair(32,2)), //EqualOrLess/ mniejsze równe (nr rejestru, wartoœæ)
 
 		//Pamiêæ

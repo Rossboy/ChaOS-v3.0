@@ -24,7 +24,10 @@ namespace cmd {
 
 	///////////////////////////////////////////////////////////
 	/*OBS£UGA PROCESU*/
-
+	void copyRegisters(const std::vector<std::string>& Arguments)
+	{
+		ActiveProcess->registers[atoi(Arguments[0].c_str())] = ActiveProcess->registers[atoi(Arguments[1].c_str())];
+	}
 	void makePoint(const std::vector<std::string>& Arguments)
 	{
 		ActiveProcess->points.push_back(ActiveProcess->GetInstructionCounter());
@@ -32,19 +35,19 @@ namespace cmd {
 	//ok
 	void jump(const std::vector<std::string>& Arguments)
 	{
-		ActiveProcess->SetInstructionCounter(atoi(Arguments[1].c_str()));
+		ActiveProcess->SetInstructionCounter(atoi(Arguments[0].c_str()));
 	}//ok
 	 //ok
 	void jumpPoint(const std::vector<std::string>& Arguments)
 	{
-		ActiveProcess->SetInstructionCounter(ActiveProcess->points[atoi(Arguments[1].c_str())]);
+		ActiveProcess->SetInstructionCounter(ActiveProcess->points[atoi(Arguments[0].c_str())+3]);
 	}//ok
 	 //ok
 	void jumpZero(const std::vector<std::string>& Arguments)
 	{
 		if (ActiveProcess->zero)
 		{
-			jumpPoint(Arguments);
+			jump(Arguments);
 		}
 	}//ok
 	 //oks
@@ -386,36 +389,38 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 	case 23://SP = Koniec programu
 		cmd::end();
 		break;
-	case 24:
+	case 24://MR - czytaj pamiêæ
 		cmd::readMemory(Arguments);
 		break;
-	case 25:
+	case 25://MW - wpisuj do pamiêci
 		cmd::writeMemory(Arguments);
 		break;
-	case 26:
+	case 26://KP - zabij proces
 		cmd::killProcess(Arguments);
 		break;
-	case 27:
+	case 27://CD - przejdŸ do kadalogu
 		cmd::changeDir(Arguments);
 		break;
-	case 28:
+	case 28://RT - przejdŸ do katalogu g³ównego
 		cmd::rootDir();
 		break;
-	case 29:
+	case 29://BD - cofnij siê do katalogu "wy¿ej"
 		cmd::backDir();
 		break;
-	case 30:
+	case 30://OF - otwórz plik
 		cmd::openFile(Arguments);
 		break;
-	case 31:
+	case 31://CLF - zamknij plik
 		cmd::closeFile();
 		break;
-	case 32:
+	case 32://EL - mniejsze równe
 		cmd::equalOrLessThan(Arguments);
 		break;
-	case 33:
+	case 33://MC - kopiuj rejestr 
+		cmd::copyRegisters(Arguments);
 		break;
-
+	case 34:
+		break;
 	default:
 		std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;
 		std::cin.ignore(1);
