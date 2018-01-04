@@ -3,6 +3,7 @@
 #include <list>
 #include <climits>
 #include <algorithm>
+#include <fstream>
 #include "../Headers/ProcessesManager.h"
 #include "../Headers/MemoryManager.h"
 
@@ -21,8 +22,25 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 	bool GroupExist = true;
 	PCB* newProcess = new PCB(fileName, GID);
 
+	std::string program;
+	std::ifstream file;
+	fileName = fileName + ".txt";
+	std::string path = "../" + fileName;
+	file.open(path);
+	if (file.good())
+	{
+		std::string napis;
+		while (!file.eof())
+		{
+			std::getline(file, napis);
+			program = program + napis + " ";
+		}
+		file.close();
+	}
+	else std::cout << "Error! Nie udalo otworzyc sie pliku!" << std::endl;
+
 	//tmczasowe bo tutaj wpisujemy kod programu
-	mm->allocateMemory(newProcess, fileName, fileName.size());
+	mm->allocateMemory(newProcess, program, program.size());
 	mm->readString(newProcess, 0);
 
 	/*Przypadek kiedy dodawany jest proces bezczynnosci*/
