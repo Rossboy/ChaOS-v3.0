@@ -7,6 +7,10 @@ extern ProcessesManager *pm;
 extern Interpreter* i;
 
 void ProcessScheduler::RunProcess() {
+	
+	if (ActiveProcess == nullptr) {
+		SRTSchedulingAlgorithm();
+	}
 	//Sprawdzenie, czy wyst¹pi³ b³¹d lub jakiœ proces siê po prostu wykona³ - w obu przypadkach wywo³ywana zostaje funkcja usuwania procesu killProcess()
 	if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) {
 		std::cout << "Killing the process and removing it from all the lists it belonged to\n";

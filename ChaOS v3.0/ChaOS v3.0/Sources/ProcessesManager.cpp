@@ -24,9 +24,8 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 
 	std::string program;
 	std::ifstream file;
-	fileName = fileName + ".txt";
-	std::string path = "../" + fileName;
-	file.open(path);
+	fileName += ".txt";	
+	file.open(fileName);
 	if (file.good())
 	{
 		std::string napis;

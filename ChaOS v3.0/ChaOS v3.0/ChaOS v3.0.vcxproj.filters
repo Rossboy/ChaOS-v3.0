@@ -115,5 +115,8 @@
     <Text Include="p3.txt">
       <Filter>Programy</Filter>
     </Text>
+    <Text Include="pb.txt">
+      <Filter>Programy</Filter>
+    </Text>
   </ItemGroup>
 </Project>

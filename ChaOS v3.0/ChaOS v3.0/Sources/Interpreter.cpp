@@ -262,6 +262,8 @@ namespace cmd {
 
 	void makeProcess(const std::vector<std::string>& Arguments)
 	{
+		std::cout << "Wykonuje siê operacja tworzenia procesu o nazwie: " << Arguments[0] << " oraz id grupy: " << Arguments[1] << std::endl;
+		pm->createProcess(Arguments[0], atoi(Arguments[1].c_str()));
 
 	}
 	//tworzenie procesu, do uzupe³nienia
