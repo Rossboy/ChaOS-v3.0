@@ -11,7 +11,7 @@ class Interpreter
 	
 
 
-
+	//liczba rozkazów = 32 + error (99)
 	//tablica rozkazów <KOD ROZKAZU <ID rozkazu/iloœæ argumentów>>
 	std::vector<std::pair<std::string, std::pair<int, int >>> CommandTab{
 
@@ -31,12 +31,19 @@ class Interpreter
 
 		//Operacje na plikach
 		std::make_pair("CF",std::make_pair(7,2)), //Utwórz plik/folder
-		std::make_pair("SF",std::make_pair(8,2)), //Zapis do pliku //////do podmiany
+		std::make_pair("SF",std::make_pair(8,1)), //Zapis do pliku //////do podmiany
+		std::make_pair("WRITE",std::make_pair(8,1)), //Zapis do pliku //////do podmiany dla shella
 		std::make_pair("RF",std::make_pair(9,1)), //Usuwanie pliku
 		std::make_pair("FR",std::make_pair(10,0)), //Odczyt pliku
-		std::make_pair("LS",std::make_pair(11,0)), //Listuj pliki
+		std::make_pair("READ",std::make_pair(10,0)), //Odczyt pliku dla shella
+		std::make_pair("LD",std::make_pair(11,0)), //Listuj pliki
 		std::make_pair("REN",std::make_pair(12,2)), //Zmieñ nazwê pliku
 		std::make_pair("AP",std::make_pair(17,1)), //Dopisz do pliku
+		std::make_pair("CD",std::make_pair(27,1)), //PrzejdŸ do folderu
+		std::make_pair("RD",std::make_pair(28,0)), //PrzejdŸ do folderu ROOT
+		std::make_pair("BD",std::make_pair(29,0)), //PrzejdŸ do folderu poprzedniego
+		std::make_pair("OF",std::make_pair(30,1)), //Otwórz plik
+		std::make_pair("CLF",std::make_pair(31,0)), //Zamknij plik
 
 		//Procesy
 		std::make_pair("CP",std::make_pair(13,2)), //Utwórz proces

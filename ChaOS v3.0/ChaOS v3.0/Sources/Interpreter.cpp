@@ -174,6 +174,20 @@ namespace cmd {
 		fs->writeFile(Arguments[0]);
 	}
 	//ok
+	void changeDir(const std::vector<std::string>& Arguments)
+	{
+		fs->changeDirectory(Arguments[0].c_str());
+	}
+
+	void rootDir()
+	{
+		fs->rootDirectory();
+	}
+
+	void backDir()
+	{
+		fs->backDirectory();
+	}
 
 	///////////////////////////////////////////////////////////
 	/*PROCESY*/
@@ -253,7 +267,14 @@ namespace cmd {
 	}
 	//ok
 
-
+	///////////////////////////////////////////////////////////
+	/*PAMIÊÆ*/
+	void readMemory(const std::vector<std::string>& Arguments)
+	{
+	}
+	void writeMemory(const std::vector<std::string>& Arguments)
+	{
+	}
 }
 
 
@@ -338,6 +359,34 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 	case 23://SP = Koniec programu
 		cmd::end();
 		break;
+	case 24:
+		cmd::readMemory(Arguments);
+		break;
+	case 25:
+		cmd::writeMemory(Arguments);
+		break;
+	case 26:
+		cmd::killProcess(Arguments);
+		break;
+	case 27:
+		cmd::changeDir(Arguments);
+		break;
+	case 28:
+		cmd::rootDir();
+		break;
+	case 29:
+		cmd::backDir();
+		break;
+	case 30:
+		cmd::openFile(Arguments);
+		break;
+	case 31:
+		cmd::closeFile();
+		break;
+	case 32:
+		break;
+
+
 	default:
 		std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;
 		std::cin.ignore(1);
@@ -394,8 +443,8 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	PCB* Temp = ActiveProcess;
 	ActiveProcess = &shell;
 	//Wczytywanie Argumentów
-	for (int i = 0; i < CommandParameters.second; i++) {
-		Arguments.push_back(cmd[i+1]);
+	for (int i = 1; i <= CommandParameters.second; i++) {
+		Arguments.push_back(cmd[i]);
 	}
 
 	//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;

@@ -24,7 +24,7 @@ PCB::PCB(std::string programName, int GID):points()
 	this->state = State::Waiting;
 	this->errorCode = 0;
 	this->zero = 0;
-
+	this->currentDir = 1;
 
 
 }
