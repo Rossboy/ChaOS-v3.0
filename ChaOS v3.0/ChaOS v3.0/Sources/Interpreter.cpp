@@ -60,7 +60,7 @@ namespace cmd {
 	//ok
 	void Return(const std::vector<std::string>& Arguments)
 	{
-		std::cout << ActiveProcess->registers[atoi(Arguments[0].c_str())] << std::endl;
+		std::cout<<"\n" << ActiveProcess->registers[atoi(Arguments[0].c_str())] << std::endl;
 		end();
 	}
 	//ok
@@ -542,7 +542,7 @@ std::string Interpreter::getArgument()
 void Interpreter::RegStatus()
 {
 	std::cout << "Aktualny stan rejestrów" << std::endl;
-	std::cout << "R0: " << ActiveProcess->registers[0] << " | R1: " << ActiveProcess->registers[1] << " | R2 " << ActiveProcess->registers[2] << std::endl;
-	std::cin.ignore(1);
+	std::cout << "R0: " << ActiveProcess->registers[0] << " | R1: " << ActiveProcess->registers[1] << " | R2 " << ActiveProcess->registers[2] << " | R2 " << ActiveProcess->registers[3] <<std::endl;
+	//std::cin.ignore(1);
 }
 
