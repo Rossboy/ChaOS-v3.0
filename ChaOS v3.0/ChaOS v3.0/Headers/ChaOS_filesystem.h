@@ -87,6 +87,7 @@ private:
 	uShort charArrSize(const char* arr);
 	void toChar5(const char* arr, char* result5);
 	std::string asBitVector(const int vector);
+	char check(const char& c);
 };
 
 #endif FILESYSTEM__H
