@@ -5,6 +5,7 @@ class SMS
 {
 	int WID;
 	std::string wiad;
+	int indeks;
 public:
 	SMS(std::string wiad);
 	~SMS();
