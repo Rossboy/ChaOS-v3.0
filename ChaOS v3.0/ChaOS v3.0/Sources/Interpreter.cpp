@@ -40,7 +40,7 @@ namespace cmd {
 	 //ok
 	void jumpPoint(const std::vector<std::string>& Arguments)
 	{
-		ActiveProcess->SetInstructionCounter(ActiveProcess->points[atoi(Arguments[0].c_str())+3]);
+		ActiveProcess->SetInstructionCounter(ActiveProcess->points[atoi(Arguments[0].c_str())]);
 	}//ok
 	 //ok
 	void jumpZero(const std::vector<std::string>& Arguments)
@@ -403,7 +403,7 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 		case 27://CD - przejdü do kadalogu
 			cmd::changeDir(Arguments);
 			break;
-		case 28://RT - przejdü do katalogu g≥Ûwnego
+		case 28://RD - przejdü do katalogu g≥Ûwnego
 			cmd::rootDir();
 			break;
 		case 29://BD - cofnij siÍ do katalogu "wyøej"
@@ -426,7 +426,6 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 			break;
 		default:
 			std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;
-			std::cin.ignore(1);
 
 			break;
 		}
