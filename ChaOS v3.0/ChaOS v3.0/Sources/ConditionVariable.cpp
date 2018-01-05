@@ -67,3 +67,8 @@ bool ConditionVariable::getResourceOccupied()
 {
 	return resourceOccupied;
 }
+//Konrad - dopisa³em ¿eby proces-nadawca nie przechodzi³ od razu do ready
+void ConditionVariable::lockmessagesender()
+{
+	this->resourceOccupied = true;
+}

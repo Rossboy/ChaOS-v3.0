@@ -7,9 +7,10 @@ class SMS
 	std::string wiad;
 	int indeks;
 public:
-	SMS(std::string wiad);
+	SMS(std::string wiad, int indeks);
 	~SMS();
 	int getID();
+	int getCVindex();
 	std::string getwiad();
 };
 

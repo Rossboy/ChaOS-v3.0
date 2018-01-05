@@ -19,5 +19,6 @@ public:
 	void signal();
 	void displayWaitingProcesses();
 	bool getResourceOccupied();
+	void lockmessagesender();
 };
 #endif CONDITIONVARIABLESS__H

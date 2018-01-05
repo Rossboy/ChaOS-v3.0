@@ -54,7 +54,7 @@ public:
 	//Konrad: doda³em usuwanie bo potrzebujê te¿ geta do wyœwietlania wiadomoœci
 	void deleteMessage();
 	//Konrad: d³ugoœci te¿ bêdê potrzebowa³
-	int messagessize();
+	std::list<SMS> getMessages();
 
 	//Stanislaw: Plik otwarty przez proces
 	file* currentFile;

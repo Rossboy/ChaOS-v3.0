@@ -7,6 +7,7 @@ class Siec
 public:
 	bool wyslij(std::string, int ID);
 	std::unique_ptr<SMS> odbierz();
+	void wyswietlwiadaktywnego();
 	void wyswietlwiad();
 	Siec();
 	~Siec();

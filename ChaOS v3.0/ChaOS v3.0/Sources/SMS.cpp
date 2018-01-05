@@ -1,14 +1,13 @@
 #include "..\Headers\SMS.h"
 #include"..\Headers\Process.h"
-#include"..\Headers\ConditionVariable.h"
 extern PCB* ActiveProcess;
-extern std::list<ConditionVariable> cv;
 
 
-SMS::SMS(std::string wiad)
+SMS::SMS(std::string wiad,int indeks)
 {
 	this->wiad = wiad;
 	this->WID = ActiveProcess->GetPID();
+	this->indeks = indeks;
 }
 
 
@@ -22,4 +21,8 @@ int SMS::getID()
 std::string SMS::getwiad()
 {
 	return wiad;
+}
+int SMS::getCVindex()
+{
+	return indeks;
 }

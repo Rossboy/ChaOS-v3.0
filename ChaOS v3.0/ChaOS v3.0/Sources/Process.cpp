@@ -99,7 +99,7 @@ void PCB::deleteMessage()
 {
 	this->messages.pop_front();
 }
-int PCB::messagessize()
+std::list<SMS> PCB::getMessages()
 {
-	return messages.size();
+	return messages;
 }
