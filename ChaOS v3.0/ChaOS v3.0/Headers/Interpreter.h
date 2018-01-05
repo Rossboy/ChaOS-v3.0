@@ -11,7 +11,7 @@ class Interpreter
 	
 
 
-	//liczba rozkazów = 33 + error (99)
+	//liczba rozkazów = 34 + error (99)
 	//tablica rozkazów <KOD ROZKAZU <ID rozkazu/iloœæ argumentów>>
 	std::vector<std::pair<std::string, std::pair<int, int >>> CommandTab{
 
@@ -40,7 +40,7 @@ class Interpreter
 		std::make_pair("READ",std::make_pair(10,0)), //Odczyt pliku dla shella
 		std::make_pair("LD",std::make_pair(11,0)), //Listuj pliki
 		std::make_pair("REN",std::make_pair(12,2)), //Zmieñ nazwê pliku
-		std::make_pair("AP",std::make_pair(17,1)), //Dopisz do pliku
+		std::make_pair("AP",std::make_pair(34,1)), //Dopisz do pliku
 		std::make_pair("CD",std::make_pair(27,1)), //PrzejdŸ do folderu
 		std::make_pair("RD",std::make_pair(28,0)), //PrzejdŸ do folderu ROOT
 		std::make_pair("BD",std::make_pair(29,0)), //PrzejdŸ do folderu poprzedniego

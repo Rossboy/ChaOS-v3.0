@@ -150,6 +150,9 @@
     <Text Include="p3.txt" />
     <Text Include="pb.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Dokumentacja ChaOS.docx" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

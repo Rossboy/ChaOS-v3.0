@@ -119,4 +119,7 @@
       <Filter>Programy</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Dokumentacja ChaOS.docx" />
+  </ItemGroup>
 </Project>

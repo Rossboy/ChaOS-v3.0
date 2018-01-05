@@ -262,7 +262,7 @@ namespace cmd {
 
 	void makeProcess(const std::vector<std::string>& Arguments)
 	{
-
+		pm->createProcess(Arguments[0], atoi(Arguments[1].c_str()));
 	}
 	//tworzenie procesu, do uzupe³nienia
 
@@ -419,7 +419,8 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 	case 33://MC - kopiuj rejestr 
 		cmd::copyRegisters(Arguments);
 		break;
-	case 34:
+	case 34://AP - dopisz do pliku
+		cmd::appendFile(Arguments);
 		break;
 	default:
 		std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;
@@ -440,7 +441,26 @@ void Interpreter::DoCommand()
 
 	//Wczytywanie Argumentów
 	for (int i = 0; i < CommandParameters.second; i++) {
-		Arguments.push_back(getArgument());//od osoby zarz¹dzaj¹cej pamiêci¹
+		std::string finalArgument = getArgument();
+		if (finalArgument== "\"")
+		{
+			finalArgument = "";
+			bool run = true;
+			std::string argument;
+			while (run)
+			{
+				argument = getArgument();
+				if (argument != "\"")
+				{
+					finalArgument += argument;
+				}else
+				{
+					run = false;
+				}
+			}
+		}
+		Arguments.push_back(finalArgument);
+		
 	}
 
 	//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;
@@ -478,13 +498,35 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	ActiveProcess = &shell;
 	//Wczytywanie Argumentów
 	for (int i = 1; i <= CommandParameters.second; i++) {
-		Arguments.push_back(cmd[i]);
+		std::string finalArgument = cmd[i];
+		if (finalArgument == "\"")
+		{
+			finalArgument = "";
+			bool run = true;
+			std::string argument;
+			int y = i;
+			while (run)
+			{
+				
+				argument = cmd[++y];
+				if (argument != "\"")
+				{
+					finalArgument += argument;
+				}
+				else
+				{
+					run = false;
+				}
+			}
+		}
+		Arguments.push_back(finalArgument);
 	}
 
 	//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;
 	std::cout << "ID: " << CommandParameters.first << " | Command name: " << command_code;
 	for (int i = 0; i < Arguments.size(); i++) {
 		std::cout << " | Arg[" << i << "]: " << Arguments[i] << " ";
+
 	}
 	std::cin.ignore(1);
 
