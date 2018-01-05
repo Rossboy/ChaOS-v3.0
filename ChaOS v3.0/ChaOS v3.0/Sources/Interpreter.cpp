@@ -246,16 +246,17 @@ namespace cmd {
 	{
 		fs->changeDirectory(Arguments[0].c_str());
 	}
-
+	//ok
 	void rootDir()
 	{
 		fs->rootDirectory();
 	}
-
+	//ok
 	void backDir()
 	{
 		fs->backDirectory();
 	}
+	//ok
 
 	///////////////////////////////////////////////////////////
 	/*PROCESY*/
@@ -442,23 +443,7 @@ void Interpreter::DoCommand()
 	//Wczytywanie Argumentów
 	for (int i = 0; i < CommandParameters.second; i++) {
 		std::string finalArgument = getArgument();
-		if (finalArgument== "\"")
-		{
-			finalArgument = "";
-			bool run = true;
-			std::string argument;
-			while (run)
-			{
-				argument = getArgument();
-				if (argument != "\"")
-				{
-					finalArgument += argument;
-				}else
-				{
-					run = false;
-				}
-			}
-		}
+		
 		Arguments.push_back(finalArgument);
 		
 	}
@@ -498,28 +483,9 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	ActiveProcess = &shell;
 	//Wczytywanie Argumentów
 	for (int i = 1; i <= CommandParameters.second; i++) {
-		std::string finalArgument = cmd[i];
-		if (finalArgument == "\"")
-		{
-			finalArgument = "";
-			bool run = true;
-			std::string argument;
-			int y = i;
-			while (run)
-			{
-				
-				argument = cmd[++y];
-				if (argument != "\"")
-				{
-					finalArgument += argument;
-				}
-				else
-				{
-					run = false;
-				}
-			}
-		}
-		Arguments.push_back(finalArgument);
+
+	
+		Arguments.push_back(cmd[i]);
 	}
 
 	//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;
