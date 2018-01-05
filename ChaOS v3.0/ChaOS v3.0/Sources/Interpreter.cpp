@@ -312,124 +312,126 @@ namespace cmd {
 void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters, const std::vector<std::string>& Arguments)
 {
 	int arg1, arg2;
-	switch (CommandParameters.first)
-	{
-	case 0://AD = Dodawanie
-		cmd::add(Arguments);
-		break;
-	case 1://SB = Odejmowanie
-		cmd::substract(Arguments);
-		break;
-	case 2://ML = MNO¯ENIE
-		cmd::multiply(Arguments);
-		break;
-	case 3://DV = DZIELENIE
-		cmd::divide(Arguments);
-		break;
-	case 4://DR = DEKREMENTACJA
-		cmd::decrement(Arguments);
-		break;
-	case 5://IR = INKREMENTACJA
-		cmd::increment(Arguments);
-		break;
-	case 6://MV =PRZENOSZENIE WARTOŒCI
-		cmd::move(Arguments);
-		break;
+	
+		switch (CommandParameters.first)
+		{
+		case 0://AD = Dodawanie
+			cmd::add(Arguments);
+			break;
+		case 1://SB = Odejmowanie
+			cmd::substract(Arguments);
+			break;
+		case 2://ML = MNO¯ENIE
+			cmd::multiply(Arguments);
+			break;
+		case 3://DV = DZIELENIE
+			cmd::divide(Arguments);
+			break;
+		case 4://DR = DEKREMENTACJA
+			cmd::decrement(Arguments);
+			break;
+		case 5://IR = INKREMENTACJA
+			cmd::increment(Arguments);
+			break;
+		case 6://MV =PRZENOSZENIE WARTOŒCI
+			cmd::move(Arguments);
+			break;
 
-		//OPERACJE NA PLIKACH
-	case 7://MF = Utwórz plik
-		cmd::makeFile(Arguments);
-		break;
-	case 8://SF = Zapis do pliku
-		cmd::writeFile(Arguments);
-		break;
-	case 9://DF = Usuwanie pliku
-		cmd::deleteFile(Arguments);
-		break;
-	case 10://RF = Odczyt pliku
-		cmd::readFile();
-		break;
-	case 11://LS = Listuj pliki
-		cmd::listFiles();
-		break;
-	case 12://CP = Zmieñ nazwê pliku
-		cmd::changeFileName(Arguments);
-		break;
+			//OPERACJE NA PLIKACH
+		case 7://MF = Utwórz plik
+			cmd::makeFile(Arguments);
+			break;
+		case 8://SF = Zapis do pliku
+			cmd::writeFile(Arguments);
+			break;
+		case 9://DF = Usuwanie pliku
+			cmd::deleteFile(Arguments);
+			break;
+		case 10://RF = Odczyt pliku
+			cmd::readFile();
+			break;
+		case 11://LS = Listuj pliki
+			cmd::listFiles();
+			break;
+		case 12://CP = Zmieñ nazwê pliku
+			cmd::changeFileName(Arguments);
+			break;
 
-		//PROCESY
-	case 13://MP = Utwórz proces
-		cmd::makeProcess(Arguments);
-		break;
-	case 14://EX = Wykonaj program?
-		//cmd::executeProcess(Arguments);
-		break;
-	case 15://PS = Wyœwietl procesy
-		//cmd::listProcess(Arguments);
-		break;
-	case 16://SM = Wyœlij komunikat
-		cmd::sendMessage(Arguments);
-		break;
-	case 17://RM = Odczytaj komunikat
-		cmd::readMessage(Arguments);
-		break;
-	case 18://ET = Utwórz etykietê
-		cmd::makePoint(Arguments);
-		break;
-	case 19://JP = Skok bezwarunkowy
-		cmd::jump(Arguments);
-		break;
-	case 20://JZ = Skok do etykiety jeœli flaga zerowa jest ustawiona
-		cmd::jumpZero(Arguments);
-		break;
-	case 21://JE = Skok do etykiety
-		cmd::jumpPoint(Arguments);
-		break;
-	case 22://RT = Zwróæ
-		cmd::Return(Arguments);
-		break;
-	case 23://SP = Koniec programu
-		cmd::end();
-		break;
-	case 24://MR - czytaj pamiêæ
-		cmd::readMemory(Arguments);
-		break;
-	case 25://MW - wpisuj do pamiêci
-		cmd::writeMemory(Arguments);
-		break;
-	case 26://KP - zabij proces
-		cmd::killProcess(Arguments);
-		break;
-	case 27://CD - przejdŸ do kadalogu
-		cmd::changeDir(Arguments);
-		break;
-	case 28://RT - przejdŸ do katalogu g³ównego
-		cmd::rootDir();
-		break;
-	case 29://BD - cofnij siê do katalogu "wy¿ej"
-		cmd::backDir();
-		break;
-	case 30://OF - otwórz plik
-		cmd::openFile(Arguments);
-		break;
-	case 31://CLF - zamknij plik
-		cmd::closeFile();
-		break;
-	case 32://EL - mniejsze równe
-		cmd::equalOrLessThan(Arguments);
-		break;
-	case 33://MC - kopiuj rejestr 
-		cmd::copyRegisters(Arguments);
-		break;
-	case 34://AP - dopisz do pliku
-		cmd::appendFile(Arguments);
-		break;
-	default:
-		std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;
-		std::cin.ignore(1);
+			//PROCESY
+		case 13://MP = Utwórz proces
+			cmd::makeProcess(Arguments);
+			break;
+		case 14://EX = Wykonaj program?
+			//cmd::executeProcess(Arguments);
+			break;
+		case 15://PS = Wyœwietl procesy
+			//cmd::listProcess(Arguments);
+			break;
+		case 16://SM = Wyœlij komunikat
+			cmd::sendMessage(Arguments);
+			break;
+		case 17://RM = Odczytaj komunikat
+			cmd::readMessage(Arguments);
+			break;
+		case 18://ET = Utwórz etykietê
+			cmd::makePoint(Arguments);
+			break;
+		case 19://JP = Skok bezwarunkowy
+			cmd::jump(Arguments);
+			break;
+		case 20://JZ = Skok do etykiety jeœli flaga zerowa jest ustawiona
+			cmd::jumpZero(Arguments);
+			break;
+		case 21://JE = Skok do etykiety
+			cmd::jumpPoint(Arguments);
+			break;
+		case 22://RT = Zwróæ
+			cmd::Return(Arguments);
+			break;
+		case 23://SP = Koniec programu
+			cmd::end();
+			break;
+		case 24://MR - czytaj pamiêæ
+			cmd::readMemory(Arguments);
+			break;
+		case 25://MW - wpisuj do pamiêci
+			cmd::writeMemory(Arguments);
+			break;
+		case 26://KP - zabij proces
+			cmd::killProcess(Arguments);
+			break;
+		case 27://CD - przejdŸ do kadalogu
+			cmd::changeDir(Arguments);
+			break;
+		case 28://RT - przejdŸ do katalogu g³ównego
+			cmd::rootDir();
+			break;
+		case 29://BD - cofnij siê do katalogu "wy¿ej"
+			cmd::backDir();
+			break;
+		case 30://OF - otwórz plik
+			cmd::openFile(Arguments);
+			break;
+		case 31://CLF - zamknij plik
+			cmd::closeFile();
+			break;
+		case 32://EL - mniejsze równe
+			cmd::equalOrLessThan(Arguments);
+			break;
+		case 33://MC - kopiuj rejestr 
+			cmd::copyRegisters(Arguments);
+			break;
+		case 34://AP - dopisz do pliku
+			cmd::appendFile(Arguments);
+			break;
+		default:
+			std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;
+			std::cin.ignore(1);
 
-		break;
-	}
-	//RegStatus();
+			break;
+		}
+
+		//RegStatus();
 }
 //Wykonywanie rozkazu
 void Interpreter::DoCommand()
@@ -453,7 +455,7 @@ void Interpreter::DoCommand()
 	for (int i = 0; i < Arguments.size(); i++) {
 		std::cout << " | Arg[" << i << "]: " << Arguments[i] << " ";
 	}
-	std::cin.ignore(2);
+
 
 	//wykonanie rozkazu
 	ExecuteCommand(CommandParameters, Arguments);

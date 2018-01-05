@@ -7,31 +7,35 @@ extern ProcessesManager *pm;
 extern Interpreter* i;
 
 void ProcessScheduler::RunProcess() {
-	
-	//Sprawdzenie, czy wyst¹pi³ jakiœ b³¹d lub proces zakoñczy³ siê wykonywaæ
-	if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) {
-		//std::cout << "Killing the process and removing it from lists it belonged to\n";
-		pm->killProcess(ActiveProcess->GetPID());
-		//Ustawienie ActiveProcess na nullptr, poniewa¿ proces nie zosta³ jeszcze wybrany przez planistê
-		ActiveProcess = nullptr;
-		//Zerowanie zmiennych pomocniczych do liczenia wykonanych instrukcji ActiveProcess
-		startCounter = endCounter = differenceCounter = 0;
+	if (ActiveProcess == nullptr)
+	{
+		SRTSchedulingAlgorithm();
 	}
-
-	//Sprawdzenie, czy ActiveProcess jest ustawiony na jakiœ proces
-	if (ActiveProcess != nullptr){
-		//Sprawdzenie rozmiaru listy readyProceesses -- size() > 1 oznacza, ¿e ActiveProcess nie jest procesem bezczynnoœci
-		if (pm->readyProcesses.size() > 1) {
-			//Wyliczenie, ile instrukcji wykona³o siê dla ActiveProcess
-			endCounter = ActiveProcess->GetInstructionCounter();
-			differenceCounter = endCounter - startCounter;
+	else {
+		//Sprawdzenie, czy wyst¹pi³ jakiœ b³¹d lub proces zakoñczy³ siê wykonywaæ
+		if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) {
+			//std::cout << "Killing the process and removing it from lists it belonged to\n";
+			pm->killProcess(ActiveProcess->GetPID());
+			//Ustawienie ActiveProcess na nullptr, poniewa¿ proces nie zosta³ jeszcze wybrany przez planistê
+			ActiveProcess = nullptr;
+			//Zerowanie zmiennych pomocniczych do liczenia wykonanych instrukcji ActiveProcess
+			startCounter = endCounter = differenceCounter = 0;
 		}
-		//Proces bezczynnoœci nie wykonuje instrukcji, wiêc nie ma powodu do ustawiania zmiennych pomocniczych
+
+		//Sprawdzenie, czy ActiveProcess jest ustawiony na jakiœ proces
+		if (ActiveProcess != nullptr) {
+			//Sprawdzenie rozmiaru listy readyProceesses -- size() > 1 oznacza, ¿e ActiveProcess nie jest procesem bezczynnoœci
+			if (pm->readyProcesses.size() > 1) {
+				//Wyliczenie, ile instrukcji wykona³o siê dla ActiveProcess
+				endCounter = ActiveProcess->GetInstructionCounter();
+				differenceCounter = endCounter - startCounter;
+			}
+			//Proces bezczynnoœci nie wykonuje instrukcji, wiêc nie ma powodu do ustawiania zmiennych pomocniczych
+		}
+
+		//Planista wywo³ywany za ka¿dym razem - obs³uguje wszystkie mo¿liwe przypadki
+		SRTSchedulingAlgorithm();
 	}
-
-	//Planista wywo³ywany za ka¿dym razem - obs³uguje wszystkie mo¿liwe przypadki
-	SRTSchedulingAlgorithm();
-
 	//Uruchomienie metody DoCommand() interpretera, gdzie mam nadzieje zmieniany jest instructionCounter wykonywanego procesu
 	i->DoCommand();
 	///pytanie, czy wywo³ywaæ dla procesu bezczynnoœci
@@ -60,13 +64,13 @@ void ProcessScheduler::SRTSchedulingAlgorithm() {
 
 	//Ustawienie iteratora pomocniczego na proces o najkrotszym burstTime zgodnie z algorytmem SRT
 	iteratorToMinElement = std::min_element(pm->readyProcesses.begin(), pm->readyProcesses.end(), [](PCB* x, PCB* y) { return x->GetProcesBurstTime() < y->GetProcesBurstTime(); });
-	
+
 	//Gdy ActiveProcess == nullptr -- nie trzeba liczyc czasu dla poprzednio aktywnego procesu, poniewa¿ proces zostal:
 	//1) wykonany		2)usuniet z powodu bledu		-- jeszcze jakieœ przypadki?
 	if (ActiveProcess == nullptr) {
 		//Ustawienie ActiveProcess najlepszym procesem zgodnie z SRT
 		ActiveProcess = *iteratorToMinElement;
-		
+
 		//Ustawienie zmiennych pomocniczych do liczenia wykonanych instrukcji ActiveProcess
 		startCounter = ActiveProcess->GetInstructionCounter();
 		endCounter = differenceCounter = 0;
@@ -92,5 +96,5 @@ void ProcessScheduler::SRTSchedulingAlgorithm() {
 			//raczej nic sie nie ma dziac
 		//}
 	}
-	
+
 }
