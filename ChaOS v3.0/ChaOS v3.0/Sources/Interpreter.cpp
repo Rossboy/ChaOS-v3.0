@@ -495,7 +495,7 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 		std::cout << " | Arg[" << i << "]: " << Arguments[i] << " ";
 
 	}
-	std::cin.ignore(1);
+	//std::cin.ignore(1);
 
 	//wykonanie rozkazu
 	ExecuteCommand(CommandParameters, Arguments);
