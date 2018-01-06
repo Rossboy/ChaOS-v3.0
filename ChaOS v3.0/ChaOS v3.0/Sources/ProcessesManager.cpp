@@ -41,7 +41,7 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 
 	//tmczasowe bo tutaj wpisujemy kod programu
 	mm->allocateMemory(newProcess, program, program.size());
-
+	newProcess->SetProcesBurstTime(program.size());
 	/*Przypadek kiedy dodawany jest proces bezczynnosci*/
 	if (GID == 0)
 	{

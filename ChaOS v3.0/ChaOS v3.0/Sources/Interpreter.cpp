@@ -53,9 +53,7 @@ namespace cmd {
 	 //oks
 	void end()
 	{
-		PCB* temp = ActiveProcess;
-		ActiveProcess = nullptr;
-		pm->killProcess(temp->GetPID());
+		ActiveProcess->SetState(Terminated);
 	}
 	//ok
 	void Return(const std::vector<std::string>& Arguments)
@@ -450,7 +448,24 @@ void Interpreter::DoCommand()
 	//Wczytywanie Argumentów
 	for (int i = 0; i < CommandParameters.second; i++) {
 		std::string finalArgument = getArgument();
-		
+		bool run = true;
+		std::string tmp;
+		if(finalArgument=="\"")
+		{
+			finalArgument = "";
+			while(run)
+			{
+				tmp = getArgument();
+				if(tmp=="\"")
+				{
+					run = false;
+				}else
+				{
+					finalArgument += tmp + " ";
+				}
+
+			}
+		}
 		Arguments.push_back(finalArgument);
 		
 	}
