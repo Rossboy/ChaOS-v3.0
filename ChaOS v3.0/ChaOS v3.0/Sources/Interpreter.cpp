@@ -67,7 +67,7 @@ namespace cmd {
 	void add(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
-		std::clog << "Wykonuje siê operacja dodawania..." << std::endl;
+		std::clog << "  -> Wykonuje sie operacja dodawania..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] += ActiveProcess->registers[arg2];
@@ -84,7 +84,7 @@ namespace cmd {
 	void substract(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
-		std::clog << "Wykonuje siê operacja odejmowania..." << std::endl;
+		std::clog << "  -> Wykonuje sie operacja odejmowania..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] -= ActiveProcess->registers[arg2];
@@ -101,7 +101,7 @@ namespace cmd {
 	void multiply(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
-		std::clog << "Wykonuje siê operacja mno¿enia..." << std::endl;
+		std::clog << "  -> Wykonuje sie operacja mnozenia..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] *= ActiveProcess->registers[arg2];
@@ -110,7 +110,7 @@ namespace cmd {
 	void divide(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
-		std::clog << "Wykonuje siê operacja dzielenia..." << std::endl;
+		std::clog << "  -> Wykonuje sie operacja dzielenia..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] /= ActiveProcess->registers[arg2];
@@ -119,7 +119,7 @@ namespace cmd {
 	void increment(const std::vector<std::string>& Arguments)
 	{
 		int arg1;
-		std::clog << "Wykonuje siê operacja inkrementacji..." << std::endl;
+		std::clog << "  -> Wykonuje sie operacja inkrementacji..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		ActiveProcess->registers[arg1]++;
 	}//done
@@ -128,7 +128,7 @@ namespace cmd {
 	{
 
 		int arg1;
-		std::clog << "Wykonuje siê operacja dekrementacji..." << std::endl;
+		std::clog << "  -> Wykonuje sie operacja dekrementacji..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		ActiveProcess->registers[arg1]--;
 		if (ActiveProcess->registers[arg1] == 0)
@@ -144,7 +144,7 @@ namespace cmd {
 	void move(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
-		std::clog << "Wykonuje siê operacja przypisania wartoœci..." << std::endl;
+		std::clog << "  -> Wykonuje sie operacja przypisania wartosci..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] = arg2;
@@ -179,19 +179,19 @@ namespace cmd {
 	/*PLIKI*/
 	void openFile(const std::vector<std::string>& Arguments)
 	{
-		std::clog << "Wykonuje siê operacja otwarcia pliku..." << std::endl;
+		//std::clog << "Wykonuje siê operacja otwarcia pliku..." << std::endl;
 		fs->openFile(Arguments[0].c_str());
 	}
 	//ok
 	void closeFile()
 	{
-		std::clog << "Wykonuje siê operacja zamykania pliku..." << std::endl;
+		//std::clog << "Wykonuje siê operacja zamykania pliku..." << std::endl;
 		fs->closeFile();
 	}
 	//ok
 	void makeFile(const std::vector<std::string>& Arguments)
 	{
-		std::clog << "Wykonuje siê operacja tworzenia ";
+		//std::clog << "Wykonuje siê operacja tworzenia ";
 		if (Arguments[1] == "plik") {
 			std::clog << "pliku..." << std::endl;
 			fs->create(Arguments[0].c_str(), ChaOS_filesystem::type::file);
@@ -207,37 +207,37 @@ namespace cmd {
 	//ok
 	void deleteFile(const std::vector<std::string>& Arguments)
 	{
-		std::clog << "Wykonuje siê operacja usuwania pliku..." << std::endl;
+		//std::clog << "Wykonuje siê operacja usuwania pliku..." << std::endl;
 		fs->remove(Arguments[0].c_str());
 	}
 	//ok
 	void readFile()
 	{
-		std::clog << "Wykonuje siê operacja czytania pliku..." << std::endl;
+		//std::clog << "Wykonuje siê operacja czytania pliku..." << std::endl;
 		std::cout << fs->readFile() << std::endl;
 	}
 	//ok
 	void listFiles()
 	{
-		std::clog << "Wykonuje siê operacja listowania katalogu..." << std::endl;
+		//std::clog << "Wykonuje siê operacja listowania katalogu..." << std::endl;
 		std::cout << fs->listDirectory() << std::endl;
 	}
 	//ok
 	void changeFileName(const std::vector<std::string>& Arguments)
 	{
-		std::clog << "Wykonuje siê operacja zmiany nazwy..." << std::endl;
+		//std::clog << "Wykonuje siê operacja zmiany nazwy..." << std::endl;
 		fs->rename(Arguments[0].c_str(), Arguments[1].c_str());
 	}
 	//ok
 	void appendFile(const std::vector<std::string>& Arguments)
 	{
-		std::clog << "Wykonuje siê operacja dopisywania do pliku..." << std::endl;
+		//std::clog << "Wykonuje siê operacja dopisywania do pliku..." << std::endl;
 		fs->appendFile(Arguments[0]);
 	}
 	//ok
 	void writeFile(const std::vector<std::string>& Arguments)
 	{
-		std::clog << "Wykonuje siê operacja pisania do pliku..." << std::endl;
+		//std::clog << "Wykonuje siê operacja pisania do pliku..." << std::endl;
 		fs->writeFile(Arguments[0]);
 	}
 	//ok
@@ -529,7 +529,7 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 		std::cout << " | Arg[" << i << "]: " << Arguments[i] << " ";
 
 	}
-	//std::cin.ignore(1);
+	std::cout<<std::endl;
 
 	//wykonanie rozkazu
 	ExecuteCommand(CommandParameters, Arguments);
