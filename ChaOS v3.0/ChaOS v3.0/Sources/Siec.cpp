@@ -4,7 +4,7 @@
 #include<vector>
 extern PCB* ActiveProcess;
 extern ProcessesManager *pm;
-extern std::vector<ConditionVariable> cv;
+std::vector<ConditionVariable> cv;
 Siec::Siec()
 {
 }
