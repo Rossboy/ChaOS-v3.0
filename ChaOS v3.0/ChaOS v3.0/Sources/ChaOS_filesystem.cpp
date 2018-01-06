@@ -239,7 +239,7 @@ void ChaOS_filesystem::remove(const char * f)
 	{
 		if (!isDirEmpty(dir))
 		{
-			std::cout << "FOLDER JEST NIEPUSTY" << std::endl;
+			ActiveProcess->errorCode = 11;
 			return;
 		}
 	}
@@ -618,7 +618,7 @@ void ChaOS_filesystem::appendFile(const std::string& text)
 	//czy tekst się zmieści
 	if ((unsigned int(charsToWrite) & 255) + (unsigned int(chars) & 255) > 255)
 	{
-		/////////////////////////////////ERRR
+		ActiveProcess->errorCode = 12;
 		return;
 	}
 
