@@ -293,7 +293,8 @@ namespace cmd {
 
 	void readMessage(const std::vector<std::string>& Arguments)
 	{
-		s->odbierz();
+		auto messege = s->odbierz();
+		mm->writeString(ActiveProcess, stoi(Arguments[0]), messege->getwiad());
 	}
 
 
