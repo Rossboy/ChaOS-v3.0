@@ -234,7 +234,7 @@ void ChaOS_filesystem::remove(const char * f)
 			return;
 		}
 	}
-
+	
 	if (dir)
 	{
 		if (!isDirEmpty(dir))
@@ -293,21 +293,21 @@ void ChaOS_filesystem::remove(const char * f)
 
 std::string ChaOS_filesystem::listDirectory()
 {
-	currentDirSector = currentDirFirst = ActiveProcess->currentDir;
+	currentDirSector= currentDirFirst = ActiveProcess->currentDir;
 	std::cout << "list dir: " << currentDirFirst << std::endl;
 
 	std::ostringstream result;
 	char dirSector[32];
 	disk.readSector(ActiveProcess->currentDir, dirSector);
-	result << "\n+----------------------------+-----------+---------+\n" << "|";
+	result << "\n+------------------------------+-------------------+\n" << "|";
 
 	result << " Current directory is ";
 	for (int i = 24; i < 29; i++)
 	{
 		result << dirSector[i];
 	}
-	result << " | First: " << std::left << std::setw(2) << unsigned short(dirSector[29]) << " | Size: "<< std::left << std::setw(2) << unsigned short(dirSector[30]) << "|";
-	result << "\n+=========+=========++=======+=+=========+=========+\n" << "| NAME    | TYPE    || FIRST   | CHARS   | SECTORS |\n" << "+---------+---------++---------+---------+---------+\n";
+	result << "   | Dir size: " << std::left << std::setw(2) << unsigned short(dirSector[30]) << "      |";
+	result << "\n+=========+=========++=========+=========+=========+\n" << "| NAME    | TYPE    || FIRST   | CHARS   | SECTORS |\n" << "+---------+---------++---------+---------+---------+\n";
 
 	char row[8];
 
@@ -334,9 +334,7 @@ std::string ChaOS_filesystem::listDirectory()
 				}
 				else
 				{
-					char sector[32];
-					disk.readSector(row[5], sector);
-					result << "        | "<< (((unsigned int)fileSector[30]) & 255) <<"       |";
+					result << "        |         |";
 				}
 				//result << "" << (unsigned int)dirSector[5 + j] << "  |" << ((dirSector[7 + j] == char(type::dir)) ? ' ' : char(dirSector[6 + j] + 48)) << "\t " << dirSector[7 + j] << std::endl;
 				result << "\n+---------+---------++---------+---------+---------+\n";
@@ -608,13 +606,13 @@ void ChaOS_filesystem::appendFile(const std::string& text)
 	}
 	currentFileFirst = ActiveProcess->currentFile->firstSector;
 
-	char fileSector[32], VCB[32], fileSector3[32];
+	char fileSector[32], VCB[32];
 	disk.readSector(0, VCB);
 	unsigned int charsToWrite = text.size();
 
-	disk.readSector(currentFileFirst, fileSector3);
-	char sectors = ActiveProcess->currentFile->fileSizeInSectors = fileSector3[1];
-	char chars = ActiveProcess->currentFile->fileSize = fileSector3[0];
+	disk.readSector(currentFileFirst, fileSector);
+	char sectors = ActiveProcess->currentFile->fileSizeInSectors = fileSector[1];
+	char chars = ActiveProcess->currentFile->fileSize = fileSector[0];
 	auto stringToWrite = text;
 
 	//czy tekst się zmieści
@@ -631,76 +629,73 @@ void ChaOS_filesystem::appendFile(const std::string& text)
 	{
 		for (int i = 1; i < sectors; i++)
 		{
-			currentFileSector = fileSector3[31];
-			disk.readSector(currentFileSector, fileSector3);
+			currentFileSector = fileSector[31];
+			disk.readSector(currentFileSector, fileSector);
 		}
 	}
 
 	//oblicznie przesunięcia
-	unsigned int pozycja = (unsigned int(chars) + 2u + unsigned int(sectors) - 1u);
+	auto pozycja = ((chars + 2) % 32);
+	if (sectors > 1) pozycja++;
 
 	//przepisanie do początkowego sektora sektora
-	pozycja %= 32;
-	for (unsigned int i = pozycja; i < 31 && charsToWrite; i++)
+	if (pozycja < 32)
 	{
-		fileSector3[i] = stringToWrite.at(0);
-		stringToWrite.erase(0, 1);
-		charsToWrite--;
-	}
-	//przydział nowego sektora
-	if (charsToWrite && fileSector3[31] == 0)
-	{
-		fileSector3[31] = allocateSector();
-		if (fileSector3[31] == 0)
+		for (int i = pozycja; i < 31 && charsToWrite; i++)
 		{
-			ActiveProcess->errorCode = 2;
-			return;
+			fileSector[i] = stringToWrite.at(0);
+			stringToWrite.erase(0, 1);
+			charsToWrite--;
 		}
+		//przydział nowego sektora
+		if (charsToWrite && fileSector[31] == 0)
+		{
+			fileSector[31] = allocateSector();
+			if (fileSector[31] == 0)
+			{
+				ActiveProcess->errorCode = 2;
+				return;
+			}
+		}
+		disk.writeSector(currentFileSector, fileSector);
 	}
-	disk.writeSector(currentFileSector, fileSector3);
+
+	currentFileSector = fileSector[31];
 
 
-	currentFileSector = fileSector3[31];
-
-	///////////////^^^^^^^^^^^^^^^^^^^^^
-
-	char fileSector2[32];
-	// Przepisywanie zawartość pliku do następnego sektora
+	// Przepisywanie zawartość pliku do sektora
 	while (currentFileSector && charsToWrite)
 	{
-
 		sectors++;
-		disk.readSector(currentFileSector, fileSector2);
+		disk.readSector(currentFileSector, fileSector);
 		for (int j = 0; j < 31 && charsToWrite; j++)
 		{
-			fileSector2[j] = stringToWrite.at(0);
+			fileSector[j] = stringToWrite.at(0);
 			stringToWrite.erase(0, 1);
 			charsToWrite--;
 		}
 
-		if (charsToWrite > 0 && fileSector2[31] == 0) //przydział nowego sektora
+		if (charsToWrite > 0 && fileSector[31] == 0) //przydział nowego sektora
 		{
-			fileSector2[31] = allocateSector();
-			if (fileSector2[31] == 0)
+			fileSector[31] = allocateSector();
+			if (fileSector[31] == 0)
 			{
 				ActiveProcess->errorCode = 2;
 				return;
 			}
 		}
 
-		disk.writeSector(currentFileSector, fileSector2);
+		disk.writeSector(currentFileSector, fileSector);
 
-		currentFileSector = fileSector2[31];
+		currentFileSector = fileSector[31];
 	}
-	disk.readSector(currentFileFirst, fileSector2);
-	fileSector2[1] = ActiveProcess->currentFile->fileSizeInSectors = sectors;
-	fileSector2[0] = ActiveProcess->currentFile->fileSize = chars + text.size();
-	disk.writeSector(currentFileFirst, fileSector2);
+	disk.readSector(currentFileFirst, fileSector);
+	fileSector[1] = ActiveProcess->currentFile->fileSizeInSectors = sectors;
+	fileSector[0] = ActiveProcess->currentFile->fileSize = chars + text.size();
+	disk.writeSector(currentFileFirst, fileSector);
 
 	currentFileSector = currentFileFirst;
-
 	//////////////////////////////////////////////////////////
-
 	// Aktualizacja wpisu w aktualnym katalogu (długość pliku)
 	currentDirFirst = ActiveProcess->currentFile->fileDir;
 	currentDirSector = currentDirFirst = ActiveProcess->currentDir;
@@ -867,7 +862,7 @@ std::string  ChaOS_filesystem::printSector(const unsigned short number)
 	char sector[32];
 
 	disk.readSector(number, sector);
-	result << "_ _ SEKTOR: " << std::setw(2) << number << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ " << std::endl;
+	result << "_ _ SEKTOR: " <<std::setw(2)<< number << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ " << std::endl;
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -892,27 +887,13 @@ std::string ChaOS_filesystem::printSectorsChain(const unsigned short first)
 	char sector[32];
 	disk.readSector(first, sector);
 	char current = first;
-
-	if (current == 0)
-	{
-		result = printSector(0);
-		return result;
-	}
-
-	if (current == 32)
+	if (!current)
 	{
 		for (int i = 0; i < 32; i++)
 		{
 			result += printSector(i);
 		}
 		return result;
-	}
-
-	if (current == 100)
-	{
-		clearDisk();
-		return ("[Format OK -> Disk is empty]\n" + printDiskStats());
-		
 	}
 
 	while (current)
@@ -1044,22 +1025,4 @@ bool ChaOS_filesystem::isDirEmpty(uShort dir)
 
 	currentDirSector = currentDirFirst;
 	return 1;
-}
-
-void ChaOS_filesystem::clearDisk()
-{
-	disk.clear();
-	char_short temp; temp.USHORT = disk.diskSize;
-	char_int temp2; temp2.INT = (~0);
-	setBit(temp2.CHAR[0], 0, 0);
-	char VCB[32] = { temp.CHAR[1], temp.CHAR[0], static_cast<char>(disk.sectorSize), static_cast<char>(disk.numberOfSectors),		0,0,0,0,
-		static_cast<char>(disk.numberOfSectors - 1),		0,0,0,0,0,0,0,
-		temp2.CHAR[3], temp2.CHAR[2], temp2.CHAR[1], temp2.CHAR[0],			0,0,0,0,
-		0,0,0,0, 0,0,0,0 };
-	disk.writeSector(0, VCB);
-	rootDirSector = allocateSector();
-	char sector[32] = { 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 'R', 'O', 'O', 'T', '\0', rootDirSector, 1, 0 };
-	disk.writeSector(rootDirSector, sector);
-	currentDirFirst = rootDirSector;
-	currentDirSector = rootDirSector;
 }

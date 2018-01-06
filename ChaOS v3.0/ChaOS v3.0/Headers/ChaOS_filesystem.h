@@ -89,7 +89,6 @@ private:
 	std::string asBitVector(const int vector);
 	char check(const char& c);
 	bool isDirEmpty(uShort dir);
-	void clearDisk();
 };
 
 #endif FILESYSTEM__H
