@@ -322,7 +322,7 @@ std::string ChaOS_filesystem::listDirectory()
 				result << "   | " << row[7] << "       || " << std::left << std::setw(2) << int(row[5]) << "      | ";
 				if (row[7] == char(type::file))
 				{
-					result << std::left << std::setw(3) << (int)fileSector[0] << "     | " << std::left << std::setw(2) << (int)fileSector[1] << "      |";
+					result << std::left << std::setw(3) << (((unsigned int)fileSector[0]) & 255) << "     | " << std::left << std::setw(2) << (((unsigned int)fileSector[1]) & 255) << "      |";
 				}
 				else
 				{
@@ -381,7 +381,6 @@ void ChaOS_filesystem::rename(const char * f, const char* newname)
 {
 	char name[5]; toChar5(f, name);
 	int file = search(name, type::file);
-
 	// czy obiekt istnieje
 	if (!(file || search(name, type::dir)))
 	{
@@ -398,9 +397,9 @@ void ChaOS_filesystem::rename(const char * f, const char* newname)
 		return;
 	}
 
-	// proces nie ma otwartego pliku
 	if (file)
 	{
+		// proces nie ma otwartego pliku
 		if (!ActiveProcess->currentFile)
 		{
 			ActiveProcess->errorCode = 5;
@@ -409,7 +408,7 @@ void ChaOS_filesystem::rename(const char * f, const char* newname)
 
 		//czy otwarty plik to ten do zmiany nazwy
 		//if (!equalName(ActiveProcess->currentFile->filename, name))
-		if (ActiveProcess->currentFile->firstSector == file)
+		if (ActiveProcess->currentFile->firstSector != file)
 		{
 			ActiveProcess->errorCode = 6;
 			return;
@@ -533,6 +532,7 @@ void ChaOS_filesystem::openFile(const char * filename)
 	ActiveProcess->currentDir = this->currentDirFirst;
 
 	fileSynchronization[currentFileFirst].wait(ActiveProcess);
+	std::cout << "FS LOG: Open: file: " << currentFileFirst << std::endl;
 }
 
 void ChaOS_filesystem::writeFile(const std::string& text)
@@ -591,6 +591,82 @@ std::string ChaOS_filesystem::readFile()
 
 void ChaOS_filesystem::appendFile(const std::string& text)
 {
+	//if (ActiveProcess->currentFile == nullptr)
+	//{
+	//	ActiveProcess->errorCode = 5;
+	//	return;
+	//}
+	//currentFileFirst = ActiveProcess->currentFile->firstSector;
+	//char fileSector[32], VCB[32];
+	//disk.readSector(0, VCB);
+	//unsigned int charsToWrite = text.size();
+	//if ((float(charsToWrite) / 31) + float(ActiveProcess->currentFile->fileSize) > float(VCB[8]) + float(ActiveProcess->currentFile->fileSizeInSectors))
+	//{
+	//	//throw outOfMemory();
+	//	ActiveProcess->errorCode = 2;
+	//	return;
+	//}
+	//if (int(charsToWrite) + int(ActiveProcess->currentFile->fileSize) > 255)
+	//{
+	//	charsToWrite = 255 - int(ActiveProcess->currentFile->fileSize);
+	//}
+	//currentFileSector = currentFileFirst;
+	//// Przepisywanie zawartość pliku do sektora
+	//while (currentFileSector && charsToWrite)
+	//{
+	//	disk.readSector(ActiveProcess->currentFile->firstSector, fileSector);
+	//	fileSector[0] += charsToWrite;
+	//	disk.writeSector(ActiveProcess->currentFile->firstSector, fileSector);
+	//	for (int i = 1; i < ActiveProcess->currentFile->fileSizeInSectors; i++)
+	//	{
+	//		disk.readSector(currentFileSector, fileSector);
+	//		currentFileSector = fileSector[31];
+	//	}
+	//	disk.readSector(currentFileSector, fileSector);
+	//	int pozycja = (ActiveProcess->currentFile->fileSize + 1) % 31;
+	//	disk.readSector(currentFileSector, fileSector);
+	//	for (int j = pozycja; j < 31 && charsToWrite; j++)
+	//	{
+	//		fileSector[j] = text[ActiveProcess->currentFile->fileContent.size() - charsToWrite];
+	//		charsToWrite--;
+	//	}
+	//	if (charsToWrite > 0 && fileSector[31] == 0) //przydział nowego sektora
+	//	{
+	//		ActiveProcess->currentFile->fileSizeInSectors++;
+	//		fileSector[31] = allocateSector();
+	//	}
+	//	disk.writeSector(currentFileSector, fileSector);
+	//	currentFileSector = fileSector[31];
+	//	pozycja = 0;
+	//}
+	//ActiveProcess->currentFile->fileContent.erase(0, 1);
+	//currentFileSector = currentFileFirst;
+	////////////////////////////////////////////////////////////
+	//// Aktualizacja wpisu w aktualnym katalogu (długość pliku)
+	//currentDirFirst = ActiveProcess->currentFile->fileDir;
+	//currentDirSector = currentDirFirst;
+	//char row[8] = {};
+	//char dirSector[32] = {};
+	//disk.readSector(currentDirSector, dirSector);
+	//while (currentDirSector)
+	//{
+	//	disk.readSector(currentDirSector, dirSector);
+	//	for (int i = 0, j = 0; i < 3; i++, j += 8)
+	//	{
+	//		getRow(&dirSector[j], row);
+	//		if (equalName(ActiveProcess->currentFile->filename, row))
+	//		{
+	//			row[6] = ActiveProcess->currentFile->fileSizeInSectors;
+	//			addRow(&dirSector[j], row);
+	//		}
+	//	}
+	//	disk.writeSector(currentDirSector, dirSector);
+	//	currentDirSector = dirSector[31];
+	//}
+	////
+	//currentDirSector = currentDirFirst;
+	//ActiveProcess->currentDir = currentDirFirst;
+
 	if (ActiveProcess->currentFile == nullptr)
 	{
 		ActiveProcess->errorCode = 5;
@@ -602,59 +678,92 @@ void ChaOS_filesystem::appendFile(const std::string& text)
 	disk.readSector(0, VCB);
 	unsigned int charsToWrite = text.size();
 
-	if ((float(charsToWrite) / 31) + float(ActiveProcess->currentFile->fileSize) > float(VCB[8]) + float(ActiveProcess->currentFile->fileSizeInSectors))
+	disk.readSector(currentFileFirst, fileSector);
+	char sectors = ActiveProcess->currentFile->fileSizeInSectors = fileSector[1];
+	char chars = ActiveProcess->currentFile->fileSize = fileSector[0];
+	auto stringToWrite = text;
+
+	//czy tekst się zmieści
+	if ((unsigned int(charsToWrite) & 255) + (unsigned int(chars) & 255) > 255)
 	{
-		//throw outOfMemory();
-		ActiveProcess->errorCode = 2;
+		/////////////////////////////////ERRR
 		return;
-	}
-	if (int(charsToWrite) + int(ActiveProcess->currentFile->fileSize) > 255)
-	{
-		charsToWrite = 255 - int(ActiveProcess->currentFile->fileSize);
 	}
 
 	currentFileSector = currentFileFirst;
 
-	// Przepisywanie zawartość pliku do sektora
+	//wyczytanie odpowieniego sektora
+	if (sectors > 1)
+	{
+		for (int i = 1; i < sectors; i++)
+		{
+			currentFileSector = fileSector[31];
+			disk.readSector(currentFileSector, fileSector);
+		}
+	}
 
+	//oblicznie przesunięcia
+	auto pozycja = ((chars + 2) % 32);
+	if (sectors > 1) pozycja++;
+
+	//przepisanie do początkowego sektora sektora
+	if (pozycja < 32)
+	{
+		for (int i = pozycja; i < 31 && charsToWrite; i++)
+		{
+			fileSector[i] = stringToWrite.at(0);
+			stringToWrite.erase(0, 1);
+			charsToWrite--;
+		}
+		//przydział nowego sektora
+		if (charsToWrite && fileSector[31] == 0)
+		{
+			fileSector[31] = allocateSector();
+			if (fileSector[31] == 0)
+			{
+				ActiveProcess->errorCode = 2;
+				return;
+			}
+		}
+		disk.writeSector(currentFileSector, fileSector);
+	}
+
+	currentFileSector = fileSector[31];
+
+
+	// Przepisywanie zawartość pliku do sektora
 	while (currentFileSector && charsToWrite)
 	{
-		disk.readSector(ActiveProcess->currentFile->firstSector, fileSector);
-		fileSector[0] += charsToWrite;
-		disk.writeSector(ActiveProcess->currentFile->firstSector, fileSector);
-
-		for (int i = 1; i < ActiveProcess->currentFile->fileSizeInSectors; i++)
-		{
-			disk.readSector(currentFileSector, fileSector);
-			currentFileSector = fileSector[31];
-		}
-
+		sectors++;
 		disk.readSector(currentFileSector, fileSector);
-		int pozycja = (ActiveProcess->currentFile->fileSize + 1) % 31;
-
-		disk.readSector(currentFileSector, fileSector);
-		for (int j = pozycja; j < 31 && charsToWrite; j++)
+		for (int j = 0; j < 31 && charsToWrite; j++)
 		{
-			fileSector[j] = text[ActiveProcess->currentFile->fileContent.size() - charsToWrite];
+			fileSector[j] = stringToWrite.at(0);
+			stringToWrite.erase(0, 1);
 			charsToWrite--;
 		}
 
 		if (charsToWrite > 0 && fileSector[31] == 0) //przydział nowego sektora
 		{
-			ActiveProcess->currentFile->fileSizeInSectors++;
 			fileSector[31] = allocateSector();
+			if (fileSector[31] == 0)
+			{
+				ActiveProcess->errorCode = 2;
+				return;
+			}
 		}
+
 		disk.writeSector(currentFileSector, fileSector);
 
 		currentFileSector = fileSector[31];
-		pozycja = 0;
 	}
-
-	ActiveProcess->currentFile->fileContent.erase(0, 1);
+	disk.readSector(currentFileFirst, fileSector);
+	fileSector[1] = ActiveProcess->currentFile->fileSizeInSectors = sectors;
+	fileSector[0] = ActiveProcess->currentFile->fileSize = chars + text.size();
+	disk.writeSector(currentFileFirst, fileSector);
 
 	currentFileSector = currentFileFirst;
 	//////////////////////////////////////////////////////////
-
 	// Aktualizacja wpisu w aktualnym katalogu (długość pliku)
 	currentDirFirst = ActiveProcess->currentFile->fileDir;
 	currentDirSector = currentDirFirst;
@@ -683,6 +792,8 @@ void ChaOS_filesystem::appendFile(const std::string& text)
 	//
 	currentDirSector = currentDirFirst;
 	ActiveProcess->currentDir = currentDirFirst;
+
+
 }
 
 void ChaOS_filesystem::saveFile(const std::string& text)
@@ -698,6 +809,7 @@ void ChaOS_filesystem::saveFile(const std::string& text)
 	char fileSector[32], VCB[32];
 	disk.readSector(0, VCB);
 	unsigned int charsToWrite = text.size() + 2;
+	ActiveProcess->currentFile->fileSize = charsToWrite - 2;
 
 	disk.readSector(currentFileFirst, fileSector);
 	auto sectors = ActiveProcess->currentFile->fileSizeInSectors = fileSector[1];
@@ -754,6 +866,7 @@ void ChaOS_filesystem::saveFile(const std::string& text)
 	}
 	disk.readSector(currentFileFirst, fileSector);
 	fileSector[1] = ActiveProcess->currentFile->fileSizeInSectors;
+	fileSector[0] = ActiveProcess->currentFile->fileSize;
 	disk.writeSector(currentFileFirst, fileSector);
 
 	currentFileSector = currentFileFirst;
@@ -793,10 +906,14 @@ void ChaOS_filesystem::closeFile()
 {
 	if (ActiveProcess)
 	{
-		if (ActiveProcess->currentFile) delete ActiveProcess->currentFile;
+		if (ActiveProcess->currentFile)
+		{
+			std::cout << "FS LOG: CLOSE: file: " << ActiveProcess->currentFile->firstSector << std::endl;
+			fileSynchronization[ActiveProcess->currentFile->firstSector].signal();
+			delete ActiveProcess->currentFile;
+		}
 		ActiveProcess->currentFile = nullptr;
 	}
-	fileSynchronization[currentFileFirst].signal();
 }
 
 
@@ -815,13 +932,13 @@ std::string  ChaOS_filesystem::printSector(const unsigned short number)
 	char sector[32];
 
 	disk.readSector(number, sector);
-	result << "_ _ SEKTOR: " << number << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ " << std::endl;
+	result << "_ _ SEKTOR: " <<std::setw(2)<< number << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ " << std::endl;
 
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = i * 8; j < i * 8 + 8; j++)
 		{
-			result << " " << sector[j];
+			result << " " << check(sector[j]);
 		}
 		result << "   ";
 		for (int j = i * 8; j < i * 8 + 8; j++)
@@ -840,6 +957,15 @@ std::string ChaOS_filesystem::printSectorsChain(const unsigned short first)
 	char sector[32];
 	disk.readSector(first, sector);
 	char current = first;
+	if (!current)
+	{
+		for (int i = 0; i < 32; i++)
+		{
+			result += printSector(i);
+		}
+		return result;
+	}
+
 	while (current)
 	{
 		disk.readSector(current, sector);
@@ -863,23 +989,15 @@ std::string ChaOS_filesystem::printDiskStats()
 	char_int temp; temp.CHAR[3] = VCB[16]; temp.CHAR[2] = VCB[17]; temp.CHAR[1] = VCB[18]; temp.CHAR[0] = VCB[19];//char[4] to int
 	freeSectorBitVector = temp.INT;
 
-	result << "Free sector count: " << unsigned int(freeSectorCount) << "/" << disk.numberOfSectors << "   " << asBitVector(freeSectorBitVector) << std::endl;
+	result << "Liczba wolnych sektorów: " << unsigned int(freeSectorCount) << "/" << disk.numberOfSectors << "   " << asBitVector(freeSectorBitVector) << std::endl;
 
-	result << "Condition variables - opened files: ";
+	result << "Zmienne warunkowe - otwarte pliki (ID): ";
 	for (int i = 0; i < 32; i++)
 	{
 		if (fileSynchronization[i].getResourceOccupied())
 			result << i << " ";
 	}
 	result << std::endl;
-
-	/*for (int i = 0; i < 32 ; i++)
-	{
-	disk.readSector(i, VCB);
-	result << i << ": ";
-	for (int j = 0; j < 32; j++) result << int(VCB[j])<<" ";
-	result << std::endl;
-	}*/
 	return result.str();
 }
 
@@ -947,4 +1065,11 @@ std::string ChaOS_filesystem::asBitVector(const int vector)
 		copy >>= 1;
 	}
 	return result += "{31}";
+}
+
+//zastępuje znaki formatujące przez '.'
+char ChaOS_filesystem::check(const char& c)
+{
+	if (c == 7 || c == 8 || c == 9 || c == 10 || c == 13) return '.';
+	return c;
 }
