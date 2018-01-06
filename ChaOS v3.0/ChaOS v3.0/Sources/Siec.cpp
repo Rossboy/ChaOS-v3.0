@@ -91,20 +91,21 @@ void Siec::wyswietlwiadaktywnego()
 }
 void Siec::wyswietlwiad()
 {
-	if (pm->getAllProcesseslist().size() == 0) std::cout << "Nie istnieje zaden proces!" << std::endl;
+	std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
+	if (lista.empty()==true) std::cout << "Nie istnieje zaden proces!" << std::endl;
 	else
 	{
-		for (auto it = pm->getAllProcesseslist().begin(); it != pm->getAllProcesseslist().end(); it++)
+		for (std::list<std::list<PCB*>>::iterator it = lista.begin(); it != lista.end(); it++)
 		{
-			std::cout << "Wyswietlanie wiadomosci procesow z grupy o ID " << (*it->begin())->GetGID();
-			for (auto et = (*it).begin(); et != (*it).end(); et++)
+			std::cout << "Wyswietlanie wiadomosci procesow z grupy o ID " << (*it->begin())->GetGID() << std::endl;
+			for (std::list<PCB*>::iterator et = it->begin(); et != it->end(); et++)
 			{
-				if ((*et)->getMessages().size() == 0) std::cout << "Brak wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
+				if (((*et)->getMessages()).size() == 0) std::cout << "Brak wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
 				else
 				{
 					std::cout << "Wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
 					int i = 1;
-					for (auto zt = (*et)->getMessages().begin();zt != (*et)->getMessages().end(); zt++)
+					for (std::list<SMS>::iterator zt = ((*et)->getMessages()).begin(); zt != ((*et)->getMessages()).end(); zt++)
 					{
 						std::cout << "Wiadomosc nr " << i << ":" << std::endl << "ID procesu wysylajacego: " << zt->getID() << std::endl << "Tresc wiadomosci: " << zt->getwiad() << std::endl;
 						i++;
