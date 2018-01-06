@@ -18,12 +18,22 @@ void ConditionVariable::wait(PCB* process)
 		process->wait = true;
 		waitingProcesses.push_back(process);
 		this->resourceOccupied = true;
+		//std::cout << "ZMIENNA WARUNKOWA \nProces: \n";
+		//process->displayProcess();
+		//std::cout << "poprzez wait(PCB* process) znalaz³ siê na liœcie procesów oczekuj¹cych." << std::endl;
 	}
 	else if (!resourceOccupied && this->waitingProcesses.empty())
 	{
 		process->SetState(State::Ready);
 		this->resourceOccupied = true;
 		pm->AddProcessToReady(process);
+		//std::cout << "ZMIENNA WARUNKOWA \nProces: \n";
+		//process->displayProcess();
+		//std::cout << "poprzez wait(PCB* process) przeszed³ od razu do stanu ready." << std::endl;
+	}
+	else
+	{
+		std::cout << "Blad z zmiennej warunkowej w metodzie wait(PCB*)." << std::endl;
 	}
 }
 
@@ -48,6 +58,10 @@ void ConditionVariable::signal()
 			this->resourceOccupied = true;
 		}
 
+		//std::cout << "ZMIENNA WARUNKOWA \nProces:\n";
+		//temp->displayProcess();
+		//std::cout << "poprzez signal() jest w stanie ready." << std::endl;
+
 		//delete temp;
 	}
 }
@@ -67,6 +81,8 @@ bool ConditionVariable::getResourceOccupied()
 {
 	return resourceOccupied;
 }
+
+
 //Konrad - dopisa³em ¿eby proces-nadawca nie przechodzi³ od razu do ready
 void ConditionVariable::lockmessagesender()
 {
