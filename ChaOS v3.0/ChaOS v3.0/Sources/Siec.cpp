@@ -62,9 +62,11 @@ std::unique_ptr<SMS> Siec::odbierz()
 	if (ActiveProcess->getMessages().size() == 0) return nullptr;
 	std::unique_ptr<SMS> pom = std::make_unique<SMS>(ActiveProcess->getMessage());
 	ActiveProcess->deleteMessage();
+	//skopiowanie listy wskaŸników do aktywnych procesów ¿eby iterowanie nie wywali³o programu w kosmos
 	std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
 	for (auto it = lista.begin(); it != lista.end(); it++)
 	{
+		//sprawdzenie czy procesu maj¹ to samo ID grupy
 		if (ActiveProcess->GetGID() == (*it->begin())->GetGID())
 		{
 			for (auto et = it->begin(); et != it->end(); et++)
@@ -98,17 +100,21 @@ void Siec::wyswietlwiad()
 	if (lista.empty()==true) std::cout << "Nie istnieje zaden proces!" << std::endl;
 	else
 	{
+		//wyœwietlanie wiadomoœci wszystkich procesów grupami
 		for (std::list<std::list<PCB*>>::iterator it = lista.begin(); it != lista.end(); it++)
 		{
 			std::cout << "Wyswietlanie wiadomosci procesow z grupy o ID " << (*it->begin())->GetGID() << std::endl;
 			for (std::list<PCB*>::iterator et = it->begin(); et != it->end(); et++)
 			{
-				if (((*et)->getMessages()).size() == 0) std::cout << "Brak wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
+				//sprawdzenie czy proces posiada jakieœ nieodczytane wiadomosci
+				std::list<SMS> wiadomosci = (*et)->getMessages();
+				if (wiadomosci.size() == 0) std::cout << "Brak wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
 				else
 				{
 					std::cout << "Wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
 					int i = 1;
-					for (std::list<SMS>::iterator zt = ((*et)->getMessages()).begin(); zt != ((*et)->getMessages()).end(); zt++)
+					//iteracja po liœcie wiadomoœci procesu wyœwietlaj¹c wszystkie
+					for (std::list<SMS>::iterator zt = wiadomosci.begin(); zt != wiadomosci.end(); zt++)
 					{
 						std::cout << "Wiadomosc nr " << i << ":" << std::endl << "ID procesu wysylajacego: " << zt->getID() << std::endl << "Tresc wiadomosci: " << zt->getwiad() << std::endl;
 						i++;
