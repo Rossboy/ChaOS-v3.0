@@ -91,12 +91,13 @@ void Siec::wyswietlwiadaktywnego()
 }
 void Siec::wyswietlwiad()
 {
-	if ((pm->getAllProcesseslist()).empty()==true) std::cout << "Nie istnieje zaden proces!" << std::endl;
+	std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
+	if (lista.empty()==true) std::cout << "Nie istnieje zaden proces!" << std::endl;
 	else
 	{
-		for (std::list<std::list<PCB*>>::iterator it = (pm->getAllProcesseslist()).begin(); it != (pm->getAllProcesseslist()).end(); it++)
+		for (std::list<std::list<PCB*>>::iterator it = lista.begin(); it != lista.end(); it++)
 		{
-			std::cout << "Wyswietlanie wiadomosci procesow z grupy o ID " << (*it->begin())->GetGID();
+			std::cout << "Wyswietlanie wiadomosci procesow z grupy o ID " << (*it->begin())->GetGID() << std::endl;
 			for (std::list<PCB*>::iterator et = it->begin(); et != it->end(); et++)
 			{
 				if (((*et)->getMessages()).size() == 0) std::cout << "Brak wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
