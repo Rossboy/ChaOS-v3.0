@@ -8,6 +8,7 @@
 #include "../Headers/MemoryManager.h"
 
 extern MemoryManager *mm;
+extern PCB* ActiveProcess;
 
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
 ProcessesManager::ProcessesManager()
@@ -51,6 +52,7 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 		std::list<PCB*>::iterator it2 = (*it).begin();
 		newProcess->SetProcesBurstTime(INT_MAX);
 		(*it).push_back(newProcess);
+		ActiveProcess = newProcess;
 	}
 	else {
 		/*Sprawdzamy czy dana grupa juz istnieje*/
