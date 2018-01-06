@@ -17,8 +17,10 @@ void ProcessScheduler::RunProcess()
 	else 
 	{
 		//Sprawdzenie, czy wyst¹pi³ jakiœ b³¹d lub proces zakoñczy³ siê wykonywaæ
-		if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) {
-			while (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) {
+		if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) 
+		{
+			while (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) 
+			{
 				pm->killProcess(ActiveProcess->GetPID());
 				//Ustawienie ActiveProcess na nullptr, poniewa¿ proces nie zosta³ jeszcze wybrany przez planistê
 				ActiveProcess = nullptr;
@@ -27,9 +29,12 @@ void ProcessScheduler::RunProcess()
 				SRTSchedulingAlgorithm();
 			}
 		}
-		else {
+
+		else 
+		{
 			//Sprawdzenie, czy ActiveProcess jest ustawiony na jakiœ proces
-			if (ActiveProcess != nullptr) {
+			if (ActiveProcess != nullptr) 
+			{
 				//Sprawdzenie rozmiaru listy readyProceesses -- size() > 1 oznacza, ¿e ActiveProcess nie jest procesem bezczynnoœci
 				if (pm->readyProcesses.size() > 1) {
 					//Wyliczenie, ile instrukcji wykona³o siê dla ActiveProcess
