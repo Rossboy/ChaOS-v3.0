@@ -15,8 +15,9 @@ Siec::~Siec()
 }
 bool Siec::wyslij(std::string wiad, int ID)
 {
+	std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
 	//przeszukiwanie listy procesów w poszukiwaniu grupy procesu aktywnego (procesy mog¹ siê komunikowaæ tylko w obrêbie tej samej grupy)
-	for (auto it = pm->getAllProcesseslist().begin(); it != pm->getAllProcesseslist().end(); it++)
+	for (auto it = lista.begin(); it != lista.end(); it++)
 	{
 		if (ActiveProcess->GetGID() == (*it->begin())->GetGID())
 		{
@@ -61,7 +62,8 @@ std::unique_ptr<SMS> Siec::odbierz()
 	if (ActiveProcess->getMessages().size() == 0) return nullptr;
 	std::unique_ptr<SMS> pom = std::make_unique<SMS>(ActiveProcess->getMessage());
 	ActiveProcess->deleteMessage();
-	for (auto it = pm->getAllProcesseslist().begin(); it != pm->getAllProcesseslist().end(); it++)
+	std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
+	for (auto it = lista.begin(); it != lista.end(); it++)
 	{
 		if (ActiveProcess->GetGID() == (*it->begin())->GetGID())
 		{
@@ -83,8 +85,9 @@ void Siec::wyswietlwiadaktywnego()
 	else
 	{
 	int i = 1;
-	std::cout << "ID aktywnego procesu: " << ActiveProcess->GetPID() << "ID grupy tego procesu: " << ActiveProcess->GetGID() << std::endl;
-	for(auto it=ActiveProcess->getMessages().begin();it!=ActiveProcess->getMessages().end();it++)
+	std::cout << "ID aktywnego procesu: " << ActiveProcess->GetPID() << std::endl << "ID grupy tego procesu: " << ActiveProcess->GetGID() << std::endl;
+	std::list<SMS> lista = ActiveProcess->getMessages();
+	for(auto it=lista.begin();it!=lista.end();it++)
 	std::cout << "Wiadomosc nr "<< i << ":" << std::endl << "ID procesu wysylajacego: " << it->getID() << std::endl  << std::endl << "Tresc wiadomosci: " << it->getwiad() << std::endl;
 	i++;
 	}
