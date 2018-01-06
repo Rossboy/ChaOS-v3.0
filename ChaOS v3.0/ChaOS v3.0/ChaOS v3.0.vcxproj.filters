@@ -121,6 +121,12 @@
     <Text Include="memTest.txt">
       <Filter>Programy</Filter>
     </Text>
+    <Text Include="smTest.txt">
+      <Filter>Programy</Filter>
+    </Text>
+    <Text Include="rmTest.txt">
+      <Filter>Programy</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dokumentacja ChaOS.docx" />

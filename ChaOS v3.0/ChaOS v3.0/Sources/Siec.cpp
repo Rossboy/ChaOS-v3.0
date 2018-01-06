@@ -47,7 +47,7 @@ bool Siec::wyslij(std::string wiad, int ID)
 						cv.push_back(x);
 						//dodanie wiadomoœci do kolejki w PCB
 						(*et)->addToMessages(SMS(wiad,cv.size()-1));
-						cv.end()->wait(ActiveProcess);
+						cv.rbegin()->wait(ActiveProcess);
 					}
 					return true;
 				}
