@@ -471,12 +471,12 @@ void Interpreter::DoCommand()
 	}
 
 	//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;
-	std::cout << "ID: " << CommandParameters.first << " | Command name: " << command_code;
+	std::cout <<"Wykonywany proces: "<<ActiveProcess->GetFileName() <<" ID rozkazu: " << CommandParameters.first << " | Command name: " << command_code;
 	for (int i = 0; i < Arguments.size(); i++) {
 		std::cout << " | Arg[" << i << "]: " << Arguments[i] << " ";
 	}
 
-
+	std::cout << "\n";
 	//wykonanie rozkazu
 	ExecuteCommand(CommandParameters, Arguments);
 	if (ActiveProcess != nullptr) {
