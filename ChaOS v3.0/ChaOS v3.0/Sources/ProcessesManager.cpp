@@ -89,7 +89,7 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 /*Zabijanie procesu*/
 void ProcessesManager::killProcess(int PID)
 {
-	if (PID == 0)
+	if (PID == 1)
 	{
 		std::cout << " Nie mozna wykonac operacji na procesie bezczynnosci. " << std::endl;
 	}
