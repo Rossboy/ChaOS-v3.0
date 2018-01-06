@@ -88,6 +88,7 @@ private:
 	void toChar5(const char* arr, char* result5);
 	std::string asBitVector(const int vector);
 	char check(const char& c);
+	bool isDirEmpty(uShort dir);
 };
 
 #endif FILESYSTEM__H

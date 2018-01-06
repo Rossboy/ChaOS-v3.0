@@ -118,6 +118,9 @@
     <Text Include="pb.txt">
       <Filter>Programy</Filter>
     </Text>
+    <Text Include="memTest.txt">
+      <Filter>Programy</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dokumentacja ChaOS.docx" />

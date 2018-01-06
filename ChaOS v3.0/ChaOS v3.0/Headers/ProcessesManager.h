@@ -24,6 +24,7 @@ public:
 	// Albert -- napisalem se funkcje do zwracania std::list<Process*>readyProcesses;
 	std::list<PCB*> GiveReadyProcessesList();
 	std::list<PCB*> GiveWaitingProcessesList();
+	void ProcessesManager::RemoveProcessFromReady(PCB*);
 	//Konrad: potrzebowa³em tego heh
 	std::list<std::list<PCB*>> getAllProcesseslist();
 	void AddProcessToReady(PCB*);
