@@ -9,6 +9,7 @@
 #include "../Headers/Siec.h"
 #include "../Headers/ProcessScheduler.h"
 #include "../Headers/MemoryManager.h"
+#include "../Headers/rlutil.h"
 
 extern PCB* ActiveProcess;
 extern std::vector <std::string> ErrorsTab;
@@ -537,7 +538,9 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	if (ActiveProcess != nullptr) {
 		if (ActiveProcess->errorCode != 0 && ActiveProcess != nullptr)
 		{
+			rlutil::setColor(rlutil::RED);
 			std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
+			rlutil::setColor(rlutil::GREEN);
 			ActiveProcess->errorCode = 0;
 		}
 		ActiveProcess = Temp;
