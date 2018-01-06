@@ -15,26 +15,30 @@ void ProcessScheduler::RunProcess() {
 	else {
 		//Sprawdzenie, czy wyst¹pi³ jakiœ b³¹d lub proces zakoñczy³ siê wykonywaæ
 		if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) {
-			pm->killProcess(ActiveProcess->GetPID());
-			//Ustawienie ActiveProcess na nullptr, poniewa¿ proces nie zosta³ jeszcze wybrany przez planistê
-			ActiveProcess = nullptr;
-			//Zerowanie zmiennych pomocniczych do liczenia wykonanych instrukcji ActiveProcess
-			startCounter = endCounter = differenceCounter = 0;
-		}
-
-		//Sprawdzenie, czy ActiveProcess jest ustawiony na jakiœ proces
-		if (ActiveProcess != nullptr) {
-			//Sprawdzenie rozmiaru listy readyProceesses -- size() > 1 oznacza, ¿e ActiveProcess nie jest procesem bezczynnoœci
-			if (pm->readyProcesses.size() > 1) {
-				//Wyliczenie, ile instrukcji wykona³o siê dla ActiveProcess
-				endCounter = ActiveProcess->GetInstructionCounter();
-				differenceCounter = endCounter - startCounter;
+			while (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) {
+				pm->killProcess(ActiveProcess->GetPID());
+				//Ustawienie ActiveProcess na nullptr, poniewa¿ proces nie zosta³ jeszcze wybrany przez planistê
+				ActiveProcess = nullptr;
+				//Zerowanie zmiennych pomocniczych do liczenia wykonanych instrukcji ActiveProcess
+				startCounter = endCounter = differenceCounter = 0;
+				SRTSchedulingAlgorithm();
 			}
-			//Proces bezczynnoœci nie wykonuje instrukcji, wiêc nie ma powodu do ustawiania zmiennych pomocniczych
 		}
+		else {
+			//Sprawdzenie, czy ActiveProcess jest ustawiony na jakiœ proces
+			if (ActiveProcess != nullptr) {
+				//Sprawdzenie rozmiaru listy readyProceesses -- size() > 1 oznacza, ¿e ActiveProcess nie jest procesem bezczynnoœci
+				if (pm->readyProcesses.size() > 1) {
+					//Wyliczenie, ile instrukcji wykona³o siê dla ActiveProcess
+					endCounter = ActiveProcess->GetInstructionCounter();
+					differenceCounter = endCounter - startCounter;
+				}
+				//Proces bezczynnoœci nie wykonuje instrukcji, wiêc nie ma powodu do ustawiania zmiennych pomocniczych
+			}
 
-		//Planista wywo³ywany za ka¿dym razem - obs³uguje wszystkie mo¿liwe przypadki
-		SRTSchedulingAlgorithm();
+			//Planista wywo³ywany za ka¿dym razem - obs³uguje wszystkie mo¿liwe przypadki
+			SRTSchedulingAlgorithm();
+		}
 	}
 	//Uruchomienie metody DoCommand() interpretera, gdzie mam nadzieje zmieniany jest instructionCounter wykonywanego procesu
 	i->DoCommand();
