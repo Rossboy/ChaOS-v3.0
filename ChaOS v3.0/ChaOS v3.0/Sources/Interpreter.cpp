@@ -302,9 +302,15 @@ namespace cmd {
 	/*PAMIÊÆ*/
 	void readMemory(const std::vector<std::string>& Arguments)
 	{
+		int registerIndex = stoi(Arguments[0]);
+		string memContetn = mm->readString(ActiveProcess, stoi(Arguments[1]));
+		ActiveProcess->registers[registerIndex] = stoi(memContetn);
 	}
 	void writeMemory(const std::vector<std::string>& Arguments)
 	{
+		int registerIndex = stoi(Arguments[0]);
+		string memContetn = to_string(ActiveProcess->registers[registerIndex]);
+		mm->writeString(ActiveProcess, stoi(Arguments[1]),memContetn);
 	}
 }
 
