@@ -48,7 +48,7 @@ void ConditionVariable::signal()
 			this->resourceOccupied = true;
 		}
 
-		delete temp;
+		//delete temp;
 	}
 }
 
