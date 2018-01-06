@@ -6,15 +6,19 @@ extern PCB* ActiveProcess;
 extern ProcessesManager *pm;
 extern Interpreter* i;
 
-void ProcessScheduler::RunProcess() {
+void ProcessScheduler::RunProcess() 
+{
 	
-	if (ActiveProcess == nullptr) {
+	if (ActiveProcess == nullptr) 
+	{
 		SRTSchedulingAlgorithm();
 	}
 
-	else {
+	else 
+	{
 		//Sprawdzenie, czy wyst¹pi³ jakiœ b³¹d lub proces zakoñczy³ siê wykonywaæ
-		if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) {
+		if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) 
+		{
 			pm->killProcess(ActiveProcess->GetPID());
 			//Ustawienie ActiveProcess na nullptr, poniewa¿ proces nie zosta³ jeszcze wybrany przez planistê
 			ActiveProcess = nullptr;
@@ -23,9 +27,11 @@ void ProcessScheduler::RunProcess() {
 		}
 
 		//Sprawdzenie, czy ActiveProcess jest ustawiony na jakiœ proces
-		if (ActiveProcess != nullptr) {
+		if (ActiveProcess != nullptr) 
+		{
 			//Sprawdzenie rozmiaru listy readyProceesses -- size() > 1 oznacza, ¿e ActiveProcess nie jest procesem bezczynnoœci
-			if (pm->readyProcesses.size() > 1) {
+			if (pm->readyProcesses.size() > 1) 
+			{
 				//Wyliczenie, ile instrukcji wykona³o siê dla ActiveProcess
 				endCounter = ActiveProcess->GetInstructionCounter();
 				differenceCounter = endCounter - startCounter;
@@ -42,11 +48,13 @@ void ProcessScheduler::RunProcess() {
 
 }
 
-void ProcessScheduler::SRTSchedulingAlgorithm() {
+void ProcessScheduler::SRTSchedulingAlgorithm() 
+{
 
 	//Gdy rozmiar readyProcesses == 1 -- tym procesem jest proces bezczynnoœci
 	//Gdy ActiveProcess == nullptr -- trzeba ustawiæ ActiveProcess jedynym elementem w readyProcesses
-	if (pm->readyProcesses.size() == 1 && ActiveProcess == nullptr) {
+	if (pm->readyProcesses.size() == 1 && ActiveProcess == nullptr) 
+	{
 		ActiveProcess = *pm->readyProcesses.begin();
 		//Dla procesu bezczynnoœci nie trzeba ustawiaæ ¿adnych zmiennych pomocniczych, poniewa¿ nie wykonuje on ¿adnych instrukcji
 		return;
@@ -54,7 +62,8 @@ void ProcessScheduler::SRTSchedulingAlgorithm() {
 
 	//Gdy rozmiar readyProcesses == 1 -- procesem jest ponownie proces bezczynnoœci
 	//Gdy Activeprocess != nullptr -- nie trzeba ustawiaæ ActiveProcess
-	if (pm->readyProcesses.size() == 1 && ActiveProcess != nullptr) {
+	if (pm->readyProcesses.size() == 1 && ActiveProcess != nullptr) 
+	{
 		//Nie trzeba te¿ niczego robiæ
 		return;
 	}
@@ -67,7 +76,8 @@ void ProcessScheduler::SRTSchedulingAlgorithm() {
 
 	//Gdy ActiveProcess == nullptr -- nie trzeba liczyc czasu dla poprzednio aktywnego procesu, poniewa¿ proces zostal:
 	//1) wykonany		2)usuniet z powodu bledu		-- jeszcze jakieœ przypadki?
-	if (ActiveProcess == nullptr) {
+	if (ActiveProcess == nullptr) 
+	{
 		//Ustawienie ActiveProcess najlepszym procesem zgodnie z SRT
 		ActiveProcess = *iteratorToMinElement;
 
@@ -77,12 +87,15 @@ void ProcessScheduler::SRTSchedulingAlgorithm() {
 	}
 
 	//ActiveProcess != nullptr -- ActiveProcess by³ ustawiony przez jakiœ proces
-	else {
+	else 
+	{
 		//Sprawdzenie przy pomoy PID, czy wybrany proces jest na pewno innym procesem
-		if ((*iteratorToMinElement)->GetPID() != ActiveProcess->GetPID()) {
+		if ((*iteratorToMinElement)->GetPID() != ActiveProcess->GetPID()) 
+		{
 			//Sprawdzenie, czy wybrany proces, obecnie ustawiony w iteratorze iteratorToMinElement, ma przewidywany czas krótszy od ActiveProcess
-			if ((*iteratorToMinElement)->GetProcesBurstTime() < ActiveProcess->GetProcesBurstTime() - differenceCounter) { //nie wiem do konca, czy z tym differenceCounter, czy jescze nie
-				//Wczeœniej trzeba obliczyæ nowy przewidywany czas dla procesu wyw³aszonego zgodnie ze wzorem
+			if ((*iteratorToMinElement)->GetProcesBurstTime() < ActiveProcess->GetProcesBurstTime() - differenceCounter) //nie wiem do konca, czy z tym differenceCounter, czy jescze nie
+			{
+																														 //Wczeœniej trzeba obliczyæ nowy przewidywany czas dla procesu wyw³aszonego zgodnie ze wzorem
 				ActiveProcess->SetProcesBurstTime(.5 * ActiveProcess->GetProcesBurstTime() + .5 * differenceCounter);
 				//Ustawienie ActiveProcess
 				ActiveProcess = *iteratorToMinElement;
@@ -92,7 +105,8 @@ void ProcessScheduler::SRTSchedulingAlgorithm() {
 			}
 		}
 		//Sytuacja, w której zosta³ wybrany ten sam proces, co ActiveProcess
-		//else {
+		//else 
+		//{
 			//raczej nic sie nie ma dziac
 		//}
 	}
