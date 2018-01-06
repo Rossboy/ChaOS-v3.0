@@ -294,7 +294,10 @@ namespace cmd {
 	void readMessage(const std::vector<std::string>& Arguments)
 	{
 		auto messege = s->odbierz();
-		mm->writeString(ActiveProcess, stoi(Arguments[0]), messege->getwiad());
+		if (ActiveProcess != nullptr)
+			mm->writeString(ActiveProcess, stoi(Arguments[0]), messege->getwiad());
+		else
+			cout << "Brak wiadomosci, nie mozna jej odczytac!";
 	}
 
 
