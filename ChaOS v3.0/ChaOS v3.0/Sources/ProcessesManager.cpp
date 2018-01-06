@@ -258,3 +258,6 @@ std::list<std::list<PCB*>> ProcessesManager::getAllProcesseslist()
 void ProcessesManager::AddProcessToReady(PCB* p) {
 	readyProcesses.push_back(p);
 }
+void ProcessesManager::RemoveProcessFromReady(PCB* p) {
+	readyProcesses.remove(p);
+}
