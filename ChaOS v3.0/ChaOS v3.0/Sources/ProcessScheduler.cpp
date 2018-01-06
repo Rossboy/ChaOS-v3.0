@@ -7,14 +7,14 @@ extern ProcessesManager *pm;
 extern Interpreter* i;
 
 void ProcessScheduler::RunProcess() {
-	if (ActiveProcess == nullptr)
-	{
+	
+	if (ActiveProcess == nullptr) {
 		SRTSchedulingAlgorithm();
 	}
+
 	else {
 		//Sprawdzenie, czy wyst¹pi³ jakiœ b³¹d lub proces zakoñczy³ siê wykonywaæ
 		if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4) {
-			//std::cout << "Killing the process and removing it from lists it belonged to\n";
 			pm->killProcess(ActiveProcess->GetPID());
 			//Ustawienie ActiveProcess na nullptr, poniewa¿ proces nie zosta³ jeszcze wybrany przez planistê
 			ActiveProcess = nullptr;
