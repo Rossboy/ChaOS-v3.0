@@ -289,7 +289,7 @@ namespace cmd {
 	/* KOMUNIKACJA */
 	void sendMessage(const std::vector<std::string>& Arguments)
 	{
-		s->wyslij(Arguments[0],atoi(Arguments[1].c_str));
+		s->wyslij(Arguments[0],atoi(Arguments[1].c_str()));
 	}
 
 	void readMessage(const std::vector<std::string>& Arguments)
