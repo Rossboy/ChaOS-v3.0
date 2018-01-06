@@ -61,7 +61,7 @@ class Interpreter
 		std::make_pair("JZ",std::make_pair(20,1)), //Skok do etykiety jeœli flaga zerowa jest ustawiona
 		std::make_pair("JE",std::make_pair(21,1)), //Skok do etykiety
 		std::make_pair("RT",std::make_pair(22,1)), //Zwróæ
-		std::make_pair("SP",std::make_pair(23,1)), //Koniec programu
+		std::make_pair("SP",std::make_pair(23,0)), //Koniec programu
 
 
 
