@@ -144,6 +144,7 @@
     <ResourceCompile Include="ChaOS v3.0.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="fifoTest.txt" />
     <Text Include="help.txt" />
     <Text Include="memTest.txt" />
     <Text Include="p1.txt" />
