@@ -289,13 +289,13 @@ namespace cmd {
 	/* KOMUNIKACJA */
 	void sendMessage(const std::vector<std::string>& Arguments)
 	{
-		s->wyslij(Arguments[0], atoi(Arguments[1].c_str()));
+		if ((s->wyslij(Arguments[0], atoi(Arguments[1].c_str()))) == false) std::cout << "Nie udalo sie wyslac wiadomosci" << std::endl;
 	}
 
 	void readMessage(const std::vector<std::string>& Arguments)
 	{
 		auto messege = s->odbierz();
-		if (ActiveProcess != nullptr)
+		if (messege != nullptr)
 			mm->writeString(ActiveProcess, stoi(Arguments[0]), messege->getwiad());
 		else
 			cout << "Brak wiadomosci, nie mozna jej odczytac!";
