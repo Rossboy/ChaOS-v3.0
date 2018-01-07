@@ -579,7 +579,7 @@ std::string Interpreter::getArgument()
 void Interpreter::RegStatus()
 {
 	std::cout << "Aktualny stan rejestrów" << std::endl;
-	std::cout << "R0: " << ActiveProcess->registers[0] << " | R1: " << ActiveProcess->registers[1] << " | R2 " << ActiveProcess->registers[2] << " | R2 " << ActiveProcess->registers[3] << std::endl;
+	std::cout << "R0: " << ActiveProcess->registers[0] << " | R1: " << ActiveProcess->registers[1] << " | R2 " << ActiveProcess->registers[2] << " | R3 " << ActiveProcess->registers[3] << std::endl;
 	//std::cin.ignore(1);
 }
 
