@@ -265,3 +265,9 @@ void ProcessesManager::AddProcessToReady(PCB* p) {
 void ProcessesManager::RemoveProcessFromReady(PCB* p) {
 	readyProcesses.remove(p);
 }
+void ProcessesManager::AddProcessToWaiting(PCB* p) {
+	waitingProcesses.push_back(p);
+}
+void ProcessesManager::RemoveProcessFromWaiting(PCB* p) {
+	waitingProcesses.remove(p);
+}
