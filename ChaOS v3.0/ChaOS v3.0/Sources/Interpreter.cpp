@@ -565,7 +565,7 @@ std::pair<int, int > Interpreter::GetParameters(std::string& cmd)
 			return CommandTab[i].second;
 		}
 	}
-	cmd = "ER";
+	ActiveProcess->errorCode = 13;
 	return CommandTab[CommandTab.size() - 1].second;
 }
 
