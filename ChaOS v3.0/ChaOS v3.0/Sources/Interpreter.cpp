@@ -308,7 +308,10 @@ namespace cmd {
 			cout << "Brak wiadomosci, nie mozna jej odczytac!";
 	}
 
-
+	void checkForMessages(const std::vector<std::string>& Arguments)
+	{
+		s->sprawdz();
+	}
 	///////////////////////////////////////////////////////////
 	/*PAMIÊÆ*/
 	void readMemory(const std::vector<std::string>& Arguments)
@@ -324,10 +327,7 @@ namespace cmd {
 		mm->writeString(ActiveProcess, stoi(Arguments[1]), memContetn);
 	}
 
-	void checkForMessages(const std::vector<std::string>& Arguments)
-	{
-		
-	}
+
 }
 
 

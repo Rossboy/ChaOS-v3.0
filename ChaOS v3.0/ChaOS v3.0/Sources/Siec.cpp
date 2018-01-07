@@ -24,28 +24,17 @@ bool Siec::wyslij(std::string wiad, int ID)
 			{
 				if (ID == (*et)->GetPID())
 				{
-					bool wolnazmienna = false;
-					for (int i = 0; i < cv.size(); i++)
+					//stworzenie zmiennej warunkowej odpowiadaj¹cej za synchroniczn¹ komunikacjê
+					ConditionVariable x;
+					x.lockmessagesender();
+					cv.emplace(std::make_pair(ActiveProcess->GetPID(), x));
+					//dodanie wiadomoœci do kolejki w PCB
+					(*et)->addToMessages(SMS(wiad));
+					cv[ActiveProcess->GetPID()].wait(ActiveProcess);
+					if (cv.find(ID) != cv.end())
 					{
-						//sprawdzenie czy nie ma nieu¿ywanej zmiennej odpowiedzialnej za komunikacjê w kontenerze
-						if (!cv[i].getResourceOccupied())
-						{
-							wolnazmienna = true;
-							cv[i].lockmessagesender();
-							(*et)->addToMessages(SMS(wiad,i));
-							cv[i].wait(ActiveProcess);
-							break;
-						}
-					}
-					if (!wolnazmienna)
-					{
-						//stworzenie zmiennej warunkowej odpowiadaj¹cej za synchroniczn¹ komunikacjê
-						ConditionVariable x;
-						x.lockmessagesender();
-						cv.push_back(x);
-						//dodanie wiadomoœci do kolejki w PCB
-						(*et)->addToMessages(SMS(wiad,cv.size()-1));
-						cv.rbegin()->wait(ActiveProcess);
+						cv[ID].signal();
+						cv.erase(ID);
 					}
 					return true;
 				}
@@ -55,9 +44,18 @@ bool Siec::wyslij(std::string wiad, int ID)
 	//jeœli odpowiedni proces-odbiorca nie zosta³ znaleziony to zostanie zwrócona wartoœæ false
 	return false;
 }
+void Siec::sprawdz()
+{
+	if (ActiveProcess->getMessages().size() == 0)
+	{
+		ConditionVariable x;
+		x.lockmessagesender();
+		cv.emplace(std::make_pair(ActiveProcess->GetPID(), x));
+		cv[ActiveProcess->GetPID()].wait(ActiveProcess);
+	}
+}
 std::unique_ptr<SMS> Siec::odbierz()
 {
-	if (ActiveProcess->getMessages().size() == 0) return nullptr;
 	std::unique_ptr<SMS> pom = std::make_unique<SMS>(ActiveProcess->getMessage());
 	ActiveProcess->deleteMessage();
 	//skopiowanie listy wskaŸników do aktywnych procesów ¿eby iterowanie nie wywali³o programu w kosmos
@@ -72,7 +70,8 @@ std::unique_ptr<SMS> Siec::odbierz()
 				if (pom->getID() == (*et)->GetPID())
 				{
 					//zmiana procesu nadawcy na gotowy (czeka³ na odebranie wiadomoœci)
-					cv[pom->getCVindex()].signal();
+					cv[pom->getID()].signal();
+					cv.erase(pom->getID());
 				}
 			}
 		}
