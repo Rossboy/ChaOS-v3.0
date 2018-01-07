@@ -294,7 +294,7 @@ void ChaOS_filesystem::remove(const char * f)
 std::string ChaOS_filesystem::listDirectory()
 {
 	currentDirSector = currentDirFirst = ActiveProcess->currentDir;
-	std::cout << "list dir: " << currentDirFirst << std::endl;
+	//std::cout << "list dir: " << currentDirFirst << std::endl;
 
 	std::ostringstream result;
 	char dirSector[32];
@@ -542,7 +542,7 @@ void ChaOS_filesystem::openFile(const char * filename)
 	ActiveProcess->currentDir = this->currentDirFirst;
 
 	fileSynchronization[currentFileFirst].wait(ActiveProcess);
-	std::cout << "FS LOG: Open: file: " << currentFileFirst << std::endl;
+	//std::cout << "FS LOG: Open: file: " << currentFileFirst << std::endl;
 }
 
 void ChaOS_filesystem::writeFile(const std::string& text)
@@ -843,7 +843,7 @@ void ChaOS_filesystem::closeFile()
 	{
 		if (ActiveProcess->currentFile)
 		{
-			std::cout << "FS LOG: CLOSE: file: " << ActiveProcess->currentFile->firstSector << std::endl;
+			//std::cout << "FS LOG: CLOSE: file: " << ActiveProcess->currentFile->firstSector << std::endl;
 			fileSynchronization[ActiveProcess->currentFile->firstSector].signal();
 			delete ActiveProcess->currentFile;
 		}
@@ -867,10 +867,10 @@ std::string  ChaOS_filesystem::printSector(const unsigned short number)
 	char sector[32];
 
 	disk.readSector(number, sector);
-	result << "_ _ SEKTOR: " << std::setw(2) << number << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ " << std::endl;
-
+	result << "  _ _ SEKTOR: " << std::setw(2) << number << " _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ " << std::endl;
 	for (int i = 0; i < 4; i++)
 	{
+		result << "  ";
 		for (int j = i * 8; j < i * 8 + 8; j++)
 		{
 			result << " " << check(sector[j]);
@@ -882,6 +882,7 @@ std::string  ChaOS_filesystem::printSector(const unsigned short number)
 		}
 		result << "\n";
 	}
+	result << "\n";
 	return result.str();
 }
 
@@ -937,10 +938,13 @@ std::string ChaOS_filesystem::printDiskStats()
 
 	char_int temp; temp.CHAR[3] = VCB[16]; temp.CHAR[2] = VCB[17]; temp.CHAR[1] = VCB[18]; temp.CHAR[0] = VCB[19];//char[4] to int
 	freeSectorBitVector = temp.INT;
-
-	result << "Liczba wolnych sektorów: " << unsigned int(freeSectorCount) << "/" << disk.numberOfSectors << "   " << asBitVector(freeSectorBitVector) << std::endl;
-
-	result << "Zmienne warunkowe - otwarte pliki (ID): ";
+	result << "     Sektory: " << std::endl;
+	result << "     " << asBitVector(freeSectorBitVector) << std::endl << std::endl;;
+	result << "     Liczba wolnych sektorów: " << unsigned int(freeSectorCount) << "/" << disk.numberOfSectors << std::endl;
+	result << "     Wolne: " << setBitNumber(freeSectorBitVector) << std::endl<<std::endl;;
+	result << "     Liczba zajętych sektorów: " << unsigned int(disk.numberOfSectors - freeSectorCount) << "/" << disk.numberOfSectors << std::endl;
+	result << "     Zajęte: " << setBitNumber(~freeSectorBitVector) << std::endl<< std::endl;
+	result << "     Zmienne warunkowe - otwarte pliki (ID): ";
 	for (int i = 0; i < 32; i++)
 	{
 		if (fileSynchronization[i].getResourceOccupied())
@@ -1062,4 +1066,14 @@ void ChaOS_filesystem::clearDisk()
 	disk.writeSector(rootDirSector, sector);
 	currentDirFirst = rootDirSector;
 	currentDirSector = rootDirSector;
+}
+
+std::string ChaOS_filesystem::setBitNumber(const int vector)
+{
+	std::ostringstream res;
+	for (int i = 0; i < disk.numberOfSectors; i++)
+	{
+		if ((vector >> i) & 1) res << i << " ";
+	}
+	return res.str();
 }

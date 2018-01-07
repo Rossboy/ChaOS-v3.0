@@ -90,6 +90,7 @@ private:
 	char check(const char& c);
 	bool isDirEmpty(uShort dir);
 	void clearDisk();
+	std::string setBitNumber(const int vector);
 };
 
 #endif FILESYSTEM__H
