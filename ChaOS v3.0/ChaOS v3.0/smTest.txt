@@ -1,2 +1,2 @@
-SM helloWorld 2
+SM helloWorld 10
 SP
