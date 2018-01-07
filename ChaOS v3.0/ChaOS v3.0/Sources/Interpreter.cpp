@@ -316,6 +316,11 @@ namespace cmd {
 		string memContetn = to_string(ActiveProcess->registers[registerIndex]);
 		mm->writeString(ActiveProcess, stoi(Arguments[1]), memContetn);
 	}
+
+	void checkForMessages(const std::vector<std::string>& Arguments)
+	{
+		
+	}
 }
 
 
@@ -433,6 +438,9 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 		break;
 	case 34://AP - dopisz do pliku
 		cmd::appendFile(Arguments);
+		break;
+	case 35:
+		cmd::checkForMessages(Arguments);
 		break;
 	default:
 		std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;

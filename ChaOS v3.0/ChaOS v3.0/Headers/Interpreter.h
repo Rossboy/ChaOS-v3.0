@@ -11,7 +11,7 @@ class Interpreter
 	
 
 
-	//liczba rozkazów = 34 + error (99)
+	//liczba rozkazów = 35 + error (99)
 	//tablica rozkazów <KOD ROZKAZU <ID rozkazu/iloœæ argumentów>>
 	std::vector<std::pair<std::string, std::pair<int, int >>> CommandTab{
 
@@ -29,7 +29,6 @@ class Interpreter
 		//Pamiêæ
 		std::make_pair("MR",std::make_pair(24,2)), //Czytanie z pamiêci
 		std::make_pair("MW",std::make_pair(25,2)), //Wpisywanie do pamiêci
-
 
 		//Operacje na plikach
 		std::make_pair("CF",std::make_pair(7,2)), //Utwórz plik/folder
@@ -52,6 +51,7 @@ class Interpreter
 		std::make_pair("EX",std::make_pair(14,1)), //Wykonaj program?
 		std::make_pair("PS",std::make_pair(15,0)), //Wyœwietl procesy
 		std::make_pair("SM",std::make_pair(16,2)), //Wyœlij komunikat
+		std::make_pair("CM",std::make_pair(35,0)), //Sprawdz czy jest wiadomosc do odczytania
 		std::make_pair("RM",std::make_pair(17,1)), //Odczytaj komunikat
 		std::make_pair("KP",std::make_pair(26,1)), //Zabij proces
 
@@ -62,7 +62,6 @@ class Interpreter
 		std::make_pair("JE",std::make_pair(21,1)), //Skok do etykiety
 		std::make_pair("RT",std::make_pair(22,1)), //Zwróæ
 		std::make_pair("SP",std::make_pair(23,0)), //Koniec programu
-
 
 
 		std::make_pair("ER",std::make_pair(99,0)) //Error - nie obs³ugiwane polecenie
