@@ -289,7 +289,14 @@ namespace cmd {
 	/* KOMUNIKACJA */
 	void sendMessage(const std::vector<std::string>& Arguments)
 	{
-		if ((s->wyslij(Arguments[0], atoi(Arguments[1].c_str()))) == false) std::cout << "Nie udalo sie wyslac wiadomosci" << std::endl;
+		if ((s->wyslij(Arguments[0], atoi(Arguments[1].c_str()))) == false)
+		{
+			ActiveProcess->SetState(State::Terminated);
+			rlutil::setColor(rlutil::RED);
+			cout << "Brak odbiorcy o podanym PID!" << endl;
+			cout << "Proces przejdzie w stan Terminated" << endl;
+			rlutil::setColor(rlutil::GREEN);
+		}
 	}
 
 	void readMessage(const std::vector<std::string>& Arguments)
