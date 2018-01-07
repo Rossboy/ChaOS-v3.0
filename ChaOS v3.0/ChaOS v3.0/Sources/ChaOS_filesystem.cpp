@@ -939,12 +939,13 @@ std::string ChaOS_filesystem::printDiskStats()
 	char_int temp; temp.CHAR[3] = VCB[16]; temp.CHAR[2] = VCB[17]; temp.CHAR[1] = VCB[18]; temp.CHAR[0] = VCB[19];//char[4] to int
 	freeSectorBitVector = temp.INT;
 	result << "     Sektory: " << std::endl;
-	result << "     " << asBitVector(freeSectorBitVector) << std::endl << std::endl;;
+	result << "     " << asBitVector(freeSectorBitVector) << std::endl;
+	result << "        :^^^^^^^:^^^^^^^:^^^^^^^:^^^^^^^" << std::endl;
 	result << "     Liczba wolnych sektorów: " << unsigned int(freeSectorCount) << "/" << disk.numberOfSectors << std::endl;
 	result << "     Wolne: " << setBitNumber(freeSectorBitVector) << std::endl<<std::endl;;
 	result << "     Liczba zajętych sektorów: " << unsigned int(disk.numberOfSectors - freeSectorCount) << "/" << disk.numberOfSectors << std::endl;
 	result << "     Zajęte: " << setBitNumber(~freeSectorBitVector) << std::endl<< std::endl;
-	result << "     Zmienne warunkowe - otwarte pliki (ID): ";
+	result << "     Ustawione zmienne warunkowe (ID pliku): ";
 	for (int i = 0; i < 32; i++)
 	{
 		if (fileSynchronization[i].getResourceOccupied())
