@@ -535,7 +535,7 @@ void MemoryManager::printPageTable(PCB * pcb)
 	int PageTableSize = pcb->getPageTableSize();
 
 	cout << " --- Tablica stron procesu: " << pcb->GetPID() << " ---\n";
-	cout << " Nr strony "<< (char)CharTable::VL <<" Nr  ramki " << (char)CharTable::VL << " Czy w pamiêci?\n";
+	cout << " Nr strony "<< (char)CharTable::VL <<" Nr  ramki " << (char)CharTable::VL << " Czy w pamieci?\n";
 
 	for (int page = 0; page < PageTableSize; page++)
 	{
@@ -544,10 +544,10 @@ void MemoryManager::printPageTable(PCB * pcb)
 		{
 			cout << " ";
 		}
-		cout << '|';
+		cout << (char)CharTable::VL;
 		if (PageTable[page].inMemory == true)
 		{
-			cout << "     " << PageTable->frameOccupied << "     " << (char)CharTable::VL;
+			cout << "     " << PageTable[page].frameOccupied << "     " << (char)CharTable::VL;
 			cout << "      Tak      \n";
 		}
 		else
