@@ -1,10 +1,8 @@
 #include "..\Headers\Siec.h"
 #include"..\Headers\ProcessesManager.h"
-#include"..\Headers\ConditionVariable.h"
-#include<vector>
 extern PCB* ActiveProcess;
 extern ProcessesManager *pm;
-std::vector<ConditionVariable> cv;
+
 Siec::Siec()
 {
 }
