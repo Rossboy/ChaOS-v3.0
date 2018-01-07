@@ -289,7 +289,14 @@ namespace cmd {
 	/* KOMUNIKACJA */
 	void sendMessage(const std::vector<std::string>& Arguments)
 	{
-		if ((s->wyslij(Arguments[0], atoi(Arguments[1].c_str()))) == false) std::cout << "Nie udalo sie wyslac wiadomosci" << std::endl;
+		if ((s->wyslij(Arguments[0], atoi(Arguments[1].c_str()))) == false)
+		{
+			ActiveProcess->SetState(State::Terminated);
+			rlutil::setColor(rlutil::RED);
+			cout << "Brak odbiorcy o podanym PID!" << endl;
+			cout << "Proces przejdzie w stan Terminated" << endl;
+			rlutil::setColor(rlutil::GREEN);
+		}
 	}
 
 	void readMessage(const std::vector<std::string>& Arguments)
@@ -301,7 +308,10 @@ namespace cmd {
 			cout << "Brak wiadomosci, nie mozna jej odczytac!";
 	}
 
-
+	void checkForMessages(const std::vector<std::string>& Arguments)
+	{
+		s->sprawdz();
+	}
 	///////////////////////////////////////////////////////////
 	/*PAMIÊÆ*/
 	void readMemory(const std::vector<std::string>& Arguments)
@@ -317,10 +327,7 @@ namespace cmd {
 		mm->writeString(ActiveProcess, stoi(Arguments[1]), memContetn);
 	}
 
-	void checkForMessages(const std::vector<std::string>& Arguments)
-	{
-		
-	}
+
 }
 
 
@@ -565,7 +572,7 @@ std::pair<int, int > Interpreter::GetParameters(std::string& cmd)
 			return CommandTab[i].second;
 		}
 	}
-	cmd = "ER";
+	ActiveProcess->errorCode = 13;
 	return CommandTab[CommandTab.size() - 1].second;
 }
 

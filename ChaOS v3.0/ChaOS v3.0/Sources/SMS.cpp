@@ -3,11 +3,10 @@
 extern PCB* ActiveProcess;
 
 
-SMS::SMS(std::string wiad,int indeks)
+SMS::SMS(std::string wiad)
 {
 	this->wiad = wiad;
 	this->WID = ActiveProcess->GetPID();
-	this->indeks = indeks;
 }
 
 
@@ -21,8 +20,4 @@ int SMS::getID()
 std::string SMS::getwiad()
 {
 	return wiad;
-}
-int SMS::getCVindex()
-{
-	return indeks;
 }
