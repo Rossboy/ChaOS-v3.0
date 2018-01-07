@@ -1,6 +1,8 @@
 #ifndef MEMORYMANAGER__H
 #define MEMORYMANAGER__H
 #include "../Headers/Process.h"
+#include "../Headers/rlutil.h"
+#include <Windows.h>
 #include <list>
 #include <iostream>
 #include <queue>
@@ -88,6 +90,7 @@ public:
 	bool isAddressRangeInAddressSpace(PCB * pcb, int logicalAddress, int range);
 	void printSFframe(int frameNr, int pageNr = -1);
 	void deallocateMemory(PCB * pcb);
+	void printPageTable(PCB * pcb);
 	MemoryManager();
 	~MemoryManager();
 };

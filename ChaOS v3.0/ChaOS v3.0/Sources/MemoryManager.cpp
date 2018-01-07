@@ -194,7 +194,9 @@ void MemoryManager::printPCBframes(PCB * pcb, bool onlyInRam)
 
 	if (pcb == nullptr)
 	{
+		rlutil::setColor(rlutil::RED);
 		cout << "Nie ma takiego procesu.\n";
+		rlutil::setColor(rlutil::GREEN);
 		return;
 	}
 
@@ -286,7 +288,9 @@ void MemoryManager::printFrame(int frameNr, int pageNumber)
 	cout << space << (char)CharTable::VL;
 	for (int i = 0; i < FRAME_SIZE; i++)
 	{
+		rlutil::setColor(rlutil::GREY);
 		printf(" %c ", RAM[addr + i]);
+		rlutil::setColor(rlutil::GREEN);
 		cout << (char)CharTable::VL;
 	}
 	cout << endl;
@@ -394,7 +398,9 @@ void MemoryManager::printSFframe(int frameNr, int pageNumber)
 	cout << space << (char)CharTable::VL;
 	for (int i = 0; i < FRAME_SIZE; i++)
 	{
+		rlutil::setColor(rlutil::GREY);
 		printf("  %c  ", swapFile[addr + i]);
+		rlutil::setColor(rlutil::GREEN);
 		cout << (char)CharTable::VL;
 	}
 	cout << endl;
@@ -513,6 +519,43 @@ void MemoryManager::deallocateMemory(PCB * pcb)
 
 	pcb->setPageTable(nullptr);
 	pcb->setPageTableSize(0);
+}
+
+void MemoryManager::printPageTable(PCB * pcb)
+{
+	if (pcb == nullptr)
+	{
+		rlutil::setColor(rlutil::RED);
+		cout << "Nie ma takiego procesu.\n";
+		rlutil::setColor(rlutil::GREEN);
+		return;
+	}
+
+	Page * PageTable = pcb->getPageTable();
+	int PageTableSize = pcb->getPageTableSize();
+
+	cout << " --- Tablica stron procesu: " << pcb->GetPID() << " ---\n";
+	cout << " Nr strony "<< (char)CharTable::VL <<" Nr  ramki " << (char)CharTable::VL << " Czy w pamiêci?\n";
+
+	for (int page = 0; page < PageTableSize; page++)
+	{
+		cout << "     " << page;
+		for (int i = 0; i < (6 - to_string(page).size()); i++)
+		{
+			cout << " ";
+		}
+		cout << '|';
+		if (PageTable[page].inMemory == true)
+		{
+			cout << "     " << PageTable->frameOccupied << "     " << (char)CharTable::VL;
+			cout << "      Tak      \n";
+		}
+		else
+		{
+			cout << "           " << (char)CharTable::VL;
+			cout << "      Nie      \n";
+		}
+	}
 }
 
 MemoryManager::MemoryManager()
