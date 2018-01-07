@@ -19,5 +19,6 @@ private:
 public:
 	//Procedura wywo³ywana przed ka¿dym wykonaniem instrukcji - z jej poziomu wywo³ywany jest planista (SRTSchedulingAlgorithm) oraz metoda DoCommand z interpretera
 	void RunProcess();
+	void ProcessScheduler::RunProcess(int);
 };
 #endif PROCESSSCHEDULER__H
