@@ -37,56 +37,54 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 			program = program + napis + " ";
 		}
 		file.close();
-	}
-	else std::cout << "Error! Nie udalo otworzyc sie pliku!" << std::endl;
 
-	//tmczasowe bo tutaj wpisujemy kod programu
-	mm->allocateMemory(newProcess, program, program.size());
-	newProcess->SetProcesBurstTime(program.size());
-	/*Przypadek kiedy dodawany jest proces bezczynnosci*/
-	if (GID == 0)
-	{
-		std::list<PCB*>list;
-		allProcesses.push_back(list); // GroupID == 0
-		std::list<std::list<PCB*>>::iterator it = allProcesses.begin();
-		std::list<PCB*>::iterator it2 = (*it).begin();
-		newProcess->SetProcesBurstTime(INT_MAX);
-		(*it).push_back(newProcess);
-		ActiveProcess = newProcess;
-	}
-	else {
-		/*Sprawdzamy czy dana grupa juz istnieje*/
-		for (std::list<std::list<PCB*>>::iterator it = allProcesses.begin(); it != allProcesses.end(); it++)
-		{
-			std::list<PCB*>::iterator it2 = (*it).begin();
-			if ((*it2)->GetGID() == GID)
-			{
-				(*it).push_back(newProcess);
-				GroupExist = true;
-				break;
-			}
-			else
-			{
-				GroupExist = false;
-			}
-		}
-		/*Jezeli nie to tworzymy nowa*/
-		if (GroupExist == false)
-		{
+		//tmczasowe bo tutaj wpisujemy kod programu
+		mm->allocateMemory(newProcess, program, program.size());
+		newProcess->SetProcesBurstTime(program.size());
+		/*Przypadek kiedy dodawany jest proces bezczynnosci*/
+		if (GID == 0) {
 			std::list<PCB*>list;
-			allProcesses.push_back(list);
+			allProcesses.push_back(list); // GroupID == 0
 			std::list<std::list<PCB*>>::iterator it = allProcesses.begin();
-			for (int i = 0; i < allProcesses.size() - 1; i++)
-			{
-				it++;
-			}
-			(*it).push_back(newProcess);
 			std::list<PCB*>::iterator it2 = (*it).begin();
+			newProcess->SetProcesBurstTime(INT_MAX);
+			(*it).push_back(newProcess);
+			ActiveProcess = newProcess;
 		}
+		else {
+			/*Sprawdzamy czy dana grupa juz istnieje*/
+			for (std::list<std::list<PCB*>>::iterator it = allProcesses.begin(); it != allProcesses.end(); it++) {
+				std::list<PCB*>::iterator it2 = (*it).begin();
+				if ((*it2)->GetGID() == GID) {
+					(*it).push_back(newProcess);
+					GroupExist = true;
+					break;
+				}
+				else {
+					GroupExist = false;
+				}
+			}
+			/*Jezeli nie to tworzymy nowa*/
+			if (GroupExist == false) {
+				std::list<PCB*>list;
+				allProcesses.push_back(list);
+				std::list<std::list<PCB*>>::iterator it = allProcesses.begin();
+				for (int i = 0; i < allProcesses.size() - 1; i++) {
+					it++;
+				}
+				(*it).push_back(newProcess);
+				std::list<PCB*>::iterator it2 = (*it).begin();
+			}
+		}
+
+		readyProcesses.push_back(newProcess);
 	}
-
-	readyProcesses.push_back(newProcess);
-
+	else
+	{
+		rlutil::setColor(rlutil::LIGHTRED);
+		std::cout << "Error! Nie udalo otworzyc sie pliku z programem asemblerowym z dysku Windows!" << std::endl;
+		rlutil::setColor(rlutil::LIGHTGREEN);
+	}
 }
 /*Zabijanie procesu*/
 void ProcessesManager::killProcess(int PID)
