@@ -29,9 +29,20 @@ void ProcessScheduler::RunProcess()
 			{
 				pm->killProcess(ActiveProcess->GetPID());
 				//Ustawienie ActiveProcess na nullptr, poniewa¿ proces nie zosta³ jeszcze wybrany przez planistê
-				ActiveProcess = nullptr;
+				//ActiveProcess = nullptr;
 				//Zerowanie zmiennych pomocniczych do liczenia wykonanych instrukcji ActiveProcess
 				startCounter = endCounter = differenceCounter = 0;
+				
+				//dodane zeby ActiveProcess nie byl ustawiany na nullptr, zgodnie z ¿yczeniem
+				for (std::list<PCB*>::iterator p = pm->readyProcesses.begin(); p != pm->readyProcesses.end(); ++p) 
+				{
+					if ((*p)->GetPID() == 1)
+					{
+						ActiveProcess = *p;
+					}
+				}
+				std::cout << "[Albert]:\tPowinien byc bezczynnosci, a jest:   " << ActiveProcess->GetPID() << "\t" << ActiveProcess->GetProcesBurstTime() << std::endl;
+
 				SRTSchedulingAlgorithm();
 			}
 		}
@@ -39,13 +50,14 @@ void ProcessScheduler::RunProcess()
 		else 
 		{
 			//Sprawdzenie, czy ActiveProcess jest ustawiony na jakiœ proces
-			if (ActiveProcess != nullptr) 
+			if (ActiveProcess) // != nullptr  
 			{
 				//Sprawdzenie rozmiaru listy readyProceesses -- size() > 1 oznacza, ¿e ActiveProcess nie jest procesem bezczynnoœci
 				if (pm->readyProcesses.size() > 1) {
 					//Wyliczenie, ile instrukcji wykona³o siê dla ActiveProcess
 					endCounter = ActiveProcess->GetInstructionCounter();
 					differenceCounter = endCounter - startCounter;
+					ActiveProcess->SetProcesBurstTime(ActiveProcess->GetProcesBurstTime()-1);
 				}
 				//Proces bezczynnoœci nie wykonuje instrukcji, wiêc nie ma powodu do ustawiania zmiennych pomocniczych
 			}
@@ -62,10 +74,10 @@ void ProcessScheduler::RunProcess()
 
 void ProcessScheduler::SRTSchedulingAlgorithm() 
 {
-
+	//to zobaczymy, czy trzeba
 	//Gdy rozmiar readyProcesses == 1 -- tym procesem jest proces bezczynnoœci
 	//Gdy ActiveProcess == nullptr -- trzeba ustawiæ ActiveProcess jedynym elementem w readyProcesses
-	if (pm->readyProcesses.size() == 1 && ActiveProcess == nullptr) 
+	if (pm->readyProcesses.size() == 1 && !ActiveProcess) //==nullptr proces bzeczynnosci jeszcze nie jest ustawiony
 	{
 		ActiveProcess = *pm->readyProcesses.begin();
 		//Dla procesu bezczynnoœci nie trzeba ustawiaæ ¿adnych zmiennych pomocniczych, poniewa¿ nie wykonuje on ¿adnych instrukcji
@@ -74,7 +86,7 @@ void ProcessScheduler::SRTSchedulingAlgorithm()
 
 	//Gdy rozmiar readyProcesses == 1 -- procesem jest ponownie proces bezczynnoœci
 	//Gdy Activeprocess != nullptr -- nie trzeba ustawiaæ ActiveProcess
-	if (pm->readyProcesses.size() == 1 && ActiveProcess != nullptr)
+	if (pm->readyProcesses.size() == 1 && ActiveProcess->GetPID() == 1) //czyli ustawiony proces bezczynnosci
 	{
 		//Nie trzeba te¿ niczego robiæ
 		return;
@@ -86,13 +98,15 @@ void ProcessScheduler::SRTSchedulingAlgorithm()
 	//Ustawienie iteratora pomocniczego na proces o najkrotszym burstTime zgodnie z algorytmem SRT
 	iteratorToMinElement = std::min_element(pm->readyProcesses.begin(), pm->readyProcesses.end(), [](PCB* x, PCB* y) { return x->GetProcesBurstTime() < y->GetProcesBurstTime(); });
 
+	//nie wiem czy to sie kiedykolwiek wywola jak nie ma nullptra ustawianego
 	//Gdy ActiveProcess == nullptr -- nie trzeba liczyc czasu dla poprzednio aktywnego procesu, poniewa¿ proces zostal:
 	//1) wykonany		2)usuniet z powodu bledu		-- jeszcze jakieœ przypadki?
-	if (ActiveProcess == nullptr) 
+	if (ActiveProcess == nullptr) //czy to sie wywola jesli usunalem ustawiania ActiveProcess na nullptr
 	{
 		//Ustawienie ActiveProcess najlepszym procesem zgodnie z SRT
 		ActiveProcess = *iteratorToMinElement;
 
+		helpBurstTime = ActiveProcess->GetProcesBurstTime();
 		//Ustawienie zmiennych pomocniczych do liczenia wykonanych instrukcji ActiveProcess
 		startCounter = ActiveProcess->GetInstructionCounter();
 		endCounter = differenceCounter = 0;
@@ -105,26 +119,27 @@ void ProcessScheduler::SRTSchedulingAlgorithm()
 		if ((*iteratorToMinElement)->GetPID() != ActiveProcess->GetPID()) 
 		{
 			//Sprawdzenie, czy wybrany proces, obecnie ustawiony w iteratorze iteratorToMinElement, ma przewidywany czas krótszy od ActiveProcess
-			if ((*iteratorToMinElement)->GetProcesBurstTime() < ActiveProcess->GetProcesBurstTime() - differenceCounter) //nie wiem do konca, czy z tym differenceCounter, czy jescze nie
+			if ((*iteratorToMinElement)->GetProcesBurstTime() < ActiveProcess->GetProcesBurstTime()) //nie wiem do konca, czy z tym differenceCounter, czy jescze nie /// - differenceCounter
 			{
 				if (ActiveProcess->GetPID() != 1)
 				{
-					std::cout << "ActiveProcess burstTime przed obliczeniem: " << ActiveProcess->GetPID() << "\t" << ActiveProcess->GetProcesBurstTime() << "\n";																					 //Wczeœniej trzeba obliczyæ nowy przewidywany czas dla procesu wyw³aszonego zgodnie ze wzorem
-					ActiveProcess->SetProcesBurstTime(.5 * ActiveProcess->GetProcesBurstTime() + .5 * differenceCounter);
-					std::cout << "ActiveProcess burstTime po obliczeniach, ale przed wywlaszczeniem: " << ActiveProcess->GetPID() << "\t" << ActiveProcess->GetProcesBurstTime() << "\n";
+	    			 //Wczeœniej trzeba obliczyæ nowy przewidywany czas dla procesu wyw³aszonego zgodnie ze wzorem
+					ActiveProcess->SetProcesBurstTime(.5 * helpBurstTime + .5 * differenceCounter);
+					std::cout << "[Albert]:\t" << "Liczenie nowego burstTime dla:" << ActiveProcess->GetPID() << "\t bursttime: " << helpBurstTime << "\twykonanych rozkazow: " << differenceCounter << "\twyliczony bursttime: " << ActiveProcess->GetProcesBurstTime() << "\n";
 					//Ustawienie ActiveProcess
 					ActiveProcess = *iteratorToMinElement;
-					std::cout << "Nowy ActiveProcess: " << ActiveProcess->GetPID() << "\t" << ActiveProcess->GetProcesBurstTime() << "\n";
+					std::cout << "[Albert]:\tNowy ActiveProcess: " << ActiveProcess->GetPID() << "\t" << ActiveProcess->GetProcesBurstTime() << "\n";
 					//Ustawienie zmiennych pomocniczych do liczenia wykonywanych instrukcji ActiveProcess
+					helpBurstTime = ActiveProcess->GetProcesBurstTime();
 					startCounter = ActiveProcess->GetInstructionCounter();
 					endCounter = differenceCounter = 0;
 				}
 				else {
-					std::cout << "Byl proces bezczynnosci!!!!!" << ActiveProcess->GetPID() << "\t" << ActiveProcess->GetProcesBurstTime() << "\n";
 					//Ustawienie ActiveProcess
 					ActiveProcess = *iteratorToMinElement;
-					std::cout << "Nowy ActiveProcess: " << ActiveProcess->GetPID() << "\t" << ActiveProcess->GetProcesBurstTime() << "\n";
+					std::cout << "[Albert]:\tNowy ActiveProcess:" << ActiveProcess->GetPID() << "\t " << ActiveProcess->GetProcesBurstTime() << "\n";
 					//Ustawienie zmiennych pomocniczych do liczenia wykonywanych instrukcji ActiveProcess
+					helpBurstTime = ActiveProcess->GetProcesBurstTime();
 					startCounter = ActiveProcess->GetInstructionCounter();
 					endCounter = differenceCounter = 0;
 				}
