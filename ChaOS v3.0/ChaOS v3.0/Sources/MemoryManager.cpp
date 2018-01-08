@@ -194,9 +194,9 @@ void MemoryManager::printPCBframes(PCB * pcb, bool onlyInRam)
 
 	if (pcb == nullptr)
 	{
-		rlutil::setColor(rlutil::RED);
+		rlutil::setColor(rlutil::LIGHTRED);
 		cout << "Nie ma takiego procesu.\n";
-		rlutil::setColor(rlutil::GREEN);
+		rlutil::setColor(rlutil::LIGHTGREEN);
 		return;
 	}
 
@@ -290,7 +290,7 @@ void MemoryManager::printFrame(int frameNr, int pageNumber)
 	{
 		rlutil::setColor(rlutil::GREY);
 		printf(" %c ", RAM[addr + i]);
-		rlutil::setColor(rlutil::GREEN);
+		rlutil::setColor(rlutil::LIGHTGREEN);
 		cout << (char)CharTable::VL;
 	}
 	cout << endl;
@@ -400,7 +400,7 @@ void MemoryManager::printSFframe(int frameNr, int pageNumber)
 	{
 		rlutil::setColor(rlutil::GREY);
 		printf("  %c  ", swapFile[addr + i]);
-		rlutil::setColor(rlutil::GREEN);
+		rlutil::setColor(rlutil::LIGHTGREEN);
 		cout << (char)CharTable::VL;
 	}
 	cout << endl;
@@ -525,9 +525,9 @@ void MemoryManager::printPageTable(PCB * pcb)
 {
 	if (pcb == nullptr)
 	{
-		rlutil::setColor(rlutil::RED);
+		rlutil::setColor(rlutil::LIGHTRED);
 		cout << "Nie ma takiego procesu.\n";
-		rlutil::setColor(rlutil::GREEN);
+		rlutil::setColor(rlutil::LIGHTGREEN);
 		return;
 	}
 

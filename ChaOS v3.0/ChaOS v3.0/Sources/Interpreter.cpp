@@ -292,10 +292,10 @@ namespace cmd {
 		if ((s->wyslij(Arguments[0], atoi(Arguments[1].c_str()))) == false)
 		{
 			ActiveProcess->SetState(State::Terminated);
-			rlutil::setColor(rlutil::RED);
+			rlutil::setColor(rlutil::LIGHTRED);
 			cout << "Brak odbiorcy o podanym PID!" << endl;
 			cout << "Proces przejdzie w stan Terminated" << endl;
-			rlutil::setColor(rlutil::GREEN);
+			rlutil::setColor(rlutil::LIGHTGREEN);
 		}
 	}
 
@@ -553,9 +553,9 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	if (ActiveProcess != nullptr) {
 		if (ActiveProcess->errorCode != 0 && ActiveProcess != nullptr)
 		{
-			rlutil::setColor(rlutil::RED);
+			rlutil::setColor(rlutil::LIGHTRED);
 			std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
-			rlutil::setColor(rlutil::GREEN);
+			rlutil::setColor(rlutil::LIGHTGREEN);
 			ActiveProcess->errorCode = 0;
 		}
 		ActiveProcess = Temp;
