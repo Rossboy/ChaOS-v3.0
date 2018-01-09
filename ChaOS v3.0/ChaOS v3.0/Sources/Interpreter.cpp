@@ -277,16 +277,22 @@ namespace cmd {
 	void changeDir(const std::vector<std::string>& Arguments)
 	{
 		fs->changeDirectory(Arguments[0].c_str());
+		if (ActiveProcess->GetFileName() == "Shell")
+			fs->getPath();
 	}
 	//ok
 	void rootDir()
 	{
 		fs->rootDirectory();
+		if (ActiveProcess->GetFileName() == "Shell")
+			fs->getPath();
 	}
 	//ok
 	void backDir()
 	{
 		fs->backDirectory();
+		if (ActiveProcess->GetFileName() == "Shell")
+			fs->getPath();
 	}
 	//ok
 

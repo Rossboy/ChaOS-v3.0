@@ -3,9 +3,7 @@
 #include <iomanip>
 #include <sstream>
 #include <deque>
-
-extern PCB shell;
-
+extern std::string shellReturnPath;
 extern PCB* ActiveProcess;
 
 enum class CharTable : char
@@ -109,7 +107,7 @@ uShort ChaOS_filesystem::getRootDir()
 
 std::string ChaOS_filesystem::getPath()
 {
-	std::stack<uShort> temp = ShellPath;
+	std::stack<uShort> temp = ActiveProcess->returnPath;
 	std::deque<uShort> path;
 	while (!temp.empty())
 	{
@@ -117,7 +115,7 @@ std::string ChaOS_filesystem::getPath()
 		temp.pop();
 	}
 
-	std::string result = "ROOT";
+	std::string result="";
 	while(!path.empty())
 	{
 		result += '/';
@@ -130,6 +128,14 @@ std::string ChaOS_filesystem::getPath()
 		}
 		path.pop_back();
 	}
+	result += '/';
+	char sector[32];
+	disk.readSector(ActiveProcess->currentDir, sector);
+	for (int j = 0; j < 5; j++)
+	{
+		if (sector[j + 24] != 0) result += sector[j + 24];
+	}
+	shellReturnPath = result;
 	return result;
 }
 
@@ -420,11 +426,10 @@ void ChaOS_filesystem::changeDirectory(const char * name)
 	uShort temp = search(name, type::dir);
 	if (temp)
 	{
-		ActiveProcess->returnPath.push(temp);
-		ActiveProcess->currentDir = temp;
+		ActiveProcess->returnPath.push(ActiveProcess->currentDir);
+		currentDirFirst = ActiveProcess->currentDir = temp;
 
-		ShellPath.push(temp);
-		ShellCurrentDir = temp;
+		//std::cout << "Stos:" << ActiveProcess->returnPath.size() << std::endl;
 	}
 	else
 	{
@@ -442,18 +447,10 @@ void ChaOS_filesystem::backDirectory()
 	}
 	else
 	{
-		ActiveProcess->currentDir = ActiveProcess->returnPath.top();
+		currentDirFirst = currentDirSector = ActiveProcess->currentDir = ActiveProcess->returnPath.top();
 		ActiveProcess->returnPath.pop();
-	}
 
-	if (ShellPath.empty())
-	{
-		rootDirectory();
-	}
-	else
-	{
-		ShellCurrentDir = ShellPath.top();
-		ShellPath.pop();
+		//std::cout << "Stos:" << ActiveProcess->returnPath.size() << std::endl;
 	}
 
 }
