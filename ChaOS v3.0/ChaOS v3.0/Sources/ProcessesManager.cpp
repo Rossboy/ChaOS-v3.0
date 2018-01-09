@@ -40,7 +40,7 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 
 		//tmczasowe bo tutaj wpisujemy kod programu
 		mm->allocateMemory(newProcess, program, program.size());
-		newProcess->SetProcesBurstTime(program.size());
+		newProcess->SetProcesBurstTime(program.size()%13);
 		/*Przypadek kiedy dodawany jest proces bezczynnosci*/
 		if (GID == 0) {
 			std::list<PCB*>list;
