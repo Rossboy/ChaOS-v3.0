@@ -4,6 +4,8 @@
 #include <sstream>
 #include <deque>
 
+extern PCB shell;
+
 extern PCB* ActiveProcess;
 
 enum class CharTable : char
@@ -107,7 +109,7 @@ uShort ChaOS_filesystem::getRootDir()
 
 std::string ChaOS_filesystem::getPath()
 {
-	std::stack<uShort> temp = ActiveProcess->returnPath;
+	std::stack<uShort> temp = ShellPath;
 	std::deque<uShort> path;
 	while (!temp.empty())
 	{
@@ -420,6 +422,9 @@ void ChaOS_filesystem::changeDirectory(const char * name)
 	{
 		ActiveProcess->returnPath.push(temp);
 		ActiveProcess->currentDir = temp;
+
+		ShellPath.push(temp);
+		ShellCurrentDir = temp;
 	}
 	else
 	{
@@ -441,10 +446,26 @@ void ChaOS_filesystem::backDirectory()
 		ActiveProcess->returnPath.pop();
 	}
 
+	if (ShellPath.empty())
+	{
+		rootDirectory();
+	}
+	else
+	{
+		ShellCurrentDir = ShellPath.top();
+		ShellPath.pop();
+	}
+
 }
 
 void ChaOS_filesystem::rootDirectory()
 {
+	while (!ShellPath.empty())
+	{
+		ShellPath.pop();
+	}
+	ShellCurrentDir = rootDirSector;
+
 	while (!ActiveProcess->returnPath.empty())
 	{
 		ActiveProcess->returnPath.pop();
