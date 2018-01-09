@@ -60,7 +60,7 @@ namespace cmd {
 	void Return(const std::vector<std::string>& Arguments)
 	{
 		std::cout<< ActiveProcess->registers[atoi(Arguments[0].c_str())] << std::endl;
-		end();
+		//end();
 	}
 	//ok
 
