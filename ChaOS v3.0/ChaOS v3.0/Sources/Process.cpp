@@ -91,7 +91,30 @@ int PCB::getPageTableSize()
 }
 void PCB::displayProcess()
 {
-	std::cout << "PID: " << GetPID() << ", GID: " << GetGID() << ", File name: " << GetFileName() << ", Burst time: " << GetProcesBurstTime() << ", State: " << GetState() << std::endl;
+	// New, Ready, Waiting, Running, Terminated
+	std::cout << "PID: " << GetPID() << ", GID: " << GetGID() << ", File name: " << GetFileName() << ", Burst time: " << GetProcesBurstTime() << ", State: ";
+	switch (this->GetState())
+	{
+	case 0:
+		std::cout << "New";
+		break;
+	case 1:
+		std::cout << "Ready";
+		break;
+	case 2:
+		std::cout << "Waiting";
+		break;
+	case 3:
+		std::cout << "Running";
+		break;
+	case 4:
+		std::cout << "Terminated";
+		break;
+	default:
+		std::cout << "WEIRDO! LOL";
+		break;
+	}
+	std::cout << std::endl;
 }
 void PCB::SetInstructionCounter(int counter)
 {
