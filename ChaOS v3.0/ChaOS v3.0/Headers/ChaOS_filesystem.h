@@ -66,6 +66,8 @@ public:
 
 	//file* currentFile;
 	uShort getRootDir();
+
+	std::string getPath();
 private:
 	c_uShort allocateSector();
 	void freeSector(uShort number);
