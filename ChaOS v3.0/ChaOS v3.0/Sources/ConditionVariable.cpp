@@ -14,7 +14,7 @@ void ConditionVariable::wait(PCB* process)
 {
 	if (resourceOccupied || !this->waitingProcesses.empty())
 	{
-		process->SetState(State::Waiting);
+		process->setStateAndMoveToRespectiveList(State::Waiting);
 		process->wait = true;
 		waitingProcesses.push_back(process);
 		this->resourceOccupied = true;
@@ -24,8 +24,9 @@ void ConditionVariable::wait(PCB* process)
 	}
 	else if (!resourceOccupied && this->waitingProcesses.empty())
 	{
-		process->SetState(State::Ready);
+		process->setStateAndMoveToRespectiveList(State::Ready);
 		this->resourceOccupied = true;
+		pm->AddProcessToReady(process);
 		//std::cout << "ZMIENNA WARUNKOWA \nProces: \n";
 		//process->displayProcess();
 		//std::cout << "poprzez wait(PCB* process) przeszed³ od razu do stanu ready." << std::endl;
@@ -44,7 +45,8 @@ void ConditionVariable::signal()
 	if (resourceOccupied && !waitingProcesses.empty())
 	{
 		auto temp = waitingProcesses.front();
-		temp->SetState(State::Ready);
+		temp->setStateAndMoveToRespectiveList(State::Ready);
+		pm->AddProcessToReady(temp);
 		waitingProcesses.pop_front();
 
 		if (this->waitingProcesses.empty())

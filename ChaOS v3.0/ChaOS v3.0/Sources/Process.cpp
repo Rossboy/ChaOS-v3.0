@@ -29,7 +29,7 @@ PCB::PCB(std::string programName, int GID):points()
 	this->currentDir = 1;
 }
 
-void PCB::SetState(State newState) 
+void PCB::setStateAndMoveToRespectiveList(State newState)
 {
 	this->state = newState;
 	if (newState == State::Ready)

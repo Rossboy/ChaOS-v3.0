@@ -54,7 +54,7 @@ namespace cmd {
 	 //oks
 	void end()
 	{
-		ActiveProcess->SetState(Terminated);
+		ActiveProcess->setStateAndMoveToRespectiveList(Terminated);
 	}
 	//ok
 	void Return(const std::vector<std::string>& Arguments)
@@ -323,7 +323,7 @@ namespace cmd {
 	{
 		if ((s->wyslij(Arguments[0], atoi(Arguments[1].c_str()))) == false)
 		{
-			ActiveProcess->SetState(State::Terminated);
+			ActiveProcess->setStateAndMoveToRespectiveList(State::Terminated);
 			rlutil::setColor(rlutil::LIGHTRED);
 			cout << "Brak odbiorcy o podanym PID!" << endl;
 			cout << "Proces przejdzie w stan Terminated" << endl;

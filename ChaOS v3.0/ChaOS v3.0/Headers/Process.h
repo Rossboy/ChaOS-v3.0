@@ -35,7 +35,7 @@ public:
 	int registers[4];
 	static int processesCounter;
 	PCB(std::string fileName, int GID);
-	void SetState(State newState);
+	void setStateAndMoveToRespectiveList(State newState);
 	void SetProcesBurstTime(int newBurstTime);
 	int GetProcesBurstTime();
 	int GetPID();
