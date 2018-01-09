@@ -42,6 +42,10 @@ void PCB::SetState(State newState)
 		pm->AddProcessToWaiting(this);
 		pm->RemoveProcessFromReady(this);
 	}
+	else if (newState == State::Terminated)
+	{
+		pm->killProcess(this->PID);
+	}
 }
 void PCB::SetProcesBurstTime(int newBurstTime)
 {
