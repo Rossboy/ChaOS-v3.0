@@ -45,6 +45,7 @@ class Interpreter
 		std::make_pair("BD",std::make_pair(29,0)), //PrzejdŸ do folderu poprzedniego
 		std::make_pair("OF",std::make_pair(30,1)), //Otwórz plik
 		std::make_pair("CLF",std::make_pair(31,0)), //Zamknij plik
+		std::make_pair("XR",std::make_pair(36,1)), //Eksport rejestru do pliku
 
 		//Procesy
 		std::make_pair("CP",std::make_pair(13,2)), //Utwórz proces

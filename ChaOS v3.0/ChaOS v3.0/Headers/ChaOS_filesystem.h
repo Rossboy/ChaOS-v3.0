@@ -66,6 +66,8 @@ public:
 
 	//file* currentFile;
 	uShort getRootDir();
+
+	std::string getPath();
 private:
 	c_uShort allocateSector();
 	void freeSector(uShort number);
@@ -76,7 +78,8 @@ private:
 	uShort currentDirFirst;
 	uShort currentDirSector;
 	uShort rootDirSector;
-
+	std::stack<uShort> ShellPath;
+	uShort ShellCurrentDir;
 	disk_drive disk;
 
 	ConditionVariable fileSynchronization[32];

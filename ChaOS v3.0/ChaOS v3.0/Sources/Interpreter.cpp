@@ -60,7 +60,7 @@ namespace cmd {
 	void Return(const std::vector<std::string>& Arguments)
 	{
 		std::cout<< ActiveProcess->registers[atoi(Arguments[0].c_str())] << std::endl;
-		end();
+		//end();
 	}
 	//ok
 
@@ -152,17 +152,45 @@ namespace cmd {
 	}//done
 	//ok
 
+
+
 	void equal(const std::vector<std::string>& Arguments)
 	{
+		if (ActiveProcess->registers[atoi(Arguments[0].c_str())] - atoi(Arguments[0].c_str()) == 0)
+		{
+			ActiveProcess->zero = true;
+		}
+		else
+		{
+			ActiveProcess->zero = false;
+		}
 
 	}
 
 
 	void lessThan(const std::vector<std::string>& Arguments)
 	{
-
+		if (ActiveProcess->registers[atoi(Arguments[0].c_str())] - atoi(Arguments[0].c_str()) < 0)
+		{
+			ActiveProcess->zero = true;
+		}
+		else
+		{
+			ActiveProcess->zero = false;
+		}
 	}
 
+	void greaterThan(const std::vector<std::string>& Arguments)
+	{
+		if (ActiveProcess->registers[atoi(Arguments[0].c_str())] - atoi(Arguments[0].c_str()) > 0)
+		{
+			ActiveProcess->zero = true;
+		}
+		else
+		{
+			ActiveProcess->zero = false;
+		}
+	}
 
 	void equalOrLessThan(const std::vector<std::string>& Arguments)
 	{
@@ -236,6 +264,10 @@ namespace cmd {
 		fs->appendFile(Arguments[0]);
 	}
 	//ok
+	void exportReg(const std::vector<std::string>& Arguments)
+	{
+		fs->appendFile(to_string(ActiveProcess->registers[atoi(Arguments[0].c_str())]));
+	}
 	void writeFile(const std::vector<std::string>& Arguments)
 	{
 		//std::clog << "Wykonuje siê operacja pisania do pliku..." << std::endl;
@@ -448,6 +480,9 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 		break;
 	case 35:
 		cmd::checkForMessages(Arguments);
+		break;
+	case 36:
+		cmd::exportReg(Arguments);
 		break;
 	default:
 		std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;

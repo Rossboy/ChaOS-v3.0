@@ -45,6 +45,7 @@ void PCB::SetState(State newState)
 	else if (newState == State::Terminated)
 	{
 		pm->killProcess(this->PID);
+		ActiveProcess = nullptr;
 	}
 }
 void PCB::SetProcesBurstTime(int newBurstTime)

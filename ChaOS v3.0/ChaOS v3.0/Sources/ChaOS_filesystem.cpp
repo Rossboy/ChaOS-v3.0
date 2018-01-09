@@ -2,8 +2,37 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <deque>
+
+extern PCB shell;
 
 extern PCB* ActiveProcess;
+
+enum class CharTable : char
+{
+	//Corner Top Left
+	CTL = char(218),
+	//Corner Top Right
+	CTR = char(191),
+	//Corner Bottom Left
+	CBL = char(192),
+	//Corner Bottom Right
+	CBR = char(217),
+	//Vertical Line Right
+	VLR = char(195),
+	//Vertical Line Left
+	VLL = char(180),
+	//Vertical Line
+	VL = char(179),
+	//Horizontal Line Top
+	HLT = char(193),
+	//Horizontal Line Bottom
+	HLB = char(194),
+	//Horizontal Line
+	HL = char(196),
+	//It's only cross
+	Cross = char(197)
+};
 
 
 
@@ -76,6 +105,32 @@ ChaOS_filesystem::~ChaOS_filesystem()
 uShort ChaOS_filesystem::getRootDir()
 {
 	return rootDirSector;
+}
+
+std::string ChaOS_filesystem::getPath()
+{
+	std::stack<uShort> temp = ShellPath;
+	std::deque<uShort> path;
+	while (!temp.empty())
+	{
+		path.push_back(temp.top());
+		temp.pop();
+	}
+
+	std::string result = "ROOT";
+	while(!path.empty())
+	{
+		result += '/';
+
+		char sector[32];
+		disk.readSector(path.back(), sector);
+		for (int j = 0; j < 5; j++)
+		{
+			if (sector[j + 24] != 0) result += sector[j + 24];
+		}
+		path.pop_back();
+	}
+	return result;
 }
 
 c_uShort ChaOS_filesystem::allocateSector()
@@ -299,17 +354,24 @@ std::string ChaOS_filesystem::listDirectory()
 	std::ostringstream result;
 	char dirSector[32];
 	disk.readSector(ActiveProcess->currentDir, dirSector);
-	result << "\n+----------------------------+-----------+---------+\n" << "|";
-
+	result << "   " << std::string(1, char(CharTable::CTL)) + std::string(36, char(CharTable::HL)) + std::string(1, char(CharTable::HLB)) + std::string(11, char(CharTable::HL)) + std::string(1, char(CharTable::HLB)) + std::string(11, char(CharTable::HL)) + std::string(1, char(CharTable::CTR)) + "\n   " << std::string(1, char(CharTable::VL));
 	result << " Current directory is ";
 	for (int i = 24; i < 29; i++)
 	{
 		result << dirSector[i];
 	}
-	result << " | First: " << std::left << std::setw(2) << unsigned short(dirSector[29]) << " | Size: " << std::left << std::setw(2) << unsigned short(dirSector[30]) << "|";
-	result << "\n+=========+=========++=======+=+=========+=========+\n" << "| NAME    | TYPE    || FIRST   | CHARS   | SECTORS |\n" << "+---------+---------++---------+---------+---------+\n";
 
+
+	result << "         " << std::string(1, char(CharTable::VL)) << " First: " << std::left << std::setw(2) << unsigned short(dirSector[29]) << " " << std::string(1, char(CharTable::VL)) << " Size: " << std::left << std::setw(2) << unsigned short(dirSector[30]) << "  " << std::string(1, char(CharTable::VL));
+	result << "\n   " << char(198) << std::string(11, char(205)) << char(209) << std::string(11, char(205)) << char(209) << char(209) << std::string(11, char(205)) << char(216) << std::string(11, char(205)) << char(216) << std::string(11, char(205)) << char(181) << "\n"
+		<< "   " << std::string(1, char(CharTable::VL)) << " NAME      " << std::string(1, char(CharTable::VL)) << " TYPE      " << std::string(1, char(CharTable::VL)) << std::string(1, char(CharTable::VL)) << " FIRST     " << std::string(1, char(CharTable::VL)) << " CHARS     " << std::string(1, char(CharTable::VL)) << " SECTORS   " << std::string(1, char(CharTable::VL)) << "\n"
+		<< "   " << char(198) << std::string(11, char(205)) << char(216) << std::string(11, char(205)) << char(216) << char(216) << std::string(11, char(205)) << char(216) << std::string(11, char(205)) << char(216) << std::string(11, char(205)) << char(181);
 	char row[8];
+
+
+	//<< std::string(1, char(CharTable::VL)) << " NAME      " << std::string(1, char(CharTable::VL)) << " TYPE      " << std::string(1, char(CharTable::VL)) << std::string(1, char(CharTable::VL)) << " FIRST     " << std::string(1, char(CharTable::VL)) << " CHARS     " << std::string(1, char(CharTable::VL)) << " SECTORS   " << std::string(1, char(CharTable::VL)) << "\n"
+		//<< char(198) << std::string(11, char(205)) << char(216) << std::string(11, char(205)) << char(216) << char(216) << std::string(11, char(205)) << char(216) << std::string(11, char(205)) << char(216) << std::string(11, char(205)) << char(181) << "\n";
+
 
 	// Wypisywanie kolejnych wpisów
 	while (currentDirSector)
@@ -320,30 +382,35 @@ std::string ChaOS_filesystem::listDirectory()
 			if (dirSector[j] != 0)
 			{
 				getRow(&dirSector[j], row);
-				result << "| ";
+				result << "\n   " << char(CharTable::VL) << " ";
 				for (int i = 0; i < 5; i++)
 				{
 					result << row[i];
 				}
 				char fileSector[32];
 				disk.readSector(row[5], fileSector);
-				result << "   | " << row[7] << "       || " << std::left << std::setw(2) << int(row[5]) << "      | ";
+				result << "     " << std::string(1, char(CharTable::VL)) << " " << row[7] << "         " << std::string(1, char(CharTable::VL)) << std::string(1, char(CharTable::VL)) << " " << std::left << std::setw(2) << int(row[5]) << "      ";
 				if (row[7] == char(type::file))
 				{
-					result << std::left << std::setw(3) << (((unsigned int)fileSector[0]) & 255) << "     | " << std::left << std::setw(2) << (((unsigned int)fileSector[1]) & 255) << "      |";
+					result << "  " << char(CharTable::VL) << " " << std::left << std::setw(3) << (((unsigned int)fileSector[0]) & 255) << "       " << char(CharTable::VL) << " " << std::left << std::setw(2) << (((unsigned int)fileSector[1]) & 255) << "        " << char(CharTable::VL);
 				}
 				else
 				{
 					char sector[32];
 					disk.readSector(row[5], sector);
-					result << "        | " << (((unsigned int)fileSector[30]) & 255) << "       |";
+					result << "  " << char(CharTable::VL) << "           " << char(CharTable::VL) << " " << (((unsigned int)fileSector[30]) & 255) << "         " << char(CharTable::VL);
 				}
 				//result << "" << (unsigned int)dirSector[5 + j] << "  |" << ((dirSector[7 + j] == char(type::dir)) ? ' ' : char(dirSector[6 + j] + 48)) << "\t " << dirSector[7 + j] << std::endl;
-				result << "\n+---------+---------++---------+---------+---------+\n";
+				//result << "\n+---------+---------++---------+---------+---------+\n";
+
+				result << "\n   " << char(CharTable::VLR) << std::string(11, char(196)) << char(CharTable::Cross) << std::string(11, char(196)) << char(CharTable::Cross) << char(CharTable::Cross) << std::string(11, char(196)) << char(CharTable::Cross) << std::string(11, char(196)) << char(CharTable::Cross) << std::string(11, char(196)) << char(CharTable::VLL) << "";
+				//result << "\r" << char(CharTable::CBL) << std::string(11, char(196)) << char(CharTable::HLT) << std::string(11, char(196)) << char(CharTable::HLT) << char(CharTable::HLT) << std::string(11, char(196)) << char(CharTable::HLT) << std::string(11, char(196)) << char(CharTable::HLT) << std::string(11, char(196)) << char(CharTable::CBR) << "\n";
+
 			}
 		}
 		currentDirSector = dirSector[31];
 	}
+	result << "\r   " << char(CharTable::CBL) << std::string(11, char(196)) << char(CharTable::HLT) << std::string(11, char(196)) << char(CharTable::HLT) << char(CharTable::HLT) << std::string(11, char(196)) << char(CharTable::HLT) << std::string(11, char(196)) << char(CharTable::HLT) << std::string(11, char(196)) << char(CharTable::CBR) << "\n";
 	currentDirSector = currentDirFirst;
 	return result.str();
 }
@@ -353,8 +420,11 @@ void ChaOS_filesystem::changeDirectory(const char * name)
 	uShort temp = search(name, type::dir);
 	if (temp)
 	{
-		ActiveProcess->returnPath.push(currentDirFirst);
+		ActiveProcess->returnPath.push(temp);
 		ActiveProcess->currentDir = temp;
+
+		ShellPath.push(temp);
+		ShellCurrentDir = temp;
 	}
 	else
 	{
@@ -375,10 +445,27 @@ void ChaOS_filesystem::backDirectory()
 		ActiveProcess->currentDir = ActiveProcess->returnPath.top();
 		ActiveProcess->returnPath.pop();
 	}
+
+	if (ShellPath.empty())
+	{
+		rootDirectory();
+	}
+	else
+	{
+		ShellCurrentDir = ShellPath.top();
+		ShellPath.pop();
+	}
+
 }
 
 void ChaOS_filesystem::rootDirectory()
 {
+	while (!ShellPath.empty())
+	{
+		ShellPath.pop();
+	}
+	ShellCurrentDir = rootDirSector;
+
 	while (!ActiveProcess->returnPath.empty())
 	{
 		ActiveProcess->returnPath.pop();
@@ -940,11 +1027,11 @@ std::string ChaOS_filesystem::printDiskStats()
 	freeSectorBitVector = temp.INT;
 	result << "     Sektory: " << std::endl;
 	result << "     " << asBitVector(freeSectorBitVector) << std::endl;
-	result << "        :^^^^^^^:^^^^^^^:^^^^^^^:^^^^^^^" << std::endl;
-	result << "     Liczba wolnych sektorów: " << unsigned int(freeSectorCount) << "/" << disk.numberOfSectors << std::endl;
-	result << "     Wolne: " << setBitNumber(freeSectorBitVector) << std::endl<<std::endl;;
-	result << "     Liczba zajętych sektorów: " << unsigned int(disk.numberOfSectors - freeSectorCount) << "/" << disk.numberOfSectors << std::endl;
-	result << "     Zajęte: " << setBitNumber(~freeSectorBitVector) << std::endl<< std::endl;
+	result << "        0^^^^^^^1^^^^^^^2^^^^^^^3^^^^^^^" << std::endl << std::endl;;
+	result << "     Liczba wolnych sektorow: " << unsigned int(freeSectorCount) << "/" << disk.numberOfSectors << std::endl;
+	result << "     Wolne: " << setBitNumber(freeSectorBitVector) << std::endl << std::endl;;
+	result << "     Liczba zajetych sektorow: " << unsigned int(disk.numberOfSectors - freeSectorCount) << "/" << disk.numberOfSectors << std::endl;
+	result << "     Zajete: " << setBitNumber(~freeSectorBitVector) << std::endl << std::endl;
 	result << "     Ustawione zmienne warunkowe (ID pliku): ";
 	for (int i = 0; i < 32; i++)
 	{
