@@ -5,11 +5,13 @@
 #include <algorithm>
 #include <vector>
 #include "../Headers/ChaOS_filesystem.h"
+#include "../Headers/ProcessScheduler.h"
 
 extern PCB* ActiveProcess;
 int PCB::processesCounter = 0;
 extern ChaOS_filesystem* fs;
 extern ProcessesManager* pm;
+extern ProcessScheduler* ps;
 PCB::PCB(std::string programName, int GID):points()
 {
 	this->PID = processesCounter++;

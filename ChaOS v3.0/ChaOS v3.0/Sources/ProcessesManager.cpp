@@ -91,7 +91,7 @@ void ProcessesManager::killProcess(int PID)
 {
 	if (PID == 1)
 	{
-		std::cout << " Nie mozna wykonac operacji na procesie bezczynnosci. " << std::endl;
+		std::cout << " Nie mozna wykonac operacji na procesie bezczynnosci. \n";
 	}
 	else
 	{

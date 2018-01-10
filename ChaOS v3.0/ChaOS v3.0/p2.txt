@@ -1,1 +1,1 @@
-OF dupa SF " dupa dupa dupa " AP " spacja spacja " CLF SP
+OF plik SF " plik plik- plik " AP " spacja spacja " CLF SP
