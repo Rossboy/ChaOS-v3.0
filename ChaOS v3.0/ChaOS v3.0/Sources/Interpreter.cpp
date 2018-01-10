@@ -303,9 +303,14 @@ namespace cmd {
 	{
 		pm->createProcess(Arguments[0], atoi(Arguments[1].c_str()));
 	}
-	//tworzenie procesu, do uzupelnienia
+	//OK
 
-	//tworzenie procesu
+	void makeProcessWithAddidionalSpace(const std::vector<std::string>& Arguments)
+	{
+		pm->createProcess(Arguments[0], atoi(Arguments[1].c_str()),stoi(Arguments[2]));
+	}
+	//OK
+
 	//void executeProcess(const std::vector<std::string>& Arguments)
 	//{
 
@@ -479,6 +484,9 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 	case 36:
 		cmd::exportReg(Arguments);
 		break;
+	case 37:
+		cmd::makeProcessWithAddidionalSpace(Arguments);
+
 	default:
 		std::cout << "ERROR - NIE OBSlUGIWANE POLECENIE!" << std::endl;
 
