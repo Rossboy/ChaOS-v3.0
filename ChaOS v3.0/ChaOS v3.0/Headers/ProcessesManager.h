@@ -14,7 +14,7 @@ public:
 	std::list<PCB*>waitingProcesses{};
 	std::list<PCB*>list{};
 	std::list<PCB*>readyProcesses{};
-	ProcessesManager(); //Poprawi³em bo by³o {}; i przez to by³ problem ¿e konstruktor jest ju¿ zdefiniowany - Bartek
+	ProcessesManager(); //Poprawilem bo bylo {}; i przez to byl problem ze konstruktor jest juz zdefiniowany - Bartek
 	void createProcess(std::string fileName, int GID);
 	void createProcess(std::string fileName, int GID, int AddidtionalSpace);
 
@@ -26,7 +26,7 @@ public:
 	// Albert -- napisalem se funkcje do zwracania std::list<Process*>readyProcesses;
 	std::list<PCB*> GiveReadyProcessesList();
 	std::list<PCB*> GiveWaitingProcessesList();
-	//Konrad: potrzebowa³em tego heh
+	//Konrad: potrzebowalem tego heh
 	std::list<std::list<PCB*>> getAllProcesseslist();
 	void AddProcessToReady(PCB*);
 	void RemoveProcessFromReady(PCB*);

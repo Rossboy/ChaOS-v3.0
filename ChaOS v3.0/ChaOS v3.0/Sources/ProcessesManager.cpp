@@ -10,7 +10,7 @@
 extern MemoryManager *mm;
 extern PCB* ActiveProcess;
 extern PCB shell;
-//Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
+//Tworzenie w konstruktorze pierwszej listy dla wszystkich procesow ,listy 
 ProcessesManager::ProcessesManager()
 {
 	createProcess("pb", 0); //Tworzenie procesu bezczynnosci GID = 0
@@ -168,7 +168,7 @@ void ProcessesManager::killProcess(int PID)
 		PCB* toRemove = findPCBbyPID(PID);
 		if (ActiveProcess == toRemove)
 		{
-			ActiveProcess = nullptr;
+			ActiveProcess = findPCBbyPID(1);
 		}
 		RemoveProcessFromWaiting(toRemove);
 		RemoveProcessFromReady(toRemove);
@@ -184,7 +184,7 @@ void ProcessesManager::killProcess(int PID)
 			std::list<PCB * > * removeFrom = nullptr;
 
 			// iterujemy po listcie list -- Bartek
-			// &_list - dlatego, ¿e potrzebujemy adresu listy  ktorej pozniej bêdziemy modyfikowac -- Bartek
+			// &_list - dlatego, ze potrzebujemy adresu listy  ktorej pozniej bedziemy modyfikowac -- Bartek
 			for (auto &_list : allProcesses)
 			{
 				for (auto element : _list)
@@ -286,7 +286,7 @@ std::list<std::list<PCB*>> ProcessesManager::getAllProcesseslist()
 {
 	return allProcesses;
 }
-//Metoda dodaj¹ca proces do listy gotowoœci
+//Metoda dodajaca proces do listy gotowosci
 void ProcessesManager::AddProcessToReady(PCB* p) {
 	if (p != &shell) {
 		readyProcesses.push_back(p);
