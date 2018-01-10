@@ -557,9 +557,11 @@ void Interpreter::DoCommand()
 			//obs³uga b³êdów.
 			if (ActiveProcess->errorCode != 0)
 			{
+				rlutil::setColor(rlutil::LIGHTRED);
 				std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
 				std::cout << "Na rzecz b³êdu, program zostaje zakoñczony." << std::endl;
 				pm->killProcess(ActiveProcess->GetPID());
+				rlutil::setColor(rlutil::LIGHTGREEN);
 			}
 		}
 	}
