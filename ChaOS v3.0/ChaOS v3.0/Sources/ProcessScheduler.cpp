@@ -18,6 +18,7 @@ void ProcessScheduler::RunProcess()
 {
 	if (ActiveProcess == nullptr || ActiveProcess->GetState()!=State::Ready || ActiveProcess->wait)
 	{
+		ActiveProcess = pm->findPCBbyPID(1);
 		SRTSchedulingAlgorithm();
 	}
 
