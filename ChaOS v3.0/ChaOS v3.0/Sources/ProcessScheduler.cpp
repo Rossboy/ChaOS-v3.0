@@ -16,7 +16,7 @@ void ProcessScheduler::RunProcess(int count)
 
 void ProcessScheduler::RunProcess()
 {
-	if (ActiveProcess == nullptr)
+	if (ActiveProcess == nullptr || ActiveProcess->GetState()!=State::Ready || ActiveProcess->wait)
 	{
 		SRTSchedulingAlgorithm();
 	}
@@ -29,7 +29,7 @@ void ProcessScheduler::RunProcess()
 			while (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4)
 			{
 				pm->killProcess(ActiveProcess->GetPID());
-				ActiveProcess = nullptr;
+				ActiveProcess = pm->findPCBbyPID(1);
 				instructions = 0;
 
 				//zabezpieczenie przed nullptr; zanim cos sie stanie - ustawiany jest proces bezczynnosci
@@ -58,6 +58,12 @@ void ProcessScheduler::RunProcess()
 	if (ActiveProcess->GetPID() > 1) {
 		instructions++;
 		//std::cout << "Ten" << ActiveProcess->GetPID() << "\t" << instructions << std::endl;
+	}
+	if(ActiveProcess->wait)
+	{
+		ActiveProcess = pm->findPCBbyPID(1);
+		SRTSchedulingAlgorithm();
+
 	}
 }
 

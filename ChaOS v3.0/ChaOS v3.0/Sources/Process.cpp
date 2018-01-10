@@ -33,21 +33,25 @@ PCB::PCB(std::string programName, int GID):points()
 
 void PCB::setStateAndMoveToRespectiveList(State newState)
 {
-	this->state = newState;
 	if (newState == State::Ready && this->GetState()!=State::Ready)
 	{
+		this->state = newState;
 		pm->RemoveProcessFromWaiting(this);
 		pm->AddProcessToReady(this);
 	}
 	else if (newState == State::Waiting && this->GetState() != State::Waiting)
 	{
-		pm->AddProcessToWaiting(this);
+		this->state = newState;
 		pm->RemoveProcessFromReady(this);
+		pm->AddProcessToWaiting(this);
+	
+		
 	}
 	else if (newState == State::Terminated && this->GetState() != State::Terminated)
 	{
+		this->state = newState;
+		if (ActiveProcess->GetPID() == this->GetPID())ActiveProcess = pm->findPCBbyPID(1);
 		pm->killProcess(this->PID);
-
 	}
 }
 void PCB::SetProcesBurstTime(int newBurstTime)
