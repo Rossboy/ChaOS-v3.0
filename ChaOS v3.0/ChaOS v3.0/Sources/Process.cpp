@@ -24,7 +24,7 @@ PCB::PCB(std::string programName, int GID):points()
 	this->registers[3] = 0;
 	this->burstTime = 10;
 	this->programName = programName;
-	this->state = State::Waiting;
+	this->state = State::Ready;
 	this->errorCode = 0;
 	this->zero = 0;
 	//this->currentDir = fs->getRootDir();
