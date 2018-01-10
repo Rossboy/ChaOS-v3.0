@@ -155,6 +155,7 @@
     <Text Include="smTest.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\Assembler.xlsx" />
     <None Include="Dokumentacja ChaOS.docx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -11,7 +11,7 @@ class Interpreter
 	
 
 
-	//liczba rozkazow = 35 + error (99)
+	//liczba rozkazow = 37 + error (99)
 	//tablica rozkazow <KOD ROZKAZU <ID rozkazu/ilosc argumentow>>
 	std::vector<std::pair<std::string, std::pair<int, int >>> CommandTab{
 
@@ -48,6 +48,7 @@ class Interpreter
 		std::make_pair("XR",std::make_pair(36,1)), //Eksport rejestru do pliku
 
 		//Procesy
+		std::make_pair("CPA",std::make_pair(37,3)), //Utworz proces
 		std::make_pair("CP",std::make_pair(13,2)), //Utworz proces
 		std::make_pair("EX",std::make_pair(14,1)), //Wykonaj program?
 		std::make_pair("PS",std::make_pair(15,0)), //Wyswietl procesy

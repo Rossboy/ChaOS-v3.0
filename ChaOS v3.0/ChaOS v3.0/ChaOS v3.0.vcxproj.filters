@@ -133,5 +133,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Dokumentacja ChaOS.docx" />
+    <None Include="..\..\..\Assembler.xlsx" />
   </ItemGroup>
 </Project>
