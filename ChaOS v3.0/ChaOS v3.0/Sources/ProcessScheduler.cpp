@@ -24,7 +24,7 @@ void ProcessScheduler::RunProcess()
 
 	else
 	{
-		//Sprawdzenie, czy wyst¹pi³ jakiœ b³¹d lub proces zakoñczy³ siê wykonywaæ
+		//Sprawdzenie, czy wystapil jakis blad lub proces zakonczyl sie wykonywac
 		if (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4)
 		{
 			while (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4)
@@ -48,7 +48,7 @@ void ProcessScheduler::RunProcess()
 
 		else
 		{
-			//Planista wywo³ywany za ka¿dym razem - obs³uguje wszystkie mo¿liwe przypadki
+			//Planista wywolywany za kazdym razem - obsluguje wszystkie mozliwe przypadki
 			SRTSchedulingAlgorithm();
 		}
 	}
@@ -102,7 +102,7 @@ void ProcessScheduler::SRTSchedulingAlgorithm()
 		//Sprawdzenie przy pomoy PID, czy wybrany proces jest na pewno innym procesem
 		if ((*iteratorToMinElement)->GetPID() != ActiveProcess->GetPID())
 		{
-			//Sprawdzenie, czy wybrany proces, obecnie ustawiony w iteratorze iteratorToMinElement, ma przewidywany czas krótszy od ActiveProcess
+			//Sprawdzenie, czy wybrany proces, obecnie ustawiony w iteratorze iteratorToMinElement, ma przewidywany czas krotszy od ActiveProcess
 			if ((*iteratorToMinElement)->GetProcesBurstTime() < ActiveProcess->GetProcesBurstTime()) //nie wiem do konca, czy z tym differenceCounter, czy jescze nie /// - differenceCounter
 			{
 				ActiveProcess = *iteratorToMinElement;
@@ -115,7 +115,7 @@ void ProcessScheduler::SRTSchedulingAlgorithm()
 			}
 		}
 
-		//Sytuacja, w której zosta³ wybrany ten sam proces, co ActiveProcess
+		//Sytuacja, w ktorej zostal wybrany ten sam proces, co ActiveProcess
 		else
 		{
 			return;

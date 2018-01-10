@@ -4,9 +4,9 @@ void MemoryManager::swapPageFromMemoryToSwapFile(PCB * pcb, int pageNumber)
 {
 	Page * PageTable = pcb->getPageTable();
 
-	if (freeSwapFileFrames.empty()) //je¿eli brak wolnych ramek w pliku wymiany, to mamy problem
+	if (freeSwapFileFrames.empty()) //jezeli brak wolnych ramek w pliku wymiany, to mamy problem
 	{
-		pcb->errorCode = static_cast<int>(MemoryManagerErrorCodes::OUT_OF_MEMORY);; // nie powinno nigdy siê staæ
+		pcb->errorCode = static_cast<int>(MemoryManagerErrorCodes::OUT_OF_MEMORY);; // nie powinno nigdy sie stac
 		return;
 	}
 
@@ -24,7 +24,7 @@ void MemoryManager::swapPageFromMemoryToSwapFile(PCB * pcb, int pageNumber)
 void MemoryManager::swapPageFromSwapFileToMemory(PCB * pcb, int pageNumber)
 {
 	Page * PageTable = pcb->getPageTable();
-	ensureFreeMemoryFrame(); //sprawiamy, ¿e na pewno pojawi siê wolna ramka pamiêci
+	ensureFreeMemoryFrame(); //sprawiamy, ze na pewno pojawi sie wolna ramka pamieci
 
 	int newOccupiedMemoryFrame = getFreeMemoryFrame();
 	int newFreeSwapFileFrame = PageTable[pageNumber].frameOccupied; //zmiana stronicy z SF do RAM

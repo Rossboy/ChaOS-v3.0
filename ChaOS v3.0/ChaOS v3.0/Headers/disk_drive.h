@@ -4,10 +4,10 @@ using uShort = unsigned short;
 using c_uShort = const uShort;
 
 // Klasa disk_drive reprezentuje fizyczny dysk twardy
-// Dysk widoczny jest jako pamięć ciągła
-// Dysk może odczytać dowolny sektor
-// Dysk może zapisać dowolny sektor
-// Volume Contol Block zawiera informacje potrzebne do odczytu istniejących sektorów oraz alokacji nowych
+// Dysk widoczny jest jako pamiec ciagla
+// Dysk moze odczytac dowolny sektor
+// Dysk moze zapisac dowolny sektor
+// Volume Contol Block zawiera informacje potrzebne do odczytu istniejacych sektorow oraz alokacji nowych
 
 class disk_drive final
 {

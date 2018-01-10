@@ -9,7 +9,7 @@ ConditionVariable::ConditionVariable()
 }
 
 
-// Zmienia stan procesu na waiting, dodaje do listy procesów oczekuj¹cych 
+// Zmienia stan procesu na waiting, dodaje do listy procesow oczekujacych 
 void ConditionVariable::wait(PCB* process)
 {
 	if (resourceOccupied)
@@ -20,7 +20,7 @@ void ConditionVariable::wait(PCB* process)
 		this->resourceOccupied = true;
 		//std::cout << "ZMIENNA WARUNKOWA \nProces: \n";
 		//process->displayProcess();
-		//std::cout << "poprzez wait(PCB* process) znalaz³ siê na liœcie procesów oczekuj¹cych." << std::endl;
+		//std::cout << "poprzez wait(PCB* process) znalazl sie na liscie procesow oczekujacych." << std::endl;
 	}
 	else if (!resourceOccupied && this->waitingProcesses.empty())
 	{
@@ -28,7 +28,7 @@ void ConditionVariable::wait(PCB* process)
 		this->resourceOccupied = true;
 		//std::cout << "ZMIENNA WARUNKOWA \nProces: \n";
 		//process->displayProcess();
-		//std::cout << "poprzez wait(PCB* process) przeszed³ od razu do stanu ready." << std::endl;
+		//std::cout << "poprzez wait(PCB* process) przeszedl od razu do stanu ready." << std::endl;
 	}
 	else
 	{
@@ -37,8 +37,8 @@ void ConditionVariable::wait(PCB* process)
 }
 
 
-// Zmienia stan procesu na gotowy, usuwa go z listy procesów oczekuj¹cych i w³¹cza planistê.
-// Jeœli nic nie czeka pod zmienn¹ warunkow¹ to wywo³anie metody jest ignorowane.
+// Zmienia stan procesu na gotowy, usuwa go z listy procesow oczekujacych i wlacza planiste.
+// Jesli nic nie czeka pod zmienna warunkowa to wywolanie metody jest ignorowane.
 void ConditionVariable::signal()
 {
 	if (resourceOccupied && !waitingProcesses.empty())
@@ -65,7 +65,7 @@ void ConditionVariable::signal()
 }
 
 
-// Wypisuje jakieœ pierdo³y o PCB do sprawdzenia co tam siedzi w liœcie.
+// Wypisuje jakies pierdoly o PCB do sprawdzenia co tam siedzi w liscie.
 void ConditionVariable::displayWaitingProcesses()
 {
 	for (std::list<PCB*>::iterator it = waitingProcesses.begin(); it != waitingProcesses.end(); it++)
@@ -81,7 +81,7 @@ bool ConditionVariable::getResourceOccupied()
 }
 
 
-//Konrad - dopisa³em ¿eby proces-nadawca nie przechodzi³ od razu do ready
+//Konrad - dopisalem zeby proces-nadawca nie przechodzil od razu do ready
 void ConditionVariable::lockmessagesender()
 {
 	this->resourceOccupied = true;

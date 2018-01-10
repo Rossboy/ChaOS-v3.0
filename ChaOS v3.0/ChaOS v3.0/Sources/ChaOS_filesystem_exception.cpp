@@ -1,6 +1,6 @@
 ﻿#include "../Headers/ChaOS_filesystem_exception.h"
 
-// WYJĄTKI
+// WYJaTKI
 outOfMemory::outOfMemory()
 	: exception("EXCEPTION: Brak wolnych sektorow!")
 {

@@ -60,7 +60,7 @@ public:
 	file* currentFile;
 	unsigned short currentDir;
 	std::stack<uShort> returnPath;
-	//Stanislaw: nie rzucam wyjątków, tylko ustawiam flagę, tak jak ustaliliśmy
+	//Stanislaw: nie rzucam wyjatkow, tylko ustawiam flage, tak jak ustalilismy
 	
 	bool zero;
 	int errorCode;

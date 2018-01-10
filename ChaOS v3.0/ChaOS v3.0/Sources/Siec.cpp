@@ -113,20 +113,20 @@ void Siec::wyswietlwiad()
 	if (lista.empty()==true) std::cout << "Nie istnieje zaden proces!" << std::endl;
 	else
 	{
-		//wyœwietlanie wiadomoœci wszystkich procesów grupami
+		//wyswietlanie wiadomosci wszystkich procesow grupami
 		for (std::list<std::list<PCB*>>::iterator it = lista.begin(); it != lista.end(); it++)
 		{
 			std::cout << "Wyswietlanie wiadomosci procesow z grupy o ID " << (*it->begin())->GetGID() << std::endl;
 			for (std::list<PCB*>::iterator et = it->begin(); et != it->end(); et++)
 			{
-				//sprawdzenie czy proces posiada jakieœ nieodczytane wiadomosci
+				//sprawdzenie czy proces posiada jakies nieodczytane wiadomosci
 				std::list<SMS> wiadomosci = (*et)->getMessages();
 				if (wiadomosci.size() == 0) std::cout << "Brak wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
 				else
 				{
 					std::cout << "Wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
 					int i = 1;
-					//iteracja po liœcie wiadomoœci procesu wyœwietlaj¹c wszystkie
+					//iteracja po liscie wiadomosci procesu wyswietlajac wszystkie
 					for (std::list<SMS>::iterator zt = wiadomosci.begin(); zt != wiadomosci.end(); zt++)
 					{
 						std::cout << "Wiadomosc nr " << i << ":" << std::endl << "ID procesu wysylajacego: " << zt->getID() << std::endl << "Tresc wiadomosci: " << zt->getwiad() << std::endl;
