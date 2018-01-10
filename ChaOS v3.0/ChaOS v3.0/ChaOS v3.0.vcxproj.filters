@@ -130,6 +130,9 @@
     <Text Include="fifoTest.txt">
       <Filter>Programy</Filter>
     </Text>
+    <Text Include="fileTest.txt">
+      <Filter>Programy</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dokumentacja ChaOS.docx" />
