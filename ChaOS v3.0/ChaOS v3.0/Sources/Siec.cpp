@@ -22,17 +22,17 @@ void Siec::wyslij(std::string wiad, int ID)
 	else
 	{
 		std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
-		//przeszukiwanie listy procesów w poszukiwaniu grupy procesu aktywnego (procesy mog¹ siê komunikowaæ tylko w obrêbie tej samej grupy)
+		//przeszukiwanie listy procesow w poszukiwaniu grupy procesu aktywnego (procesy moga sie komunikowac tylko w obrebie tej samej grupy)
 		for (auto it = lista.begin(); it != lista.end(); it++)
 		{
 			if (ActiveProcess->GetGID() == (*it->begin())->GetGID())
 			{
-				//jeœli GID siê zgadza to szukamy procesu o wskazanym ID
+				//jesli GID siê zgadza to szukamy procesu o wskazanym ID
 				for (auto et = it->begin(); et != it->end(); et++)
 				{
 					if (ID == (*et)->GetPID())
 					{
-						//stworzenie zmiennej warunkowej odpowiadaj¹cej za synchroniczn¹ komunikacjê
+						//stworzenie zmiennej warunkowej odpowiadajacej za synchroniczna komunikacje
 						ConditionVariable x;
 						x.lockmessagesender();
 						cv.emplace(std::make_pair(ActiveProcess->GetPID(), x));
@@ -74,18 +74,18 @@ void Siec::odbierz(int adres)
 		SMS pom = ActiveProcess->getMessage();
 		ActiveProcess->deleteMessage();
 		mm->writeString(ActiveProcess, adres, pom.getwiad());
-		//skopiowanie listy wskaŸników do aktywnych procesów ¿eby iterowanie nie wywali³o programu w kosmos
+		//skopiowanie listy wskaznikow do aktywnych procesow zeby iterowanie nie wywalilo programu w kosmos
 		std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
 		for (auto it = lista.begin(); it != lista.end(); it++)
 		{
-			//sprawdzenie czy procesu maj¹ to samo ID grupy
+			//sprawdzenie czy procesu maja to samo ID grupy
 			if (ActiveProcess->GetGID() == (*it->begin())->GetGID())
 			{
 				for (auto et = it->begin(); et != it->end(); et++)
 				{
 					if (pom.getID() == (*et)->GetPID())
 					{
-						//zmiana procesu nadawcy na gotowy (czeka³ na odebranie wiadomoœci)
+						//zmiana procesu nadawcy na gotowy (czekal na odebranie wiadomoœci)
 						cv[pom.getID()].signal();
 						cv.erase(pom.getID());
 					}
