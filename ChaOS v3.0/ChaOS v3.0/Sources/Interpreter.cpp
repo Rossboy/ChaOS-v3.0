@@ -327,7 +327,8 @@ namespace cmd {
 	/* KOMUNIKACJA */
 	void sendMessage(const std::vector<std::string>& Arguments)
 	{
-		if ((s->wyslij(Arguments[0], atoi(Arguments[1].c_str()))) == false)
+		string message = mm->readString(ActiveProcess, stoi(Arguments[0]));
+		if ((s->wyslij(message, stoi(Arguments[1]))) == false)
 		{
 			ActiveProcess->setStateAndMoveToRespectiveList(State::Terminated);
 			rlutil::setColor(rlutil::LIGHTRED);
