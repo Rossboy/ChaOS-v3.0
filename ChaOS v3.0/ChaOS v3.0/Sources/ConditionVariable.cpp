@@ -2,7 +2,7 @@
 #include "../Headers/Process.h"
 #include <iostream>
 
-
+extern PCB shell;
 ConditionVariable::ConditionVariable()
 {
 	this->resourceOccupied = false;
@@ -12,7 +12,7 @@ ConditionVariable::ConditionVariable()
 // Zmienia stan procesu na waiting, dodaje do listy procesów oczekuj¹cych 
 void ConditionVariable::wait(PCB* process)
 {
-	if (resourceOccupied || !this->waitingProcesses.empty())
+	if (resourceOccupied)
 	{
 		process->setStateAndMoveToRespectiveList(State::Waiting);
 		process->wait = true;
@@ -26,7 +26,6 @@ void ConditionVariable::wait(PCB* process)
 	{
 		process->setStateAndMoveToRespectiveList(State::Ready);
 		this->resourceOccupied = true;
-		pm->AddProcessToReady(process);
 		//std::cout << "ZMIENNA WARUNKOWA \nProces: \n";
 		//process->displayProcess();
 		//std::cout << "poprzez wait(PCB* process) przeszed³ od razu do stanu ready." << std::endl;
@@ -46,7 +45,6 @@ void ConditionVariable::signal()
 	{
 		auto temp = waitingProcesses.front();
 		temp->setStateAndMoveToRespectiveList(State::Ready);
-		pm->AddProcessToReady(temp);
 		waitingProcesses.pop_front();
 
 		if (this->waitingProcesses.empty())

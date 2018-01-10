@@ -24,7 +24,7 @@ PCB::PCB(std::string programName, int GID):points()
 	this->registers[3] = 0;
 	this->burstTime = 10;
 	this->programName = programName;
-	this->state = State::Waiting;
+	this->state = State::Ready;
 	this->errorCode = 0;
 	this->zero = 0;
 	//this->currentDir = fs->getRootDir();
@@ -34,20 +34,20 @@ PCB::PCB(std::string programName, int GID):points()
 void PCB::setStateAndMoveToRespectiveList(State newState)
 {
 	this->state = newState;
-	if (newState == State::Ready)
+	if (newState == State::Ready && this->GetState()!=State::Ready)
 	{
 		pm->RemoveProcessFromWaiting(this);
 		pm->AddProcessToReady(this);
 	}
-	else if (newState == State::Waiting)
+	else if (newState == State::Waiting && this->GetState() != State::Waiting)
 	{
 		pm->AddProcessToWaiting(this);
 		pm->RemoveProcessFromReady(this);
 	}
-	else if (newState == State::Terminated)
+	else if (newState == State::Terminated && this->GetState() != State::Terminated)
 	{
 		pm->killProcess(this->PID);
-		ActiveProcess = nullptr;
+
 	}
 }
 void PCB::SetProcesBurstTime(int newBurstTime)

@@ -86,7 +86,7 @@ ChaOS_filesystem::ChaOS_filesystem()
 	//Tworzenie katalogu ROOT
 	rootDirSector = allocateSector();
 
-	char sector[32] = { 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 'R', 'O', 'O', 'T', '\0', rootDirSector, 1, 0 };
+	char sector[32] = { 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 'r', 'o', 'o', 't', '\0', rootDirSector, 1, 0 };
 	disk.writeSector(rootDirSector, sector);
 
 	currentDirFirst = rootDirSector;
@@ -1147,7 +1147,7 @@ void ChaOS_filesystem::clearDisk()
 		0,0,0,0, 0,0,0,0 };
 	disk.writeSector(0, VCB);
 	rootDirSector = allocateSector();
-	char sector[32] = { 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 'R', 'O', 'O', 'T', '\0', rootDirSector, 1, 0 };
+	char sector[32] = { 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0, 'r', 'o', 'o', 't', '\0', rootDirSector, 1, 0 };
 	disk.writeSector(rootDirSector, sector);
 	currentDirFirst = rootDirSector;
 	currentDirSector = rootDirSector;
