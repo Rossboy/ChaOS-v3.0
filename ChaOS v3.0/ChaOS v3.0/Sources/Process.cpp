@@ -61,7 +61,6 @@ void PCB::setStateAndMoveToRespectiveList(State newState)
 	else if (newState == State::Terminated && this->GetState() != State::Terminated)
 	{
 		this->state = newState;
-		if (this->currentFile != nullptr)fs->closeFile();
 		if (ActiveProcess->GetPID() == this->GetPID())ActiveProcess = pm->findPCBbyPID(1);
 		pm->killProcess(this->PID);
 	}

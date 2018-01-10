@@ -266,7 +266,7 @@ namespace cmd {
 	//ok
 	void exportReg(const std::vector<std::string>& Arguments)
 	{
-		fs->appendFile(to_string(ActiveProcess->registers[atoi(Arguments[0].c_str())])+" ");
+		fs->appendFile(to_string(ActiveProcess->registers[atoi(Arguments[0].c_str())]));
 	}
 	void writeFile(const std::vector<std::string>& Arguments)
 	{
@@ -365,7 +365,7 @@ namespace cmd {
 
 void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters, const std::vector<std::string>& Arguments)
 {
-	
+	int arg1, arg2;
 
 	switch (CommandParameters.first)
 	{
@@ -478,13 +478,13 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 	case 34://AP - dopisz do pliku
 		cmd::appendFile(Arguments);
 		break;
-	case 35://CM - check Messages
+	case 35:
 		cmd::checkForMessages(Arguments);
 		break;
-	case 36://XR - export Register
+	case 36:
 		cmd::exportReg(Arguments);
 		break;
-	case 37://CPA - Create Process With Additional Space
+	case 37:
 		cmd::makeProcessWithAddidionalSpace(Arguments);
 		break;
 	default:
