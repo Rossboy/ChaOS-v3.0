@@ -9,7 +9,6 @@
 
 extern MemoryManager *mm;
 extern PCB* ActiveProcess;
-
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
 ProcessesManager::ProcessesManager()
 {
@@ -95,59 +94,19 @@ void ProcessesManager::killProcess(int PID)
 	}
 	else
 	{
-		if (waitingProcesses.empty() == false)
+		PCB* toRemove = findPCBbyPID(PID);
+		if(ActiveProcess== toRemove)
 		{
-			// wskaznik na PCB do usuniecia -- Bartek
-			std::vector<PCB *> toRemove;
-
-			// poszukujemy w liscie procesow czekajacych PCB o PID ktory chcemy usunac -- Bartek
-			for (auto element : waitingProcesses)
-			{
-				if (element->GetGID() == PID)
-				{
-					// zaleziono wskaznik -- Bartek
-					toRemove.push_back(element);
-					break;
-				}
-			}
-
-			// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
-			if (toRemove.empty()==false)
-			{
-				for(auto x : toRemove)
-				waitingProcesses.remove(x);
-			}
+			ActiveProcess = nullptr;
 		}
-
-		if (readyProcesses.empty() == false)
-		{
-			// wskaznik na PCB do usuniecia -- Bartek
-			std::vector<PCB *> toRemove;
-
-			// poszukujemy w liscie procesow gotowych PCB o PID ktory chcemy usunac -- Bartek
-			for (auto element : readyProcesses)
-			{
-				if (element->GetGID() == PID)
-				{
-					// zaleziono wskaznik -- Bartek
-					toRemove.push_back(element);
-					break;
-				}
-			}
-
-			// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
-			if (toRemove.empty() == false)
-			{
-				for (auto x : toRemove)
-				readyProcesses.remove(x);
-			}
-
-		}
-
+		RemoveProcessFromWaiting(toRemove);
+		RemoveProcessFromReady(toRemove);
+		
 		if (allProcesses.empty() == false)
 		{
+
 			// wskaznik na PCB do usuniecia -- Bartek
-			PCB * toRemove = nullptr;
+			toRemove = nullptr;
 			// wskaznik do listy ktora bedzie usunieta z listy list, bo bedzie pusta -- Bartek
 			std::list<PCB * > * listToRemove = nullptr;
 			// wskaznik do listy wskaznikow PCB z ktorego usuwamy-- Bartek
@@ -262,59 +221,64 @@ void ProcessesManager::AddProcessToReady(PCB* p) {
 }
 void ProcessesManager::RemoveProcessFromReady(PCB* p) 
 {
+	/*Szpachlowanko */
+	//if (readyProcesses.empty() == false)
+	//{
+	//	// wskaznik na PCB do usuniecia -- Bartek
+	//	std::vector<PCB *> toRemove;
 
-	if (readyProcesses.empty() == false)
-	{
-		// wskaznik na PCB do usuniecia -- Bartek
-		std::vector<PCB *> toRemove;
+	//	// poszukujemy w liscie procesow gotowych PCB o PID ktory chcemy usunac -- Bartek
+	//	for (auto element : readyProcesses)
+	//	{
+	//		if (element->GetGID() == p->GetPID())
+	//		{
+	//			// zaleziono wskaznik -- Bartek
+	//			toRemove.push_back(element);
+	//			break;
+	//		}
+	//	}
 
-		// poszukujemy w liscie procesow gotowych PCB o PID ktory chcemy usunac -- Bartek
-		for (auto element : readyProcesses)
-		{
-			if (element->GetGID() == p->GetPID())
-			{
-				// zaleziono wskaznik -- Bartek
-				toRemove.push_back(element);
-				break;
-			}
-		}
+	//	// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
+	//	if (toRemove.empty() == false)
+	//	{
+	//		for (auto x : toRemove)
+	//			readyProcesses.remove(x);
+	//	}
 
-		// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
-		if (toRemove.empty() == false)
-		{
-			for (auto x : toRemove)
-				readyProcesses.remove(x);
-		}
+	//}
+	readyProcesses.remove_if([p](PCB * toRemove) {return p == toRemove; });
 
-	}
 }
 void ProcessesManager::AddProcessToWaiting(PCB* p) {
 	waitingProcesses.push_back(p);
 }
 void ProcessesManager::RemoveProcessFromWaiting(PCB* p) 
 {
-	if (waitingProcesses.empty() == false)
-	{
-		// wskaznik na PCB do usuniecia -- Bartek
-		std::vector<PCB *> toRemove;
 
-		// poszukujemy w liscie procesow czekajacych PCB o PID ktory chcemy usunac -- Bartek
-		for (auto element : waitingProcesses)
-		{
-			if (element->GetGID() == p->GetPID())
-			{
-				// zaleziono wskaznik -- Bartek
-				toRemove.push_back(element);
-				break;
-			}
-		}
+	/*szpachlowanko*/
+	//if (waitingProcesses.empty() == false)
+	//{
+	//	// wskaznik na PCB do usuniecia -- Bartek
+	//	std::vector<PCB *> toRemove;
 
-		// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
-		if (toRemove.empty() == false)
-		{
-			for (auto x : toRemove)
-				waitingProcesses.remove(x);
-		}
-	}
+	//	// poszukujemy w liscie procesow czekajacych PCB o PID ktory chcemy usunac -- Bartek
+	//	for (auto element : waitingProcesses)
+	//	{
+	//		if (element->GetGID() == p->GetPID())
+	//		{
+	//			// zaleziono wskaznik -- Bartek
+	//			toRemove.push_back(element);
+	//			break;
+	//		}
+	//	}
+
+	//	// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
+	//	if (toRemove.empty() == false)
+	//	{
+	//		for (auto x : toRemove)
+	//			waitingProcesses.remove(x);
+	//	}
+	//}
+	waitingProcesses.remove_if([p](PCB * toRemove) {return p == toRemove; });
 }
 

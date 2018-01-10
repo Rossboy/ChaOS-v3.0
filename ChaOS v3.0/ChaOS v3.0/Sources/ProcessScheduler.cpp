@@ -30,7 +30,6 @@ void ProcessScheduler::RunProcess()
 			while (ActiveProcess->errorCode != 0 || ActiveProcess->GetState() == 4)
 			{
 				pm->killProcess(ActiveProcess->GetPID());
-				ActiveProcess = nullptr;
 				//Zerowanie zmiennych pomocniczych do liczenia wykonanych instrukcji ActiveProcess
 				startCounter = endCounter = differenceCounter = 0;
 				instructions = 0;

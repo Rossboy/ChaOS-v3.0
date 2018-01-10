@@ -501,9 +501,9 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 //Wykonywanie rozkazu
 void Interpreter::DoCommand()
 {
-	if (ActiveProcess == &shell)
+	if (ActiveProcess == &shell || ActiveProcess==nullptr)
 	{
-		ActiveProcess == nullptr;
+		ActiveProcess = nullptr;
 		ps->RunProcess();
 	}
 	else {
@@ -540,7 +540,9 @@ void Interpreter::DoCommand()
 		}
 
 		//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;
-		std::cout << "Wykonywany proces: " << ActiveProcess->GetFileName() << " ID rozkazu: " << CommandParameters.first << " | Command name: " << command_code;
+		if (ActiveProcess != nullptr) {
+			std::cout << "Wykonywany proces: " << ActiveProcess->GetFileName() << " ID rozkazu: " << CommandParameters.first << " | Command name: " << command_code;
+		}
 		for (int i = 0; i < Arguments.size(); i++) {
 			std::cout << " | Arg[" << i << "]: " << Arguments[i] << " ";
 		}
@@ -552,7 +554,7 @@ void Interpreter::DoCommand()
 
 			RegStatus();
 
-			//Wybór rozkazu
+			
 
 			//obs³uga b³êdów.
 			if (ActiveProcess->errorCode != 0)
