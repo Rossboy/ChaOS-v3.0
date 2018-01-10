@@ -70,6 +70,8 @@ public:
 	uShort getRootDir();
 
 	std::string getPath();
+	void signalByID(uShort id);
+
 private:
 	c_uShort allocateSector();
 	void freeSector(uShort number);

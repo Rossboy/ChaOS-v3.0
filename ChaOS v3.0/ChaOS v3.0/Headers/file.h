@@ -13,6 +13,7 @@ class file final
 	friend class ChaOS_filesystem;
 public:
 	file();
+	uShort getID();
 	~file();
 	//void write(const std::string& text);
 	//std::string read();
