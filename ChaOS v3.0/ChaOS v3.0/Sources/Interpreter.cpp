@@ -20,11 +20,11 @@ extern Siec *s;
 extern ChaOS_filesystem *fs;
 extern ConditionVariable *cv;
 PCB shell("Shell", 0);
-//funkcje do obs³ugi komend
+//funkcje do obslugi komend
 namespace cmd {
 
 	///////////////////////////////////////////////////////////
-	/*OBS£UGA PROCESU*/
+	/*OBSlUGA PROCESU*/
 	void copyRegisters(const std::vector<std::string>& Arguments)
 	{
 		ActiveProcess->registers[atoi(Arguments[0].c_str())] = ActiveProcess->registers[atoi(Arguments[1].c_str())];
@@ -208,19 +208,19 @@ namespace cmd {
 	/*PLIKI*/
 	void openFile(const std::vector<std::string>& Arguments)
 	{
-		//std::clog << "Wykonuje siê operacja otwarcia pliku..." << std::endl;
+		//std::clog << "Wykonuje sie operacja otwarcia pliku..." << std::endl;
 		fs->openFile(Arguments[0].c_str());
 	}
 	//ok
 	void closeFile()
 	{
-		//std::clog << "Wykonuje siê operacja zamykania pliku..." << std::endl;
+		//std::clog << "Wykonuje sie operacja zamykania pliku..." << std::endl;
 		fs->closeFile();
 	}
 	//ok
 	void makeFile(const std::vector<std::string>& Arguments)
 	{
-		//std::clog << "Wykonuje siê operacja tworzenia ";
+		//std::clog << "Wykonuje sie operacja tworzenia ";
 		if (Arguments[1] == "plik") {
 			std::clog << "pliku..." << std::endl;
 			fs->create(Arguments[0].c_str(), ChaOS_filesystem::type::file);
@@ -236,31 +236,31 @@ namespace cmd {
 	//ok
 	void deleteFile(const std::vector<std::string>& Arguments)
 	{
-		//std::clog << "Wykonuje siê operacja usuwania pliku..." << std::endl;
+		//std::clog << "Wykonuje sie operacja usuwania pliku..." << std::endl;
 		fs->remove(Arguments[0].c_str());
 	}
 	//ok
 	void readFile()
 	{
-		//std::clog << "Wykonuje siê operacja czytania pliku..." << std::endl;
+		//std::clog << "Wykonuje sie operacja czytania pliku..." << std::endl;
 		std::cout << fs->readFile() << std::endl;
 	}
 	//ok
 	void listFiles()
 	{
-		//std::clog << "Wykonuje siê operacja listowania katalogu..." << std::endl;
+		//std::clog << "Wykonuje sie operacja listowania katalogu..." << std::endl;
 		std::cout << fs->listDirectory() << std::endl;
 	}
 	//ok
 	void changeFileName(const std::vector<std::string>& Arguments)
 	{
-		//std::clog << "Wykonuje siê operacja zmiany nazwy..." << std::endl;
+		//std::clog << "Wykonuje sie operacja zmiany nazwy..." << std::endl;
 		fs->rename(Arguments[0].c_str(), Arguments[1].c_str());
 	}
 	//ok
 	void appendFile(const std::vector<std::string>& Arguments)
 	{
-		//std::clog << "Wykonuje siê operacja dopisywania do pliku..." << std::endl;
+		//std::clog << "Wykonuje sie operacja dopisywania do pliku..." << std::endl;
 		fs->appendFile(Arguments[0]);
 	}
 	//ok
@@ -270,7 +270,7 @@ namespace cmd {
 	}
 	void writeFile(const std::vector<std::string>& Arguments)
 	{
-		//std::clog << "Wykonuje siê operacja pisania do pliku..." << std::endl;
+		//std::clog << "Wykonuje sie operacja pisania do pliku..." << std::endl;
 		fs->writeFile(Arguments[0]);
 	}
 	//ok
@@ -303,14 +303,14 @@ namespace cmd {
 	{
 		pm->createProcess(Arguments[0], atoi(Arguments[1].c_str()));
 	}
-	//tworzenie procesu, do uzupe³nienia
+	//tworzenie procesu, do uzupelnienia
 
 	//tworzenie procesu
 	//void executeProcess(const std::vector<std::string>& Arguments)
 	//{
 
 	//}
-	//nie wiem czy to w góle bêdzie
+	//nie wiem czy to w gole bedzie
 
 	//void listProcess(const std::vector<std::string>& Arguments)
 	//{
@@ -352,7 +352,7 @@ namespace cmd {
 		s->sprawdz();
 	}
 	///////////////////////////////////////////////////////////
-	/*PAMIÊÆ*/
+	/*PAMIec*/
 	void readMemory(const std::vector<std::string>& Arguments)
 	{
 		int registerIndex = stoi(Arguments[0]);
@@ -382,7 +382,7 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 	case 1://SB = Odejmowanie
 		cmd::substract(Arguments);
 		break;
-	case 2://ML = MNO¯ENIE
+	case 2://ML = MNOzENIE
 		cmd::multiply(Arguments);
 		break;
 	case 3://DV = DZIELENIE
@@ -394,12 +394,12 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 	case 5://IR = INKREMENTACJA
 		cmd::increment(Arguments);
 		break;
-	case 6://MV =PRZENOSZENIE WARTOŒCI
+	case 6://MV =PRZENOSZENIE WARTOsCI
 		cmd::move(Arguments);
 		break;
 
 		//OPERACJE NA PLIKACH
-	case 7://MF = Utwórz plik
+	case 7://MF = Utworz plik
 		cmd::makeFile(Arguments);
 		break;
 	case 8://SF = Zapis do pliku
@@ -414,69 +414,69 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 	case 11://LS = Listuj pliki
 		cmd::listFiles();
 		break;
-	case 12://CP = Zmieñ nazwê pliku
+	case 12://CP = Zmien nazwe pliku
 		cmd::changeFileName(Arguments);
 		break;
 
 		//PROCESY
-	case 13://MP = Utwórz proces
+	case 13://MP = Utworz proces
 		cmd::makeProcess(Arguments);
 		break;
 	case 14://EX = Wykonaj program?
 		//cmd::executeProcess(Arguments);
 		break;
-	case 15://PS = Wyœwietl procesy
+	case 15://PS = Wyswietl procesy
 		//cmd::listProcess(Arguments);
 		break;
-	case 16://SM = Wyœlij komunikat
+	case 16://SM = Wyslij komunikat
 		cmd::sendMessage(Arguments);
 		break;
 	case 17://RM = Odczytaj komunikat
 		cmd::readMessage(Arguments);
 		break;
-	case 18://ET = Utwórz etykietê
+	case 18://ET = Utworz etykiete
 		cmd::makePoint(Arguments);
 		break;
 	case 19://JP = Skok bezwarunkowy
 		cmd::jump(Arguments);
 		break;
-	case 20://JZ = Skok do etykiety jeœli flaga zerowa jest ustawiona
+	case 20://JZ = Skok do etykiety jesli flaga zerowa jest ustawiona
 		cmd::jumpZero(Arguments);
 		break;
 	case 21://JE = Skok do etykiety
 		cmd::jumpPoint(Arguments);
 		break;
-	case 22://RT = Zwróæ
+	case 22://RT = Zwroc
 		cmd::Return(Arguments);
 		break;
 	case 23://SP = Koniec programu
 		cmd::end();
 		break;
-	case 24://MR - czytaj pamiêæ
+	case 24://MR - czytaj pamiec
 		cmd::readMemory(Arguments);
 		break;
-	case 25://MW - wpisuj do pamiêci
+	case 25://MW - wpisuj do pamieci
 		cmd::writeMemory(Arguments);
 		break;
 	case 26://KP - zabij proces
 		cmd::killProcess(Arguments);
 		break;
-	case 27://CD - przejdŸ do kadalogu
+	case 27://CD - przejdz do kadalogu
 		cmd::changeDir(Arguments);
 		break;
-	case 28://RD - przejdŸ do katalogu g³ównego
+	case 28://RD - przejdz do katalogu glownego
 		cmd::rootDir();
 		break;
-	case 29://BD - cofnij siê do katalogu "wy¿ej"
+	case 29://BD - cofnij sie do katalogu "wyzej"
 		cmd::backDir();
 		break;
-	case 30://OF - otwórz plik
+	case 30://OF - otworz plik
 		cmd::openFile(Arguments);
 		break;
 	case 31://CLF - zamknij plik
 		cmd::closeFile();
 		break;
-	case 32://EL - mniejsze równe
+	case 32://EL - mniejsze rowne
 		cmd::equalOrLessThan(Arguments);
 		break;
 	case 33://MC - kopiuj rejestr 
@@ -492,7 +492,7 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 		cmd::exportReg(Arguments);
 		break;
 	default:
-		std::cout << "ERROR - NIE OBS£UGIWANE POLECENIE!" << std::endl;
+		std::cout << "ERROR - NIE OBSlUGIWANE POLECENIE!" << std::endl;
 
 		break;
 	}
@@ -509,12 +509,12 @@ void Interpreter::DoCommand()
 	}
 	else {
 		std::string command_code = getArgument();
-		//Wczytywanie ID rozkazu, oraz iloœci argumentów
+		//Wczytywanie ID rozkazu, oraz ilosci argumentow
 
 		std::pair<int, int > CommandParameters = GetParameters(command_code);
 		std::vector<std::string>Arguments;
 
-		//Wczytywanie Argumentów
+		//Wczytywanie Argumentow
 		for (int i = 0; i < CommandParameters.second; i++) {
 			std::string finalArgument = getArgument();
 			bool run = true;
@@ -540,7 +540,7 @@ void Interpreter::DoCommand()
 
 		}
 
-		//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;
+		//Testowo - wyswietlenie wczytanego rozkazu i jego argumentow;
 		if (ActiveProcess != nullptr) {
 			std::cout << "Wykonywany proces: " << ActiveProcess->GetFileName() << " ID rozkazu: " << CommandParameters.first << " | Command name: " << command_code;
 		}
@@ -557,12 +557,12 @@ void Interpreter::DoCommand()
 
 			
 
-			//obs³uga b³êdów.
+			//obsluga bledow.
 			if (ActiveProcess->errorCode != 0)
 			{
 				rlutil::setColor(rlutil::LIGHTRED);
 				std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
-				std::cout << "Na rzecz b³êdu, program zostaje zakoñczony." << std::endl;
+				std::cout << "Na rzecz bledu, program zostaje zakonczony." << std::endl;
 				pm->killProcess(ActiveProcess->GetPID());
 				rlutil::setColor(rlutil::LIGHTGREEN);
 			}
@@ -573,19 +573,19 @@ void Interpreter::DoCommand()
 void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 {
 	std::string command_code = cmd[0];
-	//Wczytywanie ID rozkazu, oraz iloœci argumentów
+	//Wczytywanie ID rozkazu, oraz ilosci argumentow
 	std::pair<int, int > CommandParameters = GetParameters(command_code);
 	std::vector<std::string>Arguments;
 	PCB* Temp = ActiveProcess;
 	ActiveProcess = &shell;
-	//Wczytywanie Argumentów
+	//Wczytywanie Argumentow
 	for (int i = 1; i <= CommandParameters.second; i++) {
 
 
 		Arguments.push_back(cmd[i]);
 	}
 
-	//Testowo - wyœwietlenie wczytanego rozkazu i jego argumentów;
+	//Testowo - wyswietlenie wczytanego rozkazu i jego argumentow;
 	std::cout << "ID: " << CommandParameters.first << " | Command name: " << command_code;
 	for (int i = 0; i < Arguments.size(); i++) {
 		std::cout << " | Arg[" << i << "]: " << Arguments[i] << " ";
@@ -609,7 +609,7 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 }
 
 
-//Pobiera ID oraz iloœæ parametrów z tablicy rozkazów
+//Pobiera ID oraz ilosc parametrow z tablicy rozkazow
 std::pair<int, int > Interpreter::GetParameters(std::string& cmd)
 {
 	std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::toupper);
@@ -630,16 +630,16 @@ std::string Interpreter::getArgument()
 	std::string arg = mm->readString(ActiveProcess, ActiveProcess->GetInstructionCounter());;
 	ActiveProcess->SetInstructionCounter(ActiveProcess->GetInstructionCounter() + arg.size() + 1);
 
-	/*std::clog << "WprowadŸ argument:";
+	/*std::clog << "Wprowadz argument:";
 	std::cin >> arg;
 	std::clog << std::endl;*/
 	return arg;
 }
 
-//Wyœwietla aktualny stan rejestrów
+//Wyswietla aktualny stan rejestrow
 void Interpreter::RegStatus()
 {
-	std::cout << "Aktualny stan rejestrów" << std::endl;
+	std::cout << "Aktualny stan rejestrow" << std::endl;
 	std::cout << "R0: " << ActiveProcess->registers[0] << " | R1: " << ActiveProcess->registers[1] << " | R2 " << ActiveProcess->registers[2] << " | R3 " << ActiveProcess->registers[3] << std::endl;
 	//std::cin.ignore(1);
 }

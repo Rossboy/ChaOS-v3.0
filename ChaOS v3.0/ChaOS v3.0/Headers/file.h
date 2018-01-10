@@ -1,7 +1,7 @@
 ﻿#ifndef FILE__H
 #define FILE__H
 #include <string>
-// Klasa file reprezentuje plik na którym pracuje OS.
+// Klasa file reprezentuje plik na ktorym pracuje OS.
 // 
 // 1. Wpisywanie do pliku (podany obiekt string)
 // 2. Odczytywanie pliku (zwracany obiekt string)
