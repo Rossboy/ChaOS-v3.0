@@ -13,7 +13,7 @@ private:
 	//differenceCounter	-- licznik okreœlaj¹cy, ile instrukcji wykona³o siê dla ActiveProcess
 	//startCounter		-- licznik okreœlaj¹cy, która instrukcja by³a wykonana jako pierwsza dla nowo-przypisanego ActiveProcess
 	//endCounter		-- licznik okreœlaj¹cy, która instrukcja by³a wykonana dla ActiveProcess ostatnio (albo bêdzie wykonana..?)
-	short differenceCounter, startCounter, endCounter{ 0 };
+	short differenceCounter, startCounter, endCounter, instructions{ 0 };
 	//int helpBurstTime;
 	//Procedura odpowiedzialna za ustawianie ActiveProcess metod¹ SRT - Shortest Remaining Time - wyw³aszczaj¹c¹ wersj¹ SJF
 	void SRTSchedulingAlgorithm();
