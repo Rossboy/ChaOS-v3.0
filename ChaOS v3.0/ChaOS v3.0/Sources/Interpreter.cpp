@@ -563,7 +563,7 @@ void Interpreter::DoCommand()
 				rlutil::setColor(rlutil::LIGHTRED);
 				std::cout << ErrorsTab[ActiveProcess->errorCode] << std::endl;
 				std::cout << "Na rzecz b³êdu, program zostaje zakoñczony." << std::endl;
-				pm->killProcess(ActiveProcess->GetPID());
+				ActiveProcess->setStateAndMoveToRespectiveList(State::Terminated);
 				rlutil::setColor(rlutil::LIGHTGREEN);
 			}
 		}
