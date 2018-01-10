@@ -98,7 +98,7 @@ void ProcessesManager::killProcess(int PID)
 		PCB* toRemove = findPCBbyPID(PID);
 		if (ActiveProcess == toRemove)
 		{
-			ActiveProcess = nullptr;
+			ActiveProcess = findPCBbyPID(1);
 		}
 		RemoveProcessFromWaiting(toRemove);
 		RemoveProcessFromReady(toRemove);

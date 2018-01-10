@@ -504,7 +504,7 @@ void Interpreter::DoCommand()
 {
 	if (ActiveProcess == &shell || ActiveProcess==nullptr)
 	{
-		ActiveProcess = nullptr;
+		ActiveProcess = pm->findPCBbyPID(1);
 		ps->RunProcess();
 	}
 	else {
