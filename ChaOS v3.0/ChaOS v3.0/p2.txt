@@ -1,1 +1,1 @@
-OF plik SF " plik plik- plik " AP " spacja spacja " CLF SP
+OF fib SF " plik plik- plik " AP " spacja spacja " CLF SP

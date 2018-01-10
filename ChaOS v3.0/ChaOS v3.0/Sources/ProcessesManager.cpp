@@ -9,6 +9,7 @@
 
 extern MemoryManager *mm;
 extern PCB* ActiveProcess;
+extern PCB shell;
 //Tworzenie w konstruktorze pierwszej listy dla wszystkich procesów ,listy 
 ProcessesManager::ProcessesManager()
 {
@@ -39,7 +40,7 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 
 		//tmczasowe bo tutaj wpisujemy kod programu
 		mm->allocateMemory(newProcess, program, program.size());
-		newProcess->SetProcesBurstTime(program.size()%13);
+		newProcess->SetProcesBurstTime(program.size() % 13);
 		/*Przypadek kiedy dodawany jest proces bezczynnosci*/
 		if (GID == 0) {
 			std::list<PCB*>list;
@@ -95,13 +96,13 @@ void ProcessesManager::killProcess(int PID)
 	else
 	{
 		PCB* toRemove = findPCBbyPID(PID);
-		if(ActiveProcess== toRemove)
+		if (ActiveProcess == toRemove)
 		{
 			ActiveProcess = nullptr;
 		}
 		RemoveProcessFromWaiting(toRemove);
 		RemoveProcessFromReady(toRemove);
-		
+
 		if (allProcesses.empty() == false)
 		{
 
@@ -124,7 +125,7 @@ void ProcessesManager::killProcess(int PID)
 						toRemove = element;
 						removeFrom = &_list;
 						// jezeli lista przed usunieciem jest rowna 1, to po usunieciu bedzie pusta i trzeba ja usunac -- Bartek
-						if(_list.size() == 1)
+						if (_list.size() == 1)
 							listToRemove = &_list;
 					}
 				}
@@ -217,9 +218,11 @@ std::list<std::list<PCB*>> ProcessesManager::getAllProcesseslist()
 }
 //Metoda dodaj¹ca proces do listy gotowoœci
 void ProcessesManager::AddProcessToReady(PCB* p) {
-	readyProcesses.push_back(p);
+	if (p != &shell) {
+		readyProcesses.push_back(p);
+	}
 }
-void ProcessesManager::RemoveProcessFromReady(PCB* p) 
+void ProcessesManager::RemoveProcessFromReady(PCB* p)
 {
 	/*Szpachlowanko */
 	//if (readyProcesses.empty() == false)
@@ -250,9 +253,11 @@ void ProcessesManager::RemoveProcessFromReady(PCB* p)
 
 }
 void ProcessesManager::AddProcessToWaiting(PCB* p) {
-	waitingProcesses.push_back(p);
+	if (p != &shell) {
+		waitingProcesses.push_back(p);
+	}
 }
-void ProcessesManager::RemoveProcessFromWaiting(PCB* p) 
+void ProcessesManager::RemoveProcessFromWaiting(PCB* p)
 {
 
 	/*szpachlowanko*/

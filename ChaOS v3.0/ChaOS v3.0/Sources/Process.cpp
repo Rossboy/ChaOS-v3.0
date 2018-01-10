@@ -34,17 +34,17 @@ PCB::PCB(std::string programName, int GID):points()
 void PCB::setStateAndMoveToRespectiveList(State newState)
 {
 	this->state = newState;
-	if (newState == State::Ready)
+	if (newState == State::Ready && this->GetState()!=State::Ready)
 	{
 		pm->RemoveProcessFromWaiting(this);
 		pm->AddProcessToReady(this);
 	}
-	else if (newState == State::Waiting)
+	else if (newState == State::Waiting && this->GetState() != State::Waiting)
 	{
 		pm->AddProcessToWaiting(this);
 		pm->RemoveProcessFromReady(this);
 	}
-	else if (newState == State::Terminated)
+	else if (newState == State::Terminated && this->GetState() != State::Terminated)
 	{
 		pm->killProcess(this->PID);
 
