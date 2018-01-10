@@ -327,24 +327,12 @@ namespace cmd {
 	/* KOMUNIKACJA */
 	void sendMessage(const std::vector<std::string>& Arguments)
 	{
-		string message = mm->readString(ActiveProcess, stoi(Arguments[0]));
-		if ((s->wyslij(message, stoi(Arguments[1]))) == false)
-		{
-			ActiveProcess->setStateAndMoveToRespectiveList(State::Terminated);
-			rlutil::setColor(rlutil::LIGHTRED);
-			cout << "Brak odbiorcy o podanym PID!" << endl;
-			cout << "Proces przejdzie w stan Terminated" << endl;
-			rlutil::setColor(rlutil::LIGHTGREEN);
-		}
+		s->wyslij(mm->readString(ActiveProcess, stoi(Arguments[0])), stoi(Arguments[1]));
 	}
 
 	void readMessage(const std::vector<std::string>& Arguments)
 	{
-		auto messege = s->odbierz();
-		if (messege != nullptr)
-			mm->writeString(ActiveProcess, stoi(Arguments[0]), messege->getwiad());
-		else
-			cout << "Brak wiadomosci, nie mozna jej odczytac!";
+		s->odbierz(stoi(Arguments[0]));
 	}
 
 	void checkForMessages(const std::vector<std::string>& Arguments)
