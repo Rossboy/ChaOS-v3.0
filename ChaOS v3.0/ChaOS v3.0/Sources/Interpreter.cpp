@@ -486,7 +486,7 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 		break;
 	case 37:
 		cmd::makeProcessWithAddidionalSpace(Arguments);
-
+		break;
 	default:
 		std::cout << "ERROR - NIE OBSlUGIWANE POLECENIE!" << std::endl;
 
