@@ -148,11 +148,11 @@
     <Text Include="fileTest.txt" />
     <Text Include="help.txt" />
     <Text Include="memTest.txt" />
-    <Text Include="p1f.txt" />
     <Text Include="p2.txt" />
+    <Text Include="p2f.txt" />
+    <Text Include="p3f.txt" />
+    <Text Include="p1.txt" />
     <Text Include="p3.txt" />
-    <Text Include="p4.txt" />
-    <Text Include="p5.txt" />
     <Text Include="pb.txt" />
     <Text Include="rmTest.txt" />
     <Text Include="smTest.txt" />
