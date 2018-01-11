@@ -139,6 +139,9 @@
     <Text Include="p5.txt">
       <Filter>Programy</Filter>
     </Text>
+    <Text Include="p1f.txt">
+      <Filter>Programy</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dokumentacja ChaOS.docx" />

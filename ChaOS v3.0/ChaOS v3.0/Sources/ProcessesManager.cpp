@@ -39,7 +39,6 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 		}
 		file.close();
 
-		//tmczasowe bo tutaj wpisujemy kod programu
 		mm->allocateMemory(newProcess, program, program.size());
 		newProcess->SetProcesBurstTime(program.size() % 13);
 		/*Przypadek kiedy dodawany jest proces bezczynnosci*/
@@ -177,39 +176,39 @@ void ProcessesManager::killProcess(int PID)
 		if (allProcesses.empty() == false)
 		{
 
-			// wskaznik na PCB do usuniecia -- Bartek
+			// wskaznik na PCB do usuniecia
 			toRemove = nullptr;
-			// wskaznik do listy ktora bedzie usunieta z listy list, bo bedzie pusta -- Bartek
+			// wskaznik do listy ktora bedzie usunieta z listy list, bo bedzie pusta
 			std::list<PCB * > * listToRemove = nullptr;
-			// wskaznik do listy wskaznikow PCB z ktorego usuwamy-- Bartek
+			// wskaznik do listy wskaznikow PCB z ktorego usuwamy
 			std::list<PCB * > * removeFrom = nullptr;
 
-			// iterujemy po listcie list -- Bartek
-			// &_list - dlatego, ze potrzebujemy adresu listy  ktorej pozniej bedziemy modyfikowac -- Bartek
+			// iterujemy po listcie list 
+			// &_list - dlatego, ze potrzebujemy adresu listy  ktorej pozniej bedziemy modyfikowac
 			for (auto &_list : allProcesses)
 			{
 				for (auto element : _list)
 				{
 					if (element->GetPID() == PID)
 					{
-						// element do usunieca i lista do usunieca -- Bartek
+						// element do usunieca i lista do usunieca
 						toRemove = element;
 						removeFrom = &_list;
-						// jezeli lista przed usunieciem jest rowna 1, to po usunieciu bedzie pusta i trzeba ja usunac -- Bartek
+						// jezeli lista przed usunieciem jest rowna 1, to po usunieciu bedzie pusta i trzeba ja usunac
 						if (_list.size() == 1)
 							listToRemove = &_list;
 					}
 				}
 			}
-			// jezeli znaleziono element do usuniecia -- Bartek
+			// jezeli znaleziono element do usuniecia
 			if (toRemove != nullptr)
 			{
-				// usuwanie procesu z pamieci i systemu normalnego i windowsa -- Bartek
+				// usuwanie procesu z pamieci i systemu normalnego i windowsa
 				removeFrom->remove(toRemove);
 				mm->deallocateMemory(toRemove); // -- Bartek
 				delete toRemove;
 			}
-			// jezeli lista zawierajacy element jest pusta to ja usuwamy -- Bartek
+			// jezeli lista zawierajacy element jest pusta to ja usuwamy
 			if (listToRemove != nullptr)
 			{
 				allProcesses.remove(*listToRemove);
@@ -295,31 +294,6 @@ void ProcessesManager::AddProcessToReady(PCB* p) {
 }
 void ProcessesManager::RemoveProcessFromReady(PCB* p)
 {
-	/*Szpachlowanko */
-	//if (readyProcesses.empty() == false)
-	//{
-	//	// wskaznik na PCB do usuniecia -- Bartek
-	//	std::vector<PCB *> toRemove;
-
-	//	// poszukujemy w liscie procesow gotowych PCB o PID ktory chcemy usunac -- Bartek
-	//	for (auto element : readyProcesses)
-	//	{
-	//		if (element->GetGID() == p->GetPID())
-	//		{
-	//			// zaleziono wskaznik -- Bartek
-	//			toRemove.push_back(element);
-	//			break;
-	//		}
-	//	}
-
-	//	// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
-	//	if (toRemove.empty() == false)
-	//	{
-	//		for (auto x : toRemove)
-	//			readyProcesses.remove(x);
-	//	}
-
-	//}
 	readyProcesses.remove_if([p](PCB * toRemove) {return p == toRemove; });
 
 }
@@ -330,31 +304,6 @@ void ProcessesManager::AddProcessToWaiting(PCB* p) {
 }
 void ProcessesManager::RemoveProcessFromWaiting(PCB* p)
 {
-
-	/*szpachlowanko*/
-	//if (waitingProcesses.empty() == false)
-	//{
-	//	// wskaznik na PCB do usuniecia -- Bartek
-	//	std::vector<PCB *> toRemove;
-
-	//	// poszukujemy w liscie procesow czekajacych PCB o PID ktory chcemy usunac -- Bartek
-	//	for (auto element : waitingProcesses)
-	//	{
-	//		if (element->GetGID() == p->GetPID())
-	//		{
-	//			// zaleziono wskaznik -- Bartek
-	//			toRemove.push_back(element);
-	//			break;
-	//		}
-	//	}
-
-	//	// jezeli znaleziono taki PCB to go usuwamy z listy -- Bartek
-	//	if (toRemove.empty() == false)
-	//	{
-	//		for (auto x : toRemove)
-	//			waitingProcesses.remove(x);
-	//	}
-	//}
 	waitingProcesses.remove_if([p](PCB * toRemove) {return p == toRemove; });
 }
 
