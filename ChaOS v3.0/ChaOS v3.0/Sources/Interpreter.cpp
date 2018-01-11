@@ -538,11 +538,27 @@ void Interpreter::DoCommand()
 
 		//Testowo - wyswietlenie wczytanego rozkazu i jego argumentow;
 		if (ActiveProcess != nullptr) {
-			std::cout << "Wykonywany proces: " << ActiveProcess->GetFileName() << " ID rozkazu: " << CommandParameters.first << " | Command name: " << command_code;
+			
+			std::cout << "Wykonywany proces: ";
+			rlutil::setColor(rlutil::LIGHTCYAN);
+			std::cout << ActiveProcess->GetFileName();
+			rlutil::setColor(rlutil::LIGHTGREEN); 
+			std::cout << " ID rozkazu: ";
+			rlutil::setColor(rlutil::YELLOW); 
+			std::cout << CommandParameters.first;
+			rlutil::setColor(rlutil::LIGHTGREEN); 
+			std::cout << " | Command name: ";
+			rlutil::setColor(rlutil::YELLOW); 
+			std::cout << command_code;
+			rlutil::setColor(rlutil::LIGHTGREEN);
 		}
 		for (int i = 0; i < Arguments.size(); i++) {
-			std::cout << " | Arg[" << i << "]: " << Arguments[i] << " ";
+			rlutil::setColor(rlutil::LIGHTGREEN);
+			std::cout << " | Arg[" << i << "]: ";
+			rlutil::setColor(rlutil::WHITE); std::cout<< Arguments[i] << " ";
 		}
+		rlutil::setColor(rlutil::LIGHTGREEN);
+
 
 		std::cout << "\n";
 		//wykonanie rozkazu
@@ -582,12 +598,28 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 	}
 
 	//Testowo - wyswietlenie wczytanego rozkazu i jego argumentow;
-	std::cout << "ID: " << CommandParameters.first << " | Command name: " << command_code;
-	for (int i = 0; i < Arguments.size(); i++) {
-		std::cout << " | Arg[" << i << "]: " << Arguments[i] << " ";
+	if (ActiveProcess != nullptr) {
 
+		std::cout << "Wykonywany proces: ";
+		rlutil::setColor(rlutil::LIGHTCYAN);
+		std::cout << ActiveProcess->GetFileName();
+		rlutil::setColor(rlutil::LIGHTGREEN);
+		std::cout << " ID rozkazu: ";
+		rlutil::setColor(rlutil::YELLOW);
+		std::cout << CommandParameters.first;
+		rlutil::setColor(rlutil::LIGHTGREEN);
+		std::cout << " | Command name: ";
+		rlutil::setColor(rlutil::YELLOW);
+		std::cout << command_code;
+		rlutil::setColor(rlutil::LIGHTGREEN);
 	}
-	std::cout<<std::endl;
+	for (int i = 0; i < Arguments.size(); i++) {
+		rlutil::setColor(rlutil::LIGHTGREEN);
+		std::cout << " | Arg[" << i << "]: ";
+		rlutil::setColor(rlutil::WHITE); std::cout << Arguments[i] << " ";
+	}
+	rlutil::setColor(rlutil::LIGHTGREEN);
+
 
 	//wykonanie rozkazu
 	ExecuteCommand(CommandParameters, Arguments);
@@ -636,7 +668,23 @@ std::string Interpreter::getArgument()
 void Interpreter::RegStatus()
 {
 	std::cout << "Aktualny stan rejestrow" << std::endl;
-	std::cout << "R0: " << ActiveProcess->registers[0] << " | R1: " << ActiveProcess->registers[1] << " | R2 " << ActiveProcess->registers[2] << " | R3 " << ActiveProcess->registers[3] << std::endl;
+	std::cout << "R0: ";
+	rlutil::setColor(rlutil::WHITE);
+	std::cout<< ActiveProcess->registers[0];
+	rlutil::setColor(rlutil::LIGHTGREEN); 
+	std::cout << " | R1: ";
+	rlutil::setColor(rlutil::WHITE);
+	std::cout << ActiveProcess->registers[1];
+	rlutil::setColor(rlutil::LIGHTGREEN);
+	std::cout << " | R2 ";
+	rlutil::setColor(rlutil::WHITE);
+	std::cout << ActiveProcess->registers[2];
+	rlutil::setColor(rlutil::LIGHTGREEN);
+	std::cout << " | R3 ";
+	rlutil::setColor(rlutil::WHITE);
+	std::cout << ActiveProcess->registers[3] << "\n" << std::endl;
+	rlutil::setColor(rlutil::LIGHTGREEN);
+
 	//std::cin.ignore(1);
 }
 
