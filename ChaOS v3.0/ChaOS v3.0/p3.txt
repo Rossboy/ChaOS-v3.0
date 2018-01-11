@@ -1,1 +1,1 @@
-CF test plik OF test AP " [spacja spacja] z drugiego programu (p3) " CLF SP
+OF fib AP " , " CLF SM 31 3 SP OK 

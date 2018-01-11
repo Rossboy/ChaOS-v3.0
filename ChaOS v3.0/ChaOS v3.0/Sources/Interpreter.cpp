@@ -618,6 +618,7 @@ void Interpreter::DoShellCommand(std::vector<std::string> cmd)
 		std::cout << " | Arg[" << i << "]: ";
 		rlutil::setColor(rlutil::WHITE); std::cout << Arguments[i] << " ";
 	}
+	std::cout << "\n";
 	rlutil::setColor(rlutil::LIGHTGREEN);
 
 
