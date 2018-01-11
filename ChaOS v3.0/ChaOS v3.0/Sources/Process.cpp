@@ -35,7 +35,7 @@ PCB::~PCB()
 {
 	if (this->currentFile)
 	{
-		std::cout << "----- destruktor PCB zrobił signal() na zmiennej niezamkniętego pliku -----" << std::endl;
+		//std::cout << "----- destruktor PCB zrobił signal() na zmiennej niezamkniętego pliku -----" << std::endl;
 		fs->signalByID(this->currentFile->getID());
 		delete currentFile;
 		currentFile = nullptr;
