@@ -8,6 +8,7 @@
 #include <vector>
 #include <stack>
 #include "..\Headers\file.h"
+#include "..\Headers\rlutil.h"
 enum State { New, Ready, Waiting, Running, Terminated };
 
 struct Page
