@@ -8,8 +8,8 @@ class Siec
 {
 	std::map<int,ConditionVariable> cv;
 public:
-	bool wyslij(std::string, int ID);
-	std::unique_ptr<SMS> odbierz();
+	void wyslij(std::string, int ID);
+	void odbierz(int adres);
 	void wyswietlwiadaktywnego();
 	void wyswietlwiad();
 	void sprawdz();

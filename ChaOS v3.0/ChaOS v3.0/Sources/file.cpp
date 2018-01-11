@@ -5,6 +5,11 @@ file::file()
 {
 }
 
+uShort file::getID()
+{
+	return firstSector;
+}
+
 file::~file()
 {
 }

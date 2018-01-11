@@ -21,7 +21,7 @@ public:
 	// Usuwa obiekt z aktualnego folderu
 	void remove(const char* name);
 
-	// Zwraca string opisujący zawartość aktualnego folderu
+	// Zwraca string opisujacy zawartosc aktualnego folderu
 	std::string listDirectory();
 
 	// Zmiania aktualny folder na wskazany folder
@@ -33,7 +33,7 @@ public:
 	// Zmiania aktualny folder na wskazany folder
 	void rootDirectory();
 
-	// Zmienia nazwę obiektu w aktualnym folderze
+	// Zmienia nazwe obiektu w aktualnym folderze
 	void rename(const char* name, const char* newname);
 
 	// Szuka pliku/katalogu w aktualnym katalogu. Zwraca adres pierwszego sektora szukanego pliku/katalogu lub 0, gdy nie istnieje
@@ -42,39 +42,41 @@ public:
 	// Otwiera plik o wskazanej nazwie
 	void openFile(const char* filename);
 
-	// Wpisanie nowej zawartości do pliku
+	// Wpisanie nowej zawartosci do pliku
 	void writeFile(const std::string& text);
 
-	// Odczytanie zawartości pliku i umieszczenie jej w currentFile
+	// Odczytanie zawartosci pliku i umieszczenie jej w currentFile
 	std::string readFile();
 
-	// Dopisanie tekstu na końcu pliku
+	// Dopisanie tekstu na koncu pliku
 	void appendFile(const std::string& text);
 
-	// Zapisuje otwarty plik - użyte przy pisaniu do pliku
+	// Zapisuje otwarty plik - uzyte przy pisaniu do pliku
 	void saveFile(const std::string& text);
 
-	// Zamknięcie pliku
+	// Zamkniecie pliku
 	void closeFile();
 
-	// Zwraca string opisujący zadany sektor
+	// Zwraca string opisujacy zadany sektor
 	std::string printSector(const unsigned short number);
 
-	// Zwraca string opisujący łańcuch sektorów zaczynając od 'first'
+	// Zwraca string opisujacy lancuch sektorow zaczynajac od 'first'
 	std::string printSectorsChain(const unsigned short first);
 
-	// Zwraca string opisujący stan dysku
+	// Zwraca string opisujacy stan dysku
 	std::string printDiskStats();
 
 	//file* currentFile;
 	uShort getRootDir();
 
 	std::string getPath();
+	void signalByID(uShort id);
+
 private:
 	c_uShort allocateSector();
 	void freeSector(uShort number);
 
-	// Przechowują "wskaźniki" na plik/katalog
+	// Przechowuja "wskazniki" na plik/katalog
 	uShort currentFileFirst;
 	uShort currentFileSector;
 	uShort currentDirFirst;

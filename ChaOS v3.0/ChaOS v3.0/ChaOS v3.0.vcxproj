@@ -145,16 +145,20 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="fifoTest.txt" />
+    <Text Include="fileTest.txt" />
     <Text Include="help.txt" />
     <Text Include="memTest.txt" />
     <Text Include="p1.txt" />
     <Text Include="p2.txt" />
     <Text Include="p3.txt" />
+    <Text Include="p4.txt" />
+    <Text Include="p5.txt" />
     <Text Include="pb.txt" />
     <Text Include="rmTest.txt" />
     <Text Include="smTest.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assembler.xlsx" />
     <None Include="Dokumentacja ChaOS.docx" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,8 +1,9 @@
 #include "..\Headers\Siec.h"
 #include"..\Headers\ProcessesManager.h"
+#include"..\Headers\MemoryManager.h"
 extern PCB* ActiveProcess;
 extern ProcessesManager *pm;
-
+extern MemoryManager *mm;
 Siec::Siec()
 {
 }
@@ -11,38 +12,45 @@ Siec::Siec()
 Siec::~Siec()
 {
 }
-bool Siec::wyslij(std::string wiad, int ID)
+void Siec::wyslij(std::string wiad, int ID)
 {
-	std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
-	//przeszukiwanie listy procesów w poszukiwaniu grupy procesu aktywnego (procesy mog¹ siê komunikowaæ tylko w obrêbie tej samej grupy)
-	for (auto it = lista.begin(); it != lista.end(); it++)
+	if (wiad.size() > 16)
 	{
-		if (ActiveProcess->GetGID() == (*it->begin())->GetGID())
+		ActiveProcess->errorCode = 15;
+		return;
+	}
+	else
+	{
+		std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
+		//przeszukiwanie listy procesow w poszukiwaniu grupy procesu aktywnego (procesy moga sie komunikowac tylko w obrebie tej samej grupy)
+		for (auto it = lista.begin(); it != lista.end(); it++)
 		{
-			//jeœli GID siê zgadza to szukamy procesu o wskazanym ID
-			for (auto et = it->begin(); et != it->end(); et++)
+			if (ActiveProcess->GetGID() == (*it->begin())->GetGID())
 			{
-				if (ID == (*et)->GetPID())
+				//jesli GID siê zgadza to szukamy procesu o wskazanym ID
+				for (auto et = it->begin(); et != it->end(); et++)
 				{
-					//stworzenie zmiennej warunkowej odpowiadaj¹cej za synchroniczn¹ komunikacjê
-					ConditionVariable x;
-					x.lockmessagesender();
-					cv.emplace(std::make_pair(ActiveProcess->GetPID(), x));
-					//dodanie wiadomoœci do kolejki w PCB
-					(*et)->addToMessages(SMS(wiad));
-					cv[ActiveProcess->GetPID()].wait(ActiveProcess);
-					if (cv.find(ID) != cv.end())
+					if (ID == (*et)->GetPID())
 					{
-						cv[ID].signal();
-						cv.erase(ID);
+						//stworzenie zmiennej warunkowej odpowiadajacej za synchroniczna komunikacje
+						ConditionVariable x;
+						x.lockmessagesender();
+						cv.emplace(std::make_pair(ActiveProcess->GetPID(), x));
+						//dodanie wiadomoœci do kolejki w PCB
+						(*et)->addToMessages(SMS(wiad));
+						cv[ActiveProcess->GetPID()].wait(ActiveProcess);
+						if (cv.find(ID) != cv.end())
+						{
+							cv[ID].signal();
+							cv.erase(ID);
+						}
+						return;
 					}
-					return true;
 				}
 			}
 		}
+		ActiveProcess->errorCode = 14;
 	}
-	//jeœli odpowiedni proces-odbiorca nie zosta³ znaleziony to zostanie zwrócona wartoœæ false
-	return false;
 }
 void Siec::sprawdz()
 {
@@ -54,29 +62,37 @@ void Siec::sprawdz()
 		cv[ActiveProcess->GetPID()].wait(ActiveProcess);
 	}
 }
-std::unique_ptr<SMS> Siec::odbierz()
+void Siec::odbierz(int adres)
 {
-	std::unique_ptr<SMS> pom = std::make_unique<SMS>(ActiveProcess->getMessage());
-	ActiveProcess->deleteMessage();
-	//skopiowanie listy wskaŸników do aktywnych procesów ¿eby iterowanie nie wywali³o programu w kosmos
-	std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
-	for (auto it = lista.begin(); it != lista.end(); it++)
+	if (ActiveProcess->getMessages().size() == 0)
 	{
-		//sprawdzenie czy procesu maj¹ to samo ID grupy
-		if (ActiveProcess->GetGID() == (*it->begin())->GetGID())
+		ActiveProcess->errorCode = 16;
+		return;
+	}
+	else
+	{
+		SMS pom = ActiveProcess->getMessage();
+		ActiveProcess->deleteMessage();
+		mm->writeString(ActiveProcess, adres, pom.getwiad());
+		//skopiowanie listy wskaznikow do aktywnych procesow zeby iterowanie nie wywalilo programu w kosmos
+		std::list<std::list<PCB*>> lista = pm->getAllProcesseslist();
+		for (auto it = lista.begin(); it != lista.end(); it++)
 		{
-			for (auto et = it->begin(); et != it->end(); et++)
+			//sprawdzenie czy procesu maja to samo ID grupy
+			if (ActiveProcess->GetGID() == (*it->begin())->GetGID())
 			{
-				if (pom->getID() == (*et)->GetPID())
+				for (auto et = it->begin(); et != it->end(); et++)
 				{
-					//zmiana procesu nadawcy na gotowy (czeka³ na odebranie wiadomoœci)
-					cv[pom->getID()].signal();
-					cv.erase(pom->getID());
+					if (pom.getID() == (*et)->GetPID())
+					{
+						//zmiana procesu nadawcy na gotowy (czekal na odebranie wiadomoœci)
+						cv[pom.getID()].signal();
+						cv.erase(pom.getID());
+					}
 				}
 			}
 		}
 	}
-	return pom;
 }
 void Siec::wyswietlwiadaktywnego()
 {
@@ -97,20 +113,20 @@ void Siec::wyswietlwiad()
 	if (lista.empty()==true) std::cout << "Nie istnieje zaden proces!" << std::endl;
 	else
 	{
-		//wyœwietlanie wiadomoœci wszystkich procesów grupami
+		//wyswietlanie wiadomosci wszystkich procesow grupami
 		for (std::list<std::list<PCB*>>::iterator it = lista.begin(); it != lista.end(); it++)
 		{
 			std::cout << "Wyswietlanie wiadomosci procesow z grupy o ID " << (*it->begin())->GetGID() << std::endl;
 			for (std::list<PCB*>::iterator et = it->begin(); et != it->end(); et++)
 			{
-				//sprawdzenie czy proces posiada jakieœ nieodczytane wiadomosci
+				//sprawdzenie czy proces posiada jakies nieodczytane wiadomosci
 				std::list<SMS> wiadomosci = (*et)->getMessages();
 				if (wiadomosci.size() == 0) std::cout << "Brak wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
 				else
 				{
 					std::cout << "Wiadomosci w kontenerze procesu o ID " << (*et)->GetPID() << std::endl;
 					int i = 1;
-					//iteracja po liœcie wiadomoœci procesu wyœwietlaj¹c wszystkie
+					//iteracja po liscie wiadomosci procesu wyswietlajac wszystkie
 					for (std::list<SMS>::iterator zt = wiadomosci.begin(); zt != wiadomosci.end(); zt++)
 					{
 						std::cout << "Wiadomosc nr " << i << ":" << std::endl << "ID procesu wysylajacego: " << zt->getID() << std::endl << "Tresc wiadomosci: " << zt->getwiad() << std::endl;
