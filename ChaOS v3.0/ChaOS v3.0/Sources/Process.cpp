@@ -12,7 +12,7 @@ int PCB::processesCounter = 0;
 extern ChaOS_filesystem* fs;
 extern ProcessesManager* pm;
 extern ProcessScheduler* ps;
-PCB::PCB(std::string programName, int GID):points()
+PCB::PCB(std::string programName, int GID) :points()
 {
 	this->PID = processesCounter++;
 	this->GID = GID;
@@ -44,7 +44,7 @@ PCB::~PCB()
 
 void PCB::setStateAndMoveToRespectiveList(State newState)
 {
-	if (newState == State::Ready && this->GetState()!=State::Ready)
+	if (newState == State::Ready && this->GetState() != State::Ready)
 	{
 		this->state = newState;
 		pm->RemoveProcessFromWaiting(this);
@@ -55,8 +55,8 @@ void PCB::setStateAndMoveToRespectiveList(State newState)
 		this->state = newState;
 		pm->RemoveProcessFromReady(this);
 		pm->AddProcessToWaiting(this);
-	
-		
+
+
 	}
 	else if (newState == State::Terminated && this->GetState() != State::Terminated)
 	{
@@ -110,7 +110,28 @@ int PCB::getPageTableSize()
 void PCB::displayProcess()
 {
 	// New, Ready, Waiting, Running, Terminated
-	std::cout << "PID: " << GetPID() << ", GID: " << GetGID() << ", File name: " << GetFileName() << ", Burst time: " << GetProcesBurstTime() << ", State: ";
+	std::cout << "PID: ";
+	rlutil::setColor(rlutil::LIGHTCYAN);
+	std::cout << GetPID();
+	rlutil::setColor(rlutil::LIGHTGREEN);
+	std::cout << ", GID: ";
+	rlutil::setColor(rlutil::LIGHTCYAN);
+	std::cout << GetGID();
+	rlutil::setColor(rlutil::LIGHTGREEN);
+	std::cout << ", File name: ";
+	rlutil::setColor(rlutil::LIGHTCYAN);
+	std::cout << GetFileName();
+	rlutil::setColor(rlutil::LIGHTGREEN);
+	std::cout << ", Burst time: ";
+	rlutil::setColor(rlutil::YELLOW);
+	std::cout << GetProcesBurstTime();
+	rlutil::setColor(rlutil::LIGHTGREEN);
+	std::cout << ", Page Table Size: ";
+	rlutil::setColor(rlutil::YELLOW);
+	std::cout << getPageTableSize();
+	rlutil::setColor(rlutil::LIGHTGREEN);
+	std::cout << ", State: ";
+	rlutil::setColor(rlutil::WHITE);
 	switch (this->GetState())
 	{
 	case 0:
@@ -132,6 +153,7 @@ void PCB::displayProcess()
 		std::cout << "WEIRDO! LOL";
 		break;
 	}
+	rlutil::setColor(rlutil::LIGHTGREEN);
 	std::cout << std::endl;
 }
 void PCB::SetInstructionCounter(int counter)
@@ -142,7 +164,7 @@ int PCB::GetInstructionCounter()
 {
 	return this->instructionCounter;
 }
-void PCB::addToMessages(SMS message) 
+void PCB::addToMessages(SMS message)
 {
 	this->messages.push_back(message);
 }
