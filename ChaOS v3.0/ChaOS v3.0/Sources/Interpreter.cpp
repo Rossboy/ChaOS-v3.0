@@ -266,7 +266,7 @@ namespace cmd {
 	//ok
 	void exportReg(const std::vector<std::string>& Arguments)
 	{
-		fs->appendFile(to_string(ActiveProcess->registers[atoi(Arguments[0].c_str())])+" ");
+		fs->appendFile(to_string(ActiveProcess->registers[atoi(Arguments[0].c_str())]));
 	}
 	void writeFile(const std::vector<std::string>& Arguments)
 	{
