@@ -47,68 +47,63 @@ void ProcessScheduler::RunProcess()
 
 		else
 		{
-			//Planista wywo³ywany za ka¿dym razem - obs³uguje wszystkie mo¿liwe przypadki
 			SRTSchedulingAlgorithm();
 		}
 	}
 
-	//Uruchomienie metody DoCommand() interpretera, gdzie mam nadzieje zmieniany jest instructionCounter wykonywanego procesu
+	//Uruchomienie metody DoCommand() interpretera i wykonanie instrukcji ActiveProcess
 	i->DoCommand();
 
 	if (ActiveProcess->GetPID() > 1) {
+		//Dla ActiveProcess innego ni¿ proces bezczynnoœci liczone s¹ wykonane instrukcje
 		instructions++;
-		//std::cout << "Ten" << ActiveProcess->GetPID() << "\t" << instructions << std::endl;
 	}
 }
 
 void ProcessScheduler::SRTSchedulingAlgorithm()
 {
-	if (pm->readyProcesses.size() == 1) // == nullptr proces bzeczynnosci jeszcze nie jest ustawiony   && ActiveProcess == nullptr
+	//Przypadek, w którym jest dostêpny tylko jeden proces w liœcie readyProcesses (proces bezczynnoœci)
+	if (pm->readyProcesses.size() == 1)
 	{
 		ActiveProcess = *pm->readyProcesses.begin();
 		instructions = 0;
 		return;
 	}
+	//Sprawdzenie, czy ActiveProcess jest ustawiony na jakiœ proces i czy jest to proces inny od procesu bezczynnoœci
 	if (ActiveProcess->GetPID() > 1 && ActiveProcess != nullptr) {
-		std::cout << "[~~ Albert ~~]\t\t" << ActiveProcess->GetPID() << "\t" << instructions << std::endl;
-		//std::cout << std::endl;
-		//std::cout << "[~~ Albert ~~]\t\t" << ActiveProcess->GetPID() << "\t" << differenceCounter << "\tinstrukcji" << std::endl;
-		std::cout << "[~~ Albert ~~]\t\t" << ActiveProcess->GetPID() << "\t" << ActiveProcess->GetProcesBurstTime() << "\t burst time przed!" << std::endl;
+		//W tej sytuacji nastêpuje wyliczenie nowego czasu dla ActiveProcess
 		ActiveProcess->SetProcesBurstTime(.5 * ActiveProcess->GetProcesBurstTime() + .5 * instructions);
-		std::cout << "[~~ Albert ~~]\t\t" << ActiveProcess->GetPID() << "\t" << ActiveProcess->GetProcesBurstTime() << "\tburst time po!" << std::endl;
 	}
 
-	//Ustawienie iteratora pomocniczego na proces o najkrotszym burstTime zgodnie z algorytmem SRT
+	//Ustawienie iteratora pomocniczego na proces z listy readyProcesses na ten o najkrótszym czassie, zgodnie z ide¹ SRT
 	iteratorToMinElement = std::min_element(pm->readyProcesses.begin(), pm->readyProcesses.end(), [](PCB* x, PCB* y) { return x->GetProcesBurstTime() < y->GetProcesBurstTime(); });
 
 	if (ActiveProcess == nullptr)
 	{
-		//Ustawienie ActiveProcess najlepszym procesem zgodnie z SRT
 		ActiveProcess = *iteratorToMinElement;
 		instructions = 0;
 		return;
 	}
-
-	//ActiveProcess != nullptr
 	else
 	{
-		//Sprawdzenie przy pomoy PID, czy wybrany proces jest na pewno innym procesem
+		//Sprawdzenie przy pomoy PID, czy wybrany proces jest na pewno innym procesem, dodatkowe zabezpieczenie
 		if ((*iteratorToMinElement)->GetPID() != ActiveProcess->GetPID())
 		{
-			//Sprawdzenie, czy wybrany proces, obecnie ustawiony w iteratorze iteratorToMinElement, ma przewidywany czas krótszy od ActiveProcess
-			if ((*iteratorToMinElement)->GetProcesBurstTime() < ActiveProcess->GetProcesBurstTime()) //nie wiem do konca, czy z tym differenceCounter, czy jescze nie /// - differenceCounter
+			//Dodatkowe sprawdzenie, czy czas wybranego procesu jest krótszy od ActiveProcess
+			if ((*iteratorToMinElement)->GetProcesBurstTime() < ActiveProcess->GetProcesBurstTime())
 			{
 				ActiveProcess = *iteratorToMinElement;
 				instructions = 0;
 				return;
 			}
+
 			else
 			{
 				return;
 			}
 		}
 
-		//Sytuacja, w której zosta³ wybrany ten sam proces, co ActiveProcess
+		//Sytuacja, w której zosta³ wybrany ten sam proces, co ActiveProcess, co znaczy, ¿e ActiveProcess wci¹¿ ma najkrótszy czas
 		else
 		{
 			return;

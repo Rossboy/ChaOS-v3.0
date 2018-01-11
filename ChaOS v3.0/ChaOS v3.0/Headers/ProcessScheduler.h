@@ -8,18 +8,15 @@
 
 class ProcessScheduler {
 private:
-	//zmienna pomocnicza, potrzebna podczas wybierania procesu o najkrótszym czasie, lecz przed ustawieniem ActiveProcess
+	//zmienna pomocnicza, potrzebna podczas wybierania procesu o najkrótszym czasie
 	std::list<PCB*>::iterator iteratorToMinElement;
-	//differenceCounter	-- licznik okreœlaj¹cy, ile instrukcji wykona³o siê dla ActiveProcess
-	//startCounter		-- licznik okreœlaj¹cy, która instrukcja by³a wykonana jako pierwsza dla nowo-przypisanego ActiveProcess
-	//endCounter		-- licznik okreœlaj¹cy, która instrukcja by³a wykonana dla ActiveProcess ostatnio (albo bêdzie wykonana..?)
-	short differenceCounter, startCounter, endCounter, instructions{ 0 };
-	//int helpBurstTime;
-	//Procedura odpowiedzialna za ustawianie ActiveProcess metod¹ SRT - Shortest Remaining Time - wyw³aszczaj¹c¹ wersj¹ SJF
+	//zmienna pomocnicza do zliczania instrukcji wykonanych przez ActiveProcess
+	short instructions{ 0 };
+	//Procedura wywo³ywana w RunProcess(), odpowiedzialna za ustawianie ActiveProcess metod¹ SRT
 	void SRTSchedulingAlgorithm();
 public:
-	//Procedura wywo³ywana przed ka¿dym wykonaniem instrukcji - z jej poziomu wywo³ywany jest planista (SRTSchedulingAlgorithm) oraz metoda DoCommand z interpretera
+	//Procedura wywo³ywana przed ka¿dym wykonaniem instrukcji ActiveProcess - z jej poziomu wywo³ywany jest planista oraz metoda DoCommand() interpretera
 	void RunProcess();
-	void ProcessScheduler::RunProcess(int);
+	void RunProcess(int);
 };
 #endif PROCESSSCHEDULER__H
