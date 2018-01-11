@@ -20,8 +20,7 @@ ProcessesManager::ProcessesManager()
 void ProcessesManager::createProcess(std::string fileName, int GID)
 {
 
-	bool GroupExist = true;
-	PCB* newProcess = new PCB(fileName, GID);
+
 
 	std::string program;
 	std::ifstream file;
@@ -30,6 +29,8 @@ void ProcessesManager::createProcess(std::string fileName, int GID)
 	file.open(path);
 	if (file.good())
 	{
+		bool GroupExist = true;
+		PCB* newProcess = new PCB(fileName, GID); 
 		std::string napis;
 		while (!file.eof())
 		{
@@ -109,7 +110,7 @@ void ProcessesManager::createProcess(std::string fileName, int GID, int Addidtio
 		file.close();
 
 		//tmczasowe bo tutaj wpisujemy kod programu
-		mm->allocateMemory(newProcess, program, program.size()+AddidtionalSpace);
+		mm->allocateMemory(newProcess, program, program.size() + AddidtionalSpace);
 		newProcess->SetProcesBurstTime(program.size() % 13);
 		/*Przypadek kiedy dodawany jest proces bezczynnosci*/
 		if (GID == 0) {

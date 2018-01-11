@@ -62,6 +62,7 @@ void ProcessScheduler::RunProcess()
 	}
 	if(ActiveProcess->wait)
 	{
+		ActiveProcess->wait = false;
 		ActiveProcess = pm->findPCBbyPID(1);
 		SRTSchedulingAlgorithm();
 

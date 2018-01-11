@@ -1,1 +1,1 @@
-CF dupa plik OF dupa AP " [spacja spacja] z drugiego programu (p3) " CLF SP
+CF test plik OF dupa AP " [spacja spacja] z drugiego programu (p3) " CLF SP

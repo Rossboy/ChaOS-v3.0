@@ -133,7 +133,10 @@
     <Text Include="p4.txt">
       <Filter>Programy</Filter>
     </Text>
-	 <Text Include="fileTest.txt">
+    <Text Include="fileTest.txt">
+      <Filter>Programy</Filter>
+    </Text>
+    <Text Include="p5.txt">
       <Filter>Programy</Filter>
     </Text>
   </ItemGroup>

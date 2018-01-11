@@ -62,6 +62,10 @@ void ConditionVariable::signal()
 
 		//delete temp;
 	}
+	else
+	{
+		resourceOccupied = false;
+	}
 }
 
 
