@@ -1,1 +1,1 @@
-OF fib AP " ,  " CLF SP
+OF fib AP , CLF SP
