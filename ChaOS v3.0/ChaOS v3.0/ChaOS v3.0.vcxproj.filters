@@ -106,6 +106,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="help.txt" />
+    <Text Include="p1.txt">
+      <Filter>Programy</Filter>
+    </Text>
     <Text Include="p2.txt">
       <Filter>Programy</Filter>
     </Text>
@@ -125,6 +128,15 @@
       <Filter>Programy</Filter>
     </Text>
     <Text Include="fifoTest.txt">
+      <Filter>Programy</Filter>
+    </Text>
+    <Text Include="p4.txt">
+      <Filter>Programy</Filter>
+    </Text>
+    <Text Include="fileTest.txt">
+      <Filter>Programy</Filter>
+    </Text>
+    <Text Include="p5.txt">
       <Filter>Programy</Filter>
     </Text>
     <Text Include="p1f.txt">

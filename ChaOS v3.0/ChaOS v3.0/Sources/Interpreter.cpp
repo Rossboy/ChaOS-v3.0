@@ -68,7 +68,7 @@ namespace cmd {
 	void add(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
-		std::clog << "  -> Wykonuje sie operacja dodawania..." << std::endl;
+		//std::clog << "  -> Wykonuje sie operacja dodawania..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] += ActiveProcess->registers[arg2];
@@ -85,7 +85,7 @@ namespace cmd {
 	void substract(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
-		std::clog << "  -> Wykonuje sie operacja odejmowania..." << std::endl;
+		//std::clog << "  -> Wykonuje sie operacja odejmowania..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] -= ActiveProcess->registers[arg2];
@@ -102,7 +102,7 @@ namespace cmd {
 	void multiply(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
-		std::clog << "  -> Wykonuje sie operacja mnozenia..." << std::endl;
+		//std::clog << "  -> Wykonuje sie operacja mnozenia..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] *= ActiveProcess->registers[arg2];
@@ -111,7 +111,7 @@ namespace cmd {
 	void divide(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
-		std::clog << "  -> Wykonuje sie operacja dzielenia..." << std::endl;
+		//std::clog << "  -> Wykonuje sie operacja dzielenia..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] /= ActiveProcess->registers[arg2];
@@ -120,7 +120,7 @@ namespace cmd {
 	void increment(const std::vector<std::string>& Arguments)
 	{
 		int arg1;
-		std::clog << "  -> Wykonuje sie operacja inkrementacji..." << std::endl;
+		//std::clog << "  -> Wykonuje sie operacja inkrementacji..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		ActiveProcess->registers[arg1]++;
 	}//done
@@ -129,7 +129,7 @@ namespace cmd {
 	{
 
 		int arg1;
-		std::clog << "  -> Wykonuje sie operacja dekrementacji..." << std::endl;
+		//std::clog << "  -> Wykonuje sie operacja dekrementacji..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		ActiveProcess->registers[arg1]--;
 		if (ActiveProcess->registers[arg1] == 0)
@@ -145,7 +145,7 @@ namespace cmd {
 	void move(const std::vector<std::string>& Arguments)
 	{
 		int arg1, arg2;
-		std::clog << "  -> Wykonuje sie operacja przypisania wartosci..." << std::endl;
+		//std::clog << "  -> Wykonuje sie operacja przypisania wartosci..." << std::endl;
 		arg1 = atoi(Arguments[0].c_str());
 		arg2 = atoi(Arguments[1].c_str());
 		ActiveProcess->registers[arg1] = arg2;
@@ -365,7 +365,7 @@ namespace cmd {
 
 void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters, const std::vector<std::string>& Arguments)
 {
-	int arg1, arg2;
+	
 
 	switch (CommandParameters.first)
 	{
@@ -478,13 +478,13 @@ void Interpreter::ExecuteCommand(const std::pair<int, int >&  CommandParameters,
 	case 34://AP - dopisz do pliku
 		cmd::appendFile(Arguments);
 		break;
-	case 35:
+	case 35://CM - check Messages
 		cmd::checkForMessages(Arguments);
 		break;
-	case 36:
+	case 36://XR - export Register
 		cmd::exportReg(Arguments);
 		break;
-	case 37:
+	case 37://CPA - Create Process With Additional Space
 		cmd::makeProcessWithAddidionalSpace(Arguments);
 		break;
 	default:

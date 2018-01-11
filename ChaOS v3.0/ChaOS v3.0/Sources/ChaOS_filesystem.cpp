@@ -139,6 +139,12 @@ std::string ChaOS_filesystem::getPath()
 	return result;
 }
 
+void ChaOS_filesystem::signalByID(uShort id)
+{
+	if (id < 32)
+		fileSynchronization[id].signal();
+}
+
 c_uShort ChaOS_filesystem::allocateSector()
 {
 	char VCB[32];
@@ -927,7 +933,6 @@ void ChaOS_filesystem::closeFile()
 	{
 		if (ActiveProcess->currentFile)
 		{
-			//std::cout << "FS LOG: CLOSE: file: " << ActiveProcess->currentFile->firstSector << std::endl;
 			fileSynchronization[ActiveProcess->currentFile->firstSector].signal();
 			delete ActiveProcess->currentFile;
 		}

@@ -1,4 +1,4 @@
-#include "../Headers/Process.h"
+﻿#include "../Headers/Process.h"
 #include <iostream>
 #include <string>
 #include <list>
@@ -31,6 +31,17 @@ PCB::PCB(std::string programName, int GID):points()
 	this->currentDir = 1;
 }
 
+PCB::~PCB()
+{
+	if (this->currentFile)
+	{
+		std::cout << "----- destruktor PCB zrobił signal() na zmiennej niezamkniętego pliku -----" << std::endl;
+		fs->signalByID(this->currentFile->getID());
+		delete currentFile;
+		currentFile = nullptr;
+	}
+}
+
 void PCB::setStateAndMoveToRespectiveList(State newState)
 {
 	if (newState == State::Ready && this->GetState()!=State::Ready)
@@ -50,6 +61,7 @@ void PCB::setStateAndMoveToRespectiveList(State newState)
 	else if (newState == State::Terminated && this->GetState() != State::Terminated)
 	{
 		this->state = newState;
+		if (this->currentFile != nullptr)fs->closeFile();
 		if (ActiveProcess->GetPID() == this->GetPID())ActiveProcess = pm->findPCBbyPID(1);
 		pm->killProcess(this->PID);
 	}
